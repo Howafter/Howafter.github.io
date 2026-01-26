@@ -6,12 +6,12 @@
   
   <title>嵌入式存储开发高效应用 | Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="SFUD（Serial Flash Universal Driver）是一款开源的串行 SPI Flash 通用驱动库，它提供了跨平台、易用的 API 接口，简化了不同 SPI Flash 芯片的驱动程序开发。 应用场景SFUD 可用于以下工作项目和场景： 嵌入式系统开发 • IoT 智能网关 ：存储设备配置、用户数据和固件镜像，支持远程 OTA 升级 • 工业 PLC ：存储控制程序、工艺参数和">
+  <meta name="description" content="SFUD（Serial Flash Universal Driver）是一款开源的串行 SPI Flash 通用驱动库，它提供了跨平台、易用的 API 接口，简化了不同 SPI Flash 芯片的驱动程序开发。 应用场景SFUD 可用于以下工作项目和场景： 嵌入式系统开发 IoT 智能网关 ：存储设备配置、用户数据和固件镜像，支持远程 OTA 升级 工业 PLC ：存储控制程序、工艺参数和运行日志">
 <meta property="og:type" content="article">
 <meta property="og:title" content="嵌入式存储开发高效应用">
 <meta property="og:url" content="http://example.com/2026/01/26/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%98%E5%82%A8%E5%BC%80%E5%8F%91%E9%AB%98%E6%95%88%E5%BA%94%E7%94%A8/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="SFUD（Serial Flash Universal Driver）是一款开源的串行 SPI Flash 通用驱动库，它提供了跨平台、易用的 API 接口，简化了不同 SPI Flash 芯片的驱动程序开发。 应用场景SFUD 可用于以下工作项目和场景： 嵌入式系统开发 • IoT 智能网关 ：存储设备配置、用户数据和固件镜像，支持远程 OTA 升级 • 工业 PLC ：存储控制程序、工艺参数和">
+<meta property="og:description" content="SFUD（Serial Flash Universal Driver）是一款开源的串行 SPI Flash 通用驱动库，它提供了跨平台、易用的 API 接口，简化了不同 SPI Flash 芯片的驱动程序开发。 应用场景SFUD 可用于以下工作项目和场景： 嵌入式系统开发 IoT 智能网关 ：存储设备配置、用户数据和固件镜像，支持远程 OTA 升级 工业 PLC ：存储控制程序、工艺参数和运行日志">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2026-01-26T02:00:00.000Z">
 <meta property="article:modified_time" content="2026-01-26T02:00:00.000Z">
@@ -104,19 +104,19 @@
         <p>SFUD（Serial Flash Universal Driver）是一款开源的串行 SPI Flash 通用驱动库，它提供了跨平台、易用的 API 接口，简化了不同 SPI Flash 芯片的驱动程序开发。</p>
 <h2 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h2><p>SFUD 可用于以下工作项目和场景：</p>
 <h3 id="嵌入式系统开发"><a href="#嵌入式系统开发" class="headerlink" title="嵌入式系统开发"></a>嵌入式系统开发</h3><ul>
-<li>• <strong>IoT 智能网关</strong> ：存储设备配置、用户数据和固件镜像，支持远程 OTA 升级</li>
-<li>• <strong>工业 PLC</strong> ：存储控制程序、工艺参数和运行日志，确保数据可靠性</li>
-<li>• <strong>智能手表</strong> ：存储用户健康数据、运动记录和系统配置</li>
+<li><strong>IoT 智能网关</strong> ：存储设备配置、用户数据和固件镜像，支持远程 OTA 升级</li>
+<li><strong>工业 PLC</strong> ：存储控制程序、工艺参数和运行日志，确保数据可靠性</li>
+<li><strong>智能手表</strong> ：存储用户健康数据、运动记录和系统配置</li>
 </ul>
 <h3 id="固件更新系统"><a href="#固件更新系统" class="headerlink" title="固件更新系统"></a>固件更新系统</h3><ul>
-<li>• <strong>远程 OTA 升级</strong> ：通过网络接收固件包，验证后写入 Flash，支持断点续传</li>
-<li>• <strong>双分区固件管理</strong> ：实现 A&#x2F;B 分区切换，确保升级失败时可回滚</li>
-<li>• <strong>固件完整性校验</strong> ：使用 MD5&#x2F;SHA 算法验证固件完整性，防止刷入损坏固件</li>
+<li><strong>远程 OTA 升级</strong> ：通过网络接收固件包，验证后写入 Flash，支持断点续传</li>
+<li><strong>双分区固件管理</strong> ：实现 A&#x2F;B 分区切换，确保升级失败时可回滚</li>
+<li><strong>固件完整性校验</strong> ：使用 MD5&#x2F;SHA 算法验证固件完整性，防止刷入损坏固件</li>
 </ul>
 <h3 id="数据存储应用"><a href="#数据存储应用" class="headerlink" title="数据存储应用"></a>数据存储应用</h3><ul>
-<li>• <strong>配置参数管理</strong> ：使用结构化存储方式管理设备参数，支持版本控制</li>
-<li>• <strong>事件日志记录</strong> ：实现循环日志，自动覆盖旧数据，确保关键事件不丢失</li>
-<li>• <strong>用户数据持久化</strong> ：存储用户设置和个性化配置，设备重启后保持不变</li>
+<li><strong>配置参数管理</strong> ：使用结构化存储方式管理设备参数，支持版本控制</li>
+<li><strong>事件日志记录</strong> ：实现循环日志，自动覆盖旧数据，确保关键事件不丢失</li>
+<li><strong>用户数据持久化</strong> ：存储用户设置和个性化配置，设备重启后保持不变</li>
 </ul>
 <h2 id="快速上手"><a href="#快速上手" class="headerlink" title="快速上手"></a>快速上手</h2><h3 id="核心-API"><a href="#核心-API" class="headerlink" title="核心 API"></a>核心 API</h3><table>
 <thead>
@@ -188,9 +188,9 @@
 <h2 id="集成实现"><a href="#集成实现" class="headerlink" title="集成实现"></a>集成实现</h2><h3 id="集成步骤"><a href="#集成步骤" class="headerlink" title="集成步骤"></a>集成步骤</h3><h4 id="获取源码"><a href="#获取源码" class="headerlink" title="获取源码"></a>获取源码</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 从 GitHub 克隆源码</span><br><span class="line">git clone https://github.com/armink/SFUD.git</span><br></pre></td></tr></table></figure>
 
 <h4 id="添加文件到项目"><a href="#添加文件到项目" class="headerlink" title="添加文件到项目"></a>添加文件到项目</h4><ul>
-<li>• 将 <code>&lt;span leaf=&quot;&quot;&gt;sfud.c&lt;/span&gt;</code>、<code>&lt;span leaf=&quot;&quot;&gt;sfud.h&lt;/span&gt;</code> 添加到项目源码目录</li>
-<li>• 将 <code>&lt;span leaf=&quot;&quot;&gt;sfud_flash_def.h&lt;/span&gt;</code> 添加到项目（包含芯片定义）</li>
-<li>• 根据需要添加 <code>&lt;span leaf=&quot;&quot;&gt;port&lt;/span&gt;</code> 目录下的平台适配文件</li>
+<li>将 <code>&lt;span leaf=&quot;&quot;&gt;sfud.c&lt;/span&gt;</code>、<code>&lt;span leaf=&quot;&quot;&gt;sfud.h&lt;/span&gt;</code> 添加到项目源码目录</li>
+<li>将 <code>&lt;span leaf=&quot;&quot;&gt;sfud_flash_def.h&lt;/span&gt;</code> 添加到项目（包含芯片定义）</li>
+<li>根据需要添加 <code>&lt;span leaf=&quot;&quot;&gt;port&lt;/span&gt;</code> 目录下的平台适配文件</li>
 </ul>
 <h4 id="实现硬件适配函数"><a href="#实现硬件适配函数" class="headerlink" title="实现硬件适配函数"></a>实现硬件适配函数</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * SPI 接口读写函数</span><br><span class="line"> * @param spi SPI 设备结构体</span><br><span class="line"> * @param write_buf 写入缓冲区</span><br><span class="line"> * @param write_size 写入大小</span><br><span class="line"> * @param read_buf 读取缓冲区</span><br><span class="line"> * @param read_size 读取大小</span><br><span class="line"> * @return 操作结果</span><br><span class="line"> */</span><br><span class="line">static sfud_err spi_write_read(const sfud_spi *spi, const uint8_t *write_buf, size_t write_size, uint8_t *read_buf, size_t read_size)</span><br><span class="line">&#123;</span><br><span class="line">    // 片选使能</span><br><span class="line">    HAL_GPIO_WritePin(SPI_FLASH_CS_GPIO_Port, SPI_FLASH_CS_Pin, GPIO_PIN_RESET);</span><br><span class="line">    </span><br><span class="line">    // 写入数据</span><br><span class="line">    if (write_size &gt; 0) &#123;</span><br><span class="line">        HAL_SPI_Transmit(&amp;hspi1, (uint8_t *)write_buf, write_size, 1000);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    // 读取数据</span><br><span class="line">    if (read_size &gt; 0) &#123;</span><br><span class="line">        HAL_SPI_Receive(&amp;hspi1, read_buf, read_size, 1000);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    // 片选禁用</span><br><span class="line">    HAL_GPIO_WritePin(SPI_FLASH_CS_GPIO_Port, SPI_FLASH_CS_Pin, GPIO_PIN_SET);</span><br><span class="line">    </span><br><span class="line">    return SFUD_SUCCESS;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -234,7 +234,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2026/01/26/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%98%E5%82%A8%E5%BC%80%E5%8F%91%E9%AB%98%E6%95%88%E5%BA%94%E7%94%A8/" data-id="cuidneEJeT33sqfF3BjtBWpmr" data-title="嵌入式存储开发高效应用" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2026/01/26/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%98%E5%82%A8%E5%BC%80%E5%8F%91%E9%AB%98%E6%95%88%E5%BA%94%E7%94%A8/" data-id="cuidhFpFpZYRMl965JFLVxZvr" data-title="嵌入式存储开发高效应用" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
