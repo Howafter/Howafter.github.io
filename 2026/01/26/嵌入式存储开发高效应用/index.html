@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>嵌入式存储开发高效应用 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="SFUD（Serial Flash Universal Driver）是一款开源的串行 SPI Flash 通用驱动库，它提供了跨平台、易用的 API 接口，简化了不同 SPI Flash 芯片的驱动程序开发。 应用场景SFUD 可用于以下工作项目和场景： 嵌入式系统开发 • IoT 智能网关 ：存储设备配置、用户数据和固件镜像，支持远程 OTA 升级 • 工业 PLC ：存储控制程序、工艺参数和">
+<meta property="og:type" content="article">
+<meta property="og:title" content="嵌入式存储开发高效应用">
+<meta property="og:url" content="http://example.com/2026/01/26/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%98%E5%82%A8%E5%BC%80%E5%8F%91%E9%AB%98%E6%95%88%E5%BA%94%E7%94%A8/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="SFUD（Serial Flash Universal Driver）是一款开源的串行 SPI Flash 通用驱动库，它提供了跨平台、易用的 API 接口，简化了不同 SPI Flash 芯片的驱动程序开发。 应用场景SFUD 可用于以下工作项目和场景： 嵌入式系统开发 • IoT 智能网关 ：存储设备配置、用户数据和固件镜像，支持远程 OTA 升级 • 工业 PLC ：存储控制程序、工艺参数和">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2026-01-26T02:00:00.000Z">
+<meta property="article:modified_time" content="2026-01-26T02:00:00.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="嵌入式学习">
+<meta property="article:tag" content="数据存储">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-嵌入式存储开发高效应用" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2026/01/26/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%98%E5%82%A8%E5%BC%80%E5%8F%91%E9%AB%98%E6%95%88%E5%BA%94%E7%94%A8/" class="article-date">
+  <time class="dt-published" datetime="2026-01-26T02:00:00.000Z" itemprop="datePublished">2026-01-26</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      嵌入式存储开发高效应用
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>SFUD（Serial Flash Universal Driver）是一款开源的串行 SPI Flash 通用驱动库，它提供了跨平台、易用的 API 接口，简化了不同 SPI Flash 芯片的驱动程序开发。</p>
+<h2 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h2><p>SFUD 可用于以下工作项目和场景：</p>
+<h3 id="嵌入式系统开发"><a href="#嵌入式系统开发" class="headerlink" title="嵌入式系统开发"></a>嵌入式系统开发</h3><ul>
+<li>• <strong>IoT 智能网关</strong> ：存储设备配置、用户数据和固件镜像，支持远程 OTA 升级</li>
+<li>• <strong>工业 PLC</strong> ：存储控制程序、工艺参数和运行日志，确保数据可靠性</li>
+<li>• <strong>智能手表</strong> ：存储用户健康数据、运动记录和系统配置</li>
+</ul>
+<h3 id="固件更新系统"><a href="#固件更新系统" class="headerlink" title="固件更新系统"></a>固件更新系统</h3><ul>
+<li>• <strong>远程 OTA 升级</strong> ：通过网络接收固件包，验证后写入 Flash，支持断点续传</li>
+<li>• <strong>双分区固件管理</strong> ：实现 A&#x2F;B 分区切换，确保升级失败时可回滚</li>
+<li>• <strong>固件完整性校验</strong> ：使用 MD5&#x2F;SHA 算法验证固件完整性，防止刷入损坏固件</li>
+</ul>
+<h3 id="数据存储应用"><a href="#数据存储应用" class="headerlink" title="数据存储应用"></a>数据存储应用</h3><ul>
+<li>• <strong>配置参数管理</strong> ：使用结构化存储方式管理设备参数，支持版本控制</li>
+<li>• <strong>事件日志记录</strong> ：实现循环日志，自动覆盖旧数据，确保关键事件不丢失</li>
+<li>• <strong>用户数据持久化</strong> ：存储用户设置和个性化配置，设备重启后保持不变</li>
+</ul>
+<h2 id="快速上手"><a href="#快速上手" class="headerlink" title="快速上手"></a>快速上手</h2><h3 id="核心-API"><a href="#核心-API" class="headerlink" title="核心 API"></a>核心 API</h3><table>
+<thead>
+<tr>
+<th>API 函数</th>
+<th>功能描述</th>
+<th>参数说明</th>
+<th>返回值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>&lt;span leaf=&quot;&quot;&gt;sfud_init()&lt;/span&gt;</code></td>
+<td>初始化 SFUD 库，加载内置 Flash 驱动表</td>
+<td>无</td>
+<td><code>&lt;span leaf=&quot;&quot;&gt;sfud_err&lt;/span&gt;</code>：操作结果，<code>&lt;span leaf=&quot;&quot;&gt;SFUD_SUCCESS&lt;/span&gt;</code> 表示成功</td>
+</tr>
+<tr>
+<td><code>&lt;span leaf=&quot;&quot;&gt;sfud_get_device()&lt;/span&gt;</code></td>
+<td>获取 Flash 设备对象</td>
+<td><code>&lt;span leaf=&quot;&quot;&gt;index&lt;/span&gt;</code>：设备索引（0 开始）</td>
+<td><code>&lt;span leaf=&quot;&quot;&gt;const sfud_flash*&lt;/span&gt;</code>：Flash 设备指针，NULL 表示失败</td>
+</tr>
+<tr>
+<td><code>&lt;span leaf=&quot;&quot;&gt;sfud_erase()&lt;/span&gt;</code></td>
+<td>擦除 Flash 区域（自动选择最佳擦除命令）</td>
+<td><code>&lt;span leaf=&quot;&quot;&gt;flash&lt;/span&gt;</code>：Flash 设备指针<br/><code>&lt;span leaf=&quot;&quot;&gt;addr&lt;/span&gt;</code>：起始地址（必须对齐到擦除块边界）<br/><code>&lt;span leaf=&quot;&quot;&gt;size&lt;/span&gt;</code>：擦除大小（必须是擦除块大小的整数倍）</td>
+<td><code>&lt;span leaf=&quot;&quot;&gt;sfud_err&lt;/span&gt;</code>：操作结果，<code>&lt;span leaf=&quot;&quot;&gt;SFUD_SUCCESS&lt;/span&gt;</code> 表示成功</td>
+</tr>
+<tr>
+<td><code>&lt;span leaf=&quot;&quot;&gt;sfud_write()&lt;/span&gt;</code></td>
+<td>写入数据到 Flash（自动处理页对齐）</td>
+<td><code>&lt;span leaf=&quot;&quot;&gt;flash&lt;/span&gt;</code>：Flash 设备指针<br/><code>&lt;span leaf=&quot;&quot;&gt;addr&lt;/span&gt;</code>：起始地址<br/><code>&lt;span leaf=&quot;&quot;&gt;size&lt;/span&gt;</code>：写入大小<br/><code>&lt;span leaf=&quot;&quot;&gt;data&lt;/span&gt;</code>：要写入的数据缓冲区</td>
+<td><code>&lt;span leaf=&quot;&quot;&gt;sfud_err&lt;/span&gt;</code>：操作结果，<code>&lt;span leaf=&quot;&quot;&gt;SFUD_SUCCESS&lt;/span&gt;</code> 表示成功</td>
+</tr>
+<tr>
+<td><code>&lt;span leaf=&quot;&quot;&gt;sfud_read()&lt;/span&gt;</code></td>
+<td>从 Flash 读取数据</td>
+<td><code>&lt;span leaf=&quot;&quot;&gt;flash&lt;/span&gt;</code>：Flash 设备指针<br/><code>&lt;span leaf=&quot;&quot;&gt;addr&lt;/span&gt;</code>：起始地址<br/><code>&lt;span leaf=&quot;&quot;&gt;size&lt;/span&gt;</code>：读取大小<br/><code>&lt;span leaf=&quot;&quot;&gt;data&lt;/span&gt;</code>：用于存储读取数据的缓冲区</td>
+<td><code>&lt;span leaf=&quot;&quot;&gt;sfud_err&lt;/span&gt;</code>：操作结果，<code>&lt;span leaf=&quot;&quot;&gt;SFUD_SUCCESS&lt;/span&gt;</code> 表示成功</td>
+</tr>
+<tr>
+<td><code>&lt;span leaf=&quot;&quot;&gt;sfud_chip_erase()&lt;/span&gt;</code></td>
+<td>擦除整个 Flash 芯片</td>
+<td><code>&lt;span leaf=&quot;&quot;&gt;flash&lt;/span&gt;</code>：Flash 设备指针</td>
+<td><code>&lt;span leaf=&quot;&quot;&gt;sfud_err&lt;/span&gt;</code>：操作结果，<code>&lt;span leaf=&quot;&quot;&gt;SFUD_SUCCESS&lt;/span&gt;</code> 表示成功</td>
+</tr>
+<tr>
+<td><code>&lt;span leaf=&quot;&quot;&gt;sfud_is_flash_busy()&lt;/span&gt;</code></td>
+<td>检查 Flash 是否处于忙状态</td>
+<td><code>&lt;span leaf=&quot;&quot;&gt;flash&lt;/span&gt;</code>：Flash 设备指针</td>
+<td><code>&lt;span leaf=&quot;&quot;&gt;bool&lt;/span&gt;</code>：<code>&lt;span leaf=&quot;&quot;&gt;true&lt;/span&gt;</code> 表示忙，<code>&lt;span leaf=&quot;&quot;&gt;false&lt;/span&gt;</code> 表示空闲</td>
+</tr>
+<tr>
+<td><code>&lt;span leaf=&quot;&quot;&gt;sfud_get_error_code_string()&lt;/span&gt;</code></td>
+<td>获取错误码对应的字符串描述</td>
+<td><code>&lt;span leaf=&quot;&quot;&gt;error_code&lt;/span&gt;</code>：错误码</td>
+<td><code>&lt;span leaf=&quot;&quot;&gt;const char*&lt;/span&gt;</code>：错误描述字符串</td>
+</tr>
+</tbody></table>
+<h3 id="API-使用示例"><a href="#API-使用示例" class="headerlink" title="API 使用示例"></a>API 使用示例</h3><p><strong>初始化和获取设备</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">// 初始化 SFUD 库</span><br><span class="line">if (sfud_init() != SFUD_SUCCESS) &#123;</span><br><span class="line">    printf(&quot;SFUD init failed\r\n&quot;);</span><br><span class="line">    return -1;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 获取第一个 Flash 设备</span><br><span class="line">const sfud_flash *flash = sfud_get_device(0);</span><br><span class="line">if (flash == NULL) &#123;</span><br><span class="line">    printf(&quot;Get flash device failed\r\n&quot;);</span><br><span class="line">    return -1;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>擦除操作</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">// 擦除 4KB 扇区</span><br><span class="line">sfud_err result = sfud_erase(flash, 0x00000000, 4096);</span><br><span class="line">if (result != SFUD_SUCCESS) &#123;</span><br><span class="line">    printf(&quot;Erase failed: %s\r\n&quot;, sfud_get_error_code_string(result));</span><br><span class="line">    return -1;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 擦除整个芯片（耗时较长）</span><br><span class="line">result = sfud_chip_erase(flash);</span><br><span class="line">if (result != SFUD_SUCCESS) &#123;</span><br><span class="line">    printf(&quot;Chip erase failed: %s\r\n&quot;, sfud_get_error_code_string(result));</span><br><span class="line">    return -1;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>读写操作</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">// 写入数据</span><br><span class="line">uint8_t write_buf[16] = &#123;0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10&#125;;</span><br><span class="line">result = sfud_write(flash, 0x00000000, sizeof(write_buf), write_buf);</span><br><span class="line">if (result != SFUD_SUCCESS) &#123;</span><br><span class="line">    printf(&quot;Write failed: %s\r\n&quot;, sfud_get_error_code_string(result));</span><br><span class="line">    return-1;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 读取数据</span><br><span class="line">uint8_t read_buf[16];</span><br><span class="line">result = sfud_read(flash, 0x00000000, sizeof(read_buf), read_buf);</span><br><span class="line">if (result != SFUD_SUCCESS) &#123;</span><br><span class="line">    printf(&quot;Read failed: %s\r\n&quot;, sfud_get_error_code_string(result));</span><br><span class="line">    return-1;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="集成实现"><a href="#集成实现" class="headerlink" title="集成实现"></a>集成实现</h2><h3 id="集成步骤"><a href="#集成步骤" class="headerlink" title="集成步骤"></a>集成步骤</h3><h4 id="获取源码"><a href="#获取源码" class="headerlink" title="获取源码"></a>获取源码</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 从 GitHub 克隆源码</span><br><span class="line">git clone https://github.com/armink/SFUD.git</span><br></pre></td></tr></table></figure>
+
+<h4 id="添加文件到项目"><a href="#添加文件到项目" class="headerlink" title="添加文件到项目"></a>添加文件到项目</h4><ul>
+<li>• 将 <code>&lt;span leaf=&quot;&quot;&gt;sfud.c&lt;/span&gt;</code>、<code>&lt;span leaf=&quot;&quot;&gt;sfud.h&lt;/span&gt;</code> 添加到项目源码目录</li>
+<li>• 将 <code>&lt;span leaf=&quot;&quot;&gt;sfud_flash_def.h&lt;/span&gt;</code> 添加到项目（包含芯片定义）</li>
+<li>• 根据需要添加 <code>&lt;span leaf=&quot;&quot;&gt;port&lt;/span&gt;</code> 目录下的平台适配文件</li>
+</ul>
+<h4 id="实现硬件适配函数"><a href="#实现硬件适配函数" class="headerlink" title="实现硬件适配函数"></a>实现硬件适配函数</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * SPI 接口读写函数</span><br><span class="line"> * @param spi SPI 设备结构体</span><br><span class="line"> * @param write_buf 写入缓冲区</span><br><span class="line"> * @param write_size 写入大小</span><br><span class="line"> * @param read_buf 读取缓冲区</span><br><span class="line"> * @param read_size 读取大小</span><br><span class="line"> * @return 操作结果</span><br><span class="line"> */</span><br><span class="line">static sfud_err spi_write_read(const sfud_spi *spi, const uint8_t *write_buf, size_t write_size, uint8_t *read_buf, size_t read_size)</span><br><span class="line">&#123;</span><br><span class="line">    // 片选使能</span><br><span class="line">    HAL_GPIO_WritePin(SPI_FLASH_CS_GPIO_Port, SPI_FLASH_CS_Pin, GPIO_PIN_RESET);</span><br><span class="line">    </span><br><span class="line">    // 写入数据</span><br><span class="line">    if (write_size &gt; 0) &#123;</span><br><span class="line">        HAL_SPI_Transmit(&amp;hspi1, (uint8_t *)write_buf, write_size, 1000);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    // 读取数据</span><br><span class="line">    if (read_size &gt; 0) &#123;</span><br><span class="line">        HAL_SPI_Receive(&amp;hspi1, read_buf, read_size, 1000);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    // 片选禁用</span><br><span class="line">    HAL_GPIO_WritePin(SPI_FLASH_CS_GPIO_Port, SPI_FLASH_CS_Pin, GPIO_PIN_SET);</span><br><span class="line">    </span><br><span class="line">    return SFUD_SUCCESS;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="初始化和使用-SFUD"><a href="#初始化和使用-SFUD" class="headerlink" title="初始化和使用 SFUD"></a>初始化和使用 SFUD</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line">#include &quot;sfud.h&quot;</span><br><span class="line"></span><br><span class="line">intmain(void) &#123;</span><br><span class="line">    sfud_err result = SFUD_SUCCESS;</span><br><span class="line">    const sfud_flash *flash = NULL; // 注意：标准API返回的是const指针</span><br><span class="line">    </span><br><span class="line">    // 1. 初始化SFUD库</span><br><span class="line">    result = sfud_init();</span><br><span class="line">    if (result != SFUD_SUCCESS) &#123;</span><br><span class="line">        printf(&quot;SFUD init failed: %d\r\n&quot;, result);</span><br><span class="line">        return-1;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    // 2. 获取Flash设备对象（索引号根据你在sfud_cfg.h中的配置）</span><br><span class="line">    flash = sfud_get_device(0); // 获取设备表中第一个Flash设备[citation:6]</span><br><span class="line">    if (flash == NULL) &#123;</span><br><span class="line">        printf(&quot;Get SFUD flash device failed!\r\n&quot;);</span><br><span class="line">        return-1;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    // 3. 打印Flash信息（你的原始代码部分正确）</span><br><span class="line">    printf(&quot;Flash info:\r\n&quot;);</span><br><span class="line">    printf(&quot;  Name: %s\r\n&quot;, flash-&gt;name);</span><br><span class="line">    printf(&quot;  Size: %ld bytes\r\n&quot;, flash-&gt;chip.size);</span><br><span class="line">    printf(&quot;  Sector size: %ld bytes\r\n&quot;, flash-&gt;chip.sector_size);</span><br><span class="line">    printf(&quot;  Page size: %ld bytes\r\n&quot;, flash-&gt;chip.page_size);</span><br><span class="line">    </span><br><span class="line">    // 4. 擦除第一个扇区（必须确保地址0是扇区起始地址，且size是扇区大小的整数倍）</span><br><span class="line">    result = sfud_erase(flash, 0, flash-&gt;chip.sector_size); // 使用芯片自身的扇区大小更安全</span><br><span class="line">    if (result != SFUD_SUCCESS) &#123;</span><br><span class="line">        printf(&quot;Erase failed: %d\r\n&quot;, result);</span><br><span class="line">        return-1;</span><br><span class="line">    &#125;</span><br><span class="line">    printf(&quot;Erase sector success\r\n&quot;);</span><br><span class="line">    </span><br><span class="line">    // 5. 写入数据（确保目标区域已擦除）</span><br><span class="line">    uint8_t write_data[16] = &#123;0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,</span><br><span class="line">                              0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10&#125;;</span><br><span class="line">    result = sfud_write(flash, 0, sizeof(write_data), write_data);</span><br><span class="line">    if (result != SFUD_SUCCESS) &#123;</span><br><span class="line">        printf(&quot;Write failed: %d\r\n&quot;, result);</span><br><span class="line">        return-1;</span><br><span class="line">    &#125;</span><br><span class="line">    printf(&quot;Write data success\r\n&quot;);</span><br><span class="line">    </span><br><span class="line">    // 6. 读取数据并验证（这部分代码正确，无需修改）</span><br><span class="line">    uint8_t read_data[16];</span><br><span class="line">    result = sfud_read(flash, 0, sizeof(read_data), read_data);</span><br><span class="line">    if (result != SFUD_SUCCESS) &#123;</span><br><span class="line">        printf(&quot;Read failed: %d\r\n&quot;, result);</span><br><span class="line">        return-1;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    bool data_match = true;</span><br><span class="line">    for (int i = 0; i &lt; sizeof(write_data); i++) &#123;</span><br><span class="line">        if (read_data[i] != write_data[i]) &#123;</span><br><span class="line">            data_match = false;</span><br><span class="line">            break;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    if (data_match) &#123;</span><br><span class="line">        printf(&quot;Data verify success\r\n&quot;);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        printf(&quot;Data verify failed\r\n&quot;);</span><br><span class="line">        // 注意：写入后立即读取不一致，通常是因为写入前未正确擦除[citation:7]</span><br><span class="line">        return-1;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    printf(&quot;SFUD test completed successfully!\r\n&quot;);</span><br><span class="line">    return0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="常见问题处理"><a href="#常见问题处理" class="headerlink" title="常见问题处理"></a>常见问题处理</h3><table>
+<thead>
+<tr>
+<th>问题</th>
+<th>原因</th>
+<th>解决方案</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>初始化失败</strong></td>
+<td>SPI 通信问题</td>
+<td>检查 SPI 硬件连接和时钟配置</td>
+</tr>
+<tr>
+<td><strong>芯片识别失败</strong></td>
+<td>芯片型号未支持</td>
+<td>确认芯片型号是否在支持列表中，或手动指定</td>
+</tr>
+<tr>
+<td><strong>写入失败</strong></td>
+<td>未擦除扇区</td>
+<td>确保写入前已擦除目标扇区</td>
+</tr>
+<tr>
+<td><strong>读取数据错误</strong></td>
+<td>地址计算错误</td>
+<td>检查地址范围是否正确</td>
+</tr>
+<tr>
+<td><strong>性能不佳</strong></td>
+<td>SPI 时钟速度低</td>
+<td>提高 SPI 时钟频率，最高可达芯片支持的最大值</td>
+</tr>
+</tbody></table>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2026/01/26/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%98%E5%82%A8%E5%BC%80%E5%8F%91%E9%AB%98%E6%95%88%E5%BA%94%E7%94%A8/" data-id="cuidiByRa1zt7HY_D5B8naaY6" data-title="嵌入式存储开发高效应用" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" rel="tag">嵌入式学习</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" rel="tag">数据存储</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2026/01/26/%E9%AB%98%E6%95%88%E6%95%B0%E6%8D%AE%E4%BA%A4%E6%8D%A2/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">嵌入式设备如何实现高效数据交换</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" rel="tag">嵌入式学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" rel="tag">工具使用</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" rel="tag">数据传输</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" rel="tag">数据存储</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" style="font-size: 20px;">嵌入式学习</a> <a href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" style="font-size: 10px;">工具使用</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" style="font-size: 10px;">数据传输</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" style="font-size: 10px;">数据存储</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/01/">January 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">January 2023</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2026/01/26/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%98%E5%82%A8%E5%BC%80%E5%8F%91%E9%AB%98%E6%95%88%E5%BA%94%E7%94%A8/">嵌入式存储开发高效应用</a>
+          </li>
+        
+          <li>
+            <a href="/2026/01/26/%E9%AB%98%E6%95%88%E6%95%B0%E6%8D%AE%E4%BA%A4%E6%8D%A2/">嵌入式设备如何实现高效数据交换</a>
+          </li>
+        
+          <li>
+            <a href="/2026/01/18/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/">博客撰写方法</a>
+          </li>
+        
+          <li>
+            <a href="/2023/01/18/Linux%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B0/">Linux入门笔记</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
