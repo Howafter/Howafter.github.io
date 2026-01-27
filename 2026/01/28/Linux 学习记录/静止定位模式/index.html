@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>GNSS 静止状态定位功能实现文档 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="GNSS 静止状态定位功能实现文档功能概述本功能为GNSS定位系统添加了智能的静止&#x2F;动态状态检测和数据管理机制。当设备静止时，系统自动切换到低功耗模式，定期保存最优的定位数据；当设备运动时，按原有逻辑进行定位。 核心功能特性1. 运动状态检测（3种模式）模式1：基于速度判断 判断标准：速度 &lt; 0.1 km&#x2F;h 适用场景：速度数据可信的环境  模式2：基于位置偏移判断 判">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GNSS 静止状态定位功能实现文档">
+<meta property="og:url" content="http://example.com/2026/01/28/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/%E9%9D%99%E6%AD%A2%E5%AE%9A%E4%BD%8D%E6%A8%A1%E5%BC%8F/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="GNSS 静止状态定位功能实现文档功能概述本功能为GNSS定位系统添加了智能的静止&#x2F;动态状态检测和数据管理机制。当设备静止时，系统自动切换到低功耗模式，定期保存最优的定位数据；当设备运动时，按原有逻辑进行定位。 核心功能特性1. 运动状态检测（3种模式）模式1：基于速度判断 判断标准：速度 &lt; 0.1 km&#x2F;h 适用场景：速度数据可信的环境  模式2：基于位置偏移判断 判">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2026-01-27T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-01-28T04:00:00.000Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-Linux 学习记录/静止定位模式" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2026/01/28/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/%E9%9D%99%E6%AD%A2%E5%AE%9A%E4%BD%8D%E6%A8%A1%E5%BC%8F/" class="article-date">
+  <time class="dt-published" datetime="2026-01-27T16:00:00.000Z" itemprop="datePublished">2026-01-28</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      GNSS 静止状态定位功能实现文档
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="GNSS-静止状态定位功能实现文档"><a href="#GNSS-静止状态定位功能实现文档" class="headerlink" title="GNSS 静止状态定位功能实现文档"></a>GNSS 静止状态定位功能实现文档</h1><h2 id="功能概述"><a href="#功能概述" class="headerlink" title="功能概述"></a>功能概述</h2><p>本功能为GNSS定位系统添加了智能的静止&#x2F;动态状态检测和数据管理机制。当设备静止时，系统自动切换到低功耗模式，定期保存最优的定位数据；当设备运动时，按原有逻辑进行定位。</p>
+<h2 id="核心功能特性"><a href="#核心功能特性" class="headerlink" title="核心功能特性"></a>核心功能特性</h2><h3 id="1-运动状态检测（3种模式）"><a href="#1-运动状态检测（3种模式）" class="headerlink" title="1. 运动状态检测（3种模式）"></a>1. 运动状态检测（3种模式）</h3><h4 id="模式1：基于速度判断"><a href="#模式1：基于速度判断" class="headerlink" title="模式1：基于速度判断"></a>模式1：基于速度判断</h4><ul>
+<li><strong>判断标准</strong>：速度 &lt; 0.1 km&#x2F;h</li>
+<li><strong>适用场景</strong>：速度数据可信的环境</li>
+</ul>
+<h4 id="模式2：基于位置偏移判断"><a href="#模式2：基于位置偏移判断" class="headerlink" title="模式2：基于位置偏移判断"></a>模式2：基于位置偏移判断</h4><ul>
+<li><strong>判断标准</strong>：与上一个定位点的距离 &lt; 可配置阈值（默认50米）</li>
+<li><strong>适用场景</strong>：GPS信号不稳定，但可靠GPS坐标的环境</li>
+</ul>
+<h4 id="模式3：组合模式（推荐）"><a href="#模式3：组合模式（推荐）" class="headerlink" title="模式3：组合模式（推荐）"></a>模式3：组合模式（推荐）</h4><ul>
+<li><strong>判断标准</strong>：两个条件都满足</li>
+<li><strong>优势</strong>：最可靠，能有效过滤误判</li>
+</ul>
+<h3 id="2-GNSS数据滤波"><a href="#2-GNSS数据滤波" class="headerlink" title="2. GNSS数据滤波"></a>2. GNSS数据滤波</h3><p>系统对定位数据进行多维度评分，自动保留最优的定位点：</p>
+<p><strong>评分维度</strong>：</p>
+<ul>
+<li><p>HDOP值（水平精度因子）</p>
+<ul>
+<li>≤1.5：0分（最优）</li>
+<li>≤3.0：10分</li>
+<li>≤5.0：20分</li>
+<li><blockquote>
+<p>5.0：50分（差）</p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li><p>定位质量标志（0&#x3D;无效，1&#x3D;有效）</p>
+<ul>
+<li>有效：0分</li>
+<li>无效：100分</li>
+</ul>
+</li>
+<li><p>卫星数量</p>
+<ul>
+<li>≥10颗：0分（最优）</li>
+<li>≥7颗：5分</li>
+<li>≥4颗：15分</li>
+<li>&lt;4颗：50分（差）</li>
+</ul>
+</li>
+<li><p>定位状态（A&#x3D;有效, V&#x3D;无效）</p>
+<ul>
+<li>有效(A)：0分</li>
+<li>无效(V)：100分</li>
+</ul>
+</li>
+</ul>
+<p>评分越低说明定位点质量越好，系统自动保留评分最低的N个点。</p>
+<h3 id="3-定时器管理"><a href="#3-定时器管理" class="headerlink" title="3. 定时器管理"></a>3. 定时器管理</h3><p>系统新增一个独立的静止状态定位定时器：</p>
+<ul>
+<li><strong>静止状态定位间隔</strong>：30分钟（默认可配置）</li>
+<li><strong>启动&#x2F;停止</strong>：通过 <code>static_location_timer_start()</code> 和 <code>static_location_timer_stop()</code> 控制</li>
+</ul>
+<h2 id="配置参数"><a href="#配置参数" class="headerlink" title="配置参数"></a>配置参数</h2><h3 id="通过MQTT远程配置"><a href="#通过MQTT远程配置" class="headerlink" title="通过MQTT远程配置"></a>通过MQTT远程配置</h3><table>
+<thead>
+<tr>
+<th>命令类型</th>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>cfg.static.period</code></td>
+<td>period_seconds</td>
+<td>静止状态定位间隔（秒）</td>
+</tr>
+<tr>
+<td><code>cfg.static.mode</code></td>
+<td>mode (1-3)</td>
+<td>运动检测模式（1&#x3D;速度，2&#x3D;位置，3&#x3D;组合）</td>
+</tr>
+<tr>
+<td><code>cfg.static.threshold</code></td>
+<td>threshold_meters</td>
+<td>位置偏移阈值（米）</td>
+</tr>
+<tr>
+<td><code>cfg.static.best</code></td>
+<td>count (1-10)</td>
+<td>滤波后保留的最优点数</td>
+</tr>
+</tbody></table>
+<h3 id="本地默认值"><a href="#本地默认值" class="headerlink" title="本地默认值"></a>本地默认值</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> DEFAULT_STATIC_PERIOD_INTERVAL  (30 * 60 * 1000)  <span class="comment">// 30分钟</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> DEFAULT_STATIC_MOTION_MODE      GNSS_MOTION_MODE_COMBINED  <span class="comment">// 组合模式</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> DEFAULT_STATIC_POSITION_THRESHOLD  50.0  <span class="comment">// 50米</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> DEFAULT_GNSS_BUFFER_SIZE        10      <span class="comment">// 缓冲最多10个点</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> DEFAULT_BEST_POINTS_COUNT       5       <span class="comment">// 默认保留5个最优点</span></span></span><br></pre></td></tr></table></figure>
+
+<h2 id="导出函数接口"><a href="#导出函数接口" class="headerlink" title="导出函数接口"></a>导出函数接口</h2><h3 id="查询接口"><a href="#查询接口" class="headerlink" title="查询接口"></a>查询接口</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 获取静止状态定位周期（毫秒）</span></span><br><span class="line"><span class="type">uint32_t</span> <span class="title function_">get_static_period_interval</span><span class="params">(<span class="type">void</span>)</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取运动检测模式（1/2/3）</span></span><br><span class="line"><span class="type">uint8_t</span> <span class="title function_">get_motion_detect_mode</span><span class="params">(<span class="type">void</span>)</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取位置偏移阈值（米）</span></span><br><span class="line"><span class="type">double</span> <span class="title function_">get_position_drift_threshold</span><span class="params">(<span class="type">void</span>)</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取当前是否为静止状态（0=运动，1=静止）</span></span><br><span class="line"><span class="type">uint8_t</span> <span class="title function_">get_device_is_stationary</span><span class="params">(<span class="type">void</span>)</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="控制接口"><a href="#控制接口" class="headerlink" title="控制接口"></a>控制接口</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 启动静止状态定位定时器</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">static_location_timer_start</span><span class="params">(<span class="type">void</span>)</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 停止静止状态定位定时器</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">static_location_timer_stop</span><span class="params">(<span class="type">void</span>)</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 处理新的GNSS定位数据（由gnss_main.c调用）</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">gnss_static_buffer_add</span><span class="params">(<span class="type">gnss_t</span>* point)</span>;</span><br></pre></td></tr></table></figure>
+
+<h2 id="内部实现函数"><a href="#内部实现函数" class="headerlink" title="内部实现函数"></a>内部实现函数</h2><h3 id="运动状态判断"><a href="#运动状态判断" class="headerlink" title="运动状态判断"></a>运动状态判断</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">uint8_t</span> <span class="title function_">is_device_stationary</span><span class="params">(<span class="type">const</span> <span class="type">gnss_t</span>* last_point,</span></span><br><span class="line"><span class="params">                                   <span class="type">const</span> <span class="type">gnss_t</span>* current_point)</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="GNSS点质量评分"><a href="#GNSS点质量评分" class="headerlink" title="GNSS点质量评分"></a>GNSS点质量评分</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">uint32_t</span> <span class="title function_">gnss_point_score</span><span class="params">(<span class="type">const</span> <span class="type">gnss_t</span>* point)</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="GNSS数据滤波"><a href="#GNSS数据滤波" class="headerlink" title="GNSS数据滤波"></a>GNSS数据滤波</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">uint8_t</span> <span class="title function_">filter_gnss_data</span><span class="params">(<span class="type">gnss_t</span>* points, <span class="type">uint8_t</span> count, <span class="type">uint8_t</span> best_count)</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="距离计算（Haversine公式）"><a href="#距离计算（Haversine公式）" class="headerlink" title="距离计算（Haversine公式）"></a>距离计算（Haversine公式）</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">double</span> <span class="title function_">calculate_distance</span><span class="params">(<span class="type">double</span> lat1, <span class="type">double</span> lon1,</span></span><br><span class="line"><span class="params">                                 <span class="type">double</span> lat2, <span class="type">double</span> lon2)</span>;</span><br></pre></td></tr></table></figure>
+
+<h2 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h2><h3 id="gnss-buffer-t-结构体（在gnss-location-ringbuffer-h中）"><a href="#gnss-buffer-t-结构体（在gnss-location-ringbuffer-h中）" class="headerlink" title="gnss_buffer_t 结构体（在gnss_location_ringbuffer.h中）"></a>gnss_buffer_t 结构体（在gnss_location_ringbuffer.h中）</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="type">gnss_t</span> points[<span class="number">10</span>];                    <span class="comment">// 最多保留10个定位点</span></span><br><span class="line">    <span class="type">uint8_t</span> count;                        <span class="comment">// 当前缓冲点数</span></span><br><span class="line">    <span class="type">uint8_t</span> capacity;                     <span class="comment">// 缓冲容量</span></span><br><span class="line"></span><br><span class="line">    <span class="type">gnss_t</span> last_valid_point;              <span class="comment">// 上一个有效定位点</span></span><br><span class="line">    <span class="type">uint8_t</span> has_last_point;               <span class="comment">// 是否有有效的上一个点</span></span><br><span class="line"></span><br><span class="line">    <span class="type">uint8_t</span> motion_detect_mode;           <span class="comment">// 运动检测模式</span></span><br><span class="line">    <span class="type">double</span> position_drift_threshold;      <span class="comment">// 位置偏移阈值（米）</span></span><br><span class="line"></span><br><span class="line">    <span class="type">uint8_t</span> best_points_count;            <span class="comment">// 要保留的最优点数</span></span><br><span class="line">    <span class="type">uint8_t</span> is_stationary;                <span class="comment">// 当前是否为静止状态</span></span><br><span class="line">    <span class="type">uint32_t</span> last_report_tick;            <span class="comment">// 上次报告时间</span></span><br><span class="line">&#125; <span class="type">gnss_buffer_t</span>;</span><br></pre></td></tr></table></figure>
+
+<h2 id="工作流程"><a href="#工作流程" class="headerlink" title="工作流程"></a>工作流程</h2><ol>
+<li><p><strong>获取定位数据</strong></p>
+<ul>
+<li>gnss_main.c 通过 nmea_parse_packet() 获得新的定位数据</li>
+<li>调用 <code>gnss_static_buffer_add()</code> 传入定位数据</li>
+</ul>
+</li>
+<li><p><strong>状态判断</strong></p>
+<ul>
+<li>根据配置的运动检测模式判断设备是否静止</li>
+<li>保存当前定位点为”上一个有效点”</li>
+</ul>
+</li>
+<li><p><strong>数据管理</strong></p>
+<ul>
+<li>如果静止：保存定位点到缓冲</li>
+<li>如果运动：按原有逻辑处理</li>
+</ul>
+</li>
+<li><p><strong>定时上报</strong></p>
+<ul>
+<li>静止状态定位定时器触发时，发送保留的最优定位数据</li>
+<li>每30分钟（可配）强制发送一次，保持设备在线</li>
+</ul>
+</li>
+<li><p><strong>远程配置</strong></p>
+<ul>
+<li>后台通过MQTT下发配置命令</li>
+<li>设备实时更新相关参数</li>
+</ul>
+</li>
+</ol>
+<h2 id="集成说明"><a href="#集成说明" class="headerlink" title="集成说明"></a>集成说明</h2><h3 id="已修改文件"><a href="#已修改文件" class="headerlink" title="已修改文件"></a>已修改文件</h3><ol>
+<li><p><strong>gnss_location_ringbuffer.h</strong></p>
+<ul>
+<li>添加 <code>gnss_motion_detect_mode_t</code> 枚举</li>
+<li>添加 <code>gnss_buffer_t</code> 结构体</li>
+</ul>
+</li>
+<li><p><strong>_client.c</strong></p>
+<ul>
+<li>扩展 <code>ClientCtx_t</code> 结构体</li>
+<li>添加静止状态定位定时器</li>
+<li>实现所有功能函数</li>
+<li>添加MQTT配置命令处理</li>
+</ul>
+</li>
+<li><p><strong>gnss_main.c</strong></p>
+<ul>
+<li>在 nmea_parse_packet() 中调用 <code>gnss_static_buffer_add()</code></li>
+</ul>
+</li>
+</ol>
+<h2 id="使用示例"><a href="#使用示例" class="headerlink" title="使用示例"></a>使用示例</h2><h3 id="远程配置示例"><a href="#远程配置示例" class="headerlink" title="远程配置示例"></a>远程配置示例</h3><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 设置静止状态定位周期为60分钟</span></span><br><span class="line"><span class="punctuation">&#123;</span><span class="attr">&quot;type&quot;</span><span class="punctuation">:</span><span class="string">&quot;cfg.static.period&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;cmd_id&quot;</span><span class="punctuation">:</span><span class="number">1</span><span class="punctuation">,</span> <span class="attr">&quot;val&quot;</span><span class="punctuation">:</span><span class="number">3600</span><span class="punctuation">&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 设置运动检测模式为组合模式</span></span><br><span class="line"><span class="punctuation">&#123;</span><span class="attr">&quot;type&quot;</span><span class="punctuation">:</span><span class="string">&quot;cfg.static.mode&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;cmd_id&quot;</span><span class="punctuation">:</span><span class="number">2</span><span class="punctuation">,</span> <span class="attr">&quot;val&quot;</span><span class="punctuation">:</span><span class="number">3</span><span class="punctuation">&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 设置位置偏移阈值为100米</span></span><br><span class="line"><span class="punctuation">&#123;</span><span class="attr">&quot;type&quot;</span><span class="punctuation">:</span><span class="string">&quot;cfg.static.threshold&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;cmd_id&quot;</span><span class="punctuation">:</span><span class="number">3</span><span class="punctuation">,</span> <span class="attr">&quot;val&quot;</span><span class="punctuation">:</span><span class="number">100</span><span class="punctuation">&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 设置保留最优点数为7个</span></span><br><span class="line"><span class="punctuation">&#123;</span><span class="attr">&quot;type&quot;</span><span class="punctuation">:</span><span class="string">&quot;cfg.static.best&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;cmd_id&quot;</span><span class="punctuation">:</span><span class="number">4</span><span class="punctuation">,</span> <span class="attr">&quot;val&quot;</span><span class="punctuation">:</span><span class="number">7</span><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><ol>
+<li><p><strong>内存占用</strong>：最多占用 sizeof(gnss_t) * 10 个字节的额外内存用于缓冲</p>
+</li>
+<li><p><strong>精度权衡</strong>：建议使用组合模式（mode&#x3D;3）获得最高的准确性</p>
+</li>
+<li><p><strong>电源管理</strong>：静止时应配合PM模块降低功耗</p>
+</li>
+<li><p><strong>时间戳同步</strong>：确保RTC时间准确，影响距离计算的精确性</p>
+</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2026/01/28/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/%E9%9D%99%E6%AD%A2%E5%AE%9A%E4%BD%8D%E6%A8%A1%E5%BC%8F/" data-id="cuid83jsNeqQS9TI4rOSh5Trh" data-title="GNSS 静止状态定位功能实现文档" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%98%E5%82%A8%E5%BC%80%E5%8F%91%E9%AB%98%E6%95%88%E5%BA%94%E7%94%A8/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">嵌入式存储开发高效应用</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" rel="tag">学习记录</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" rel="tag">嵌入式学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" rel="tag">工具使用</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" rel="tag">数据传输</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" rel="tag">数据存储</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" style="font-size: 10px;">学习记录</a> <a href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" style="font-size: 20px;">嵌入式学习</a> <a href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" style="font-size: 15px;">工具使用</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" style="font-size: 10px;">数据传输</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" style="font-size: 10px;">数据存储</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/01/">January 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">January 2023</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2026/01/28/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/%E9%9D%99%E6%AD%A2%E5%AE%9A%E4%BD%8D%E6%A8%A1%E5%BC%8F/">GNSS 静止状态定位功能实现文档</a>
+          </li>
+        
+          <li>
+            <a href="/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%98%E5%82%A8%E5%BC%80%E5%8F%91%E9%AB%98%E6%95%88%E5%BA%94%E7%94%A8/">嵌入式存储开发高效应用</a>
+          </li>
+        
+          <li>
+            <a href="/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E9%AB%98%E6%95%88%E6%95%B0%E6%8D%AE%E4%BA%A4%E6%8D%A2/">嵌入式设备如何实现高效数据交换</a>
+          </li>
+        
+          <li>
+            <a href="/2026/01/18/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/">博客撰写方法</a>
+          </li>
+        
+          <li>
+            <a href="/2026/01/18/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95%EF%BC%88%E6%95%B4%E7%90%86%E5%90%8E%EF%BC%89/">博客撰写方法(整理后)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
