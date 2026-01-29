@@ -71,12 +71,16 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-Linux 学习记录/静止定位模式" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+    <article id="post-技巧学习/嵌入式结构体设计的对齐与优化" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
-    <a href="/2026/01/28/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/%E9%9D%99%E6%AD%A2%E5%AE%9A%E4%BD%8D%E6%A8%A1%E5%BC%8F/" class="article-date">
-  <time class="dt-published" datetime="2026-01-27T16:00:00.000Z" itemprop="datePublished">2026-01-28</time>
+    <a href="/2026/01/29/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E7%BB%93%E6%9E%84%E4%BD%93%E8%AE%BE%E8%AE%A1%E7%9A%84%E5%AF%B9%E9%BD%90%E4%B8%8E%E4%BC%98%E5%8C%96/" class="article-date">
+  <time class="dt-published" datetime="2026-01-29T01:00:00.000Z" itemprop="datePublished">2026-01-29</time>
 </a>
     
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>
+  </div>
+
   </div>
   <div class="article-inner">
     
@@ -85,7 +89,7 @@
         
   
     <h1 itemprop="name">
-      <a class="p-name article-title" href="/2026/01/28/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/%E9%9D%99%E6%AD%A2%E5%AE%9A%E4%BD%8D%E6%A8%A1%E5%BC%8F/">GNSS 静止状态定位功能实现文档</a>
+      <a class="p-name article-title" href="/2026/01/29/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E7%BB%93%E6%9E%84%E4%BD%93%E8%AE%BE%E8%AE%A1%E7%9A%84%E5%AF%B9%E9%BD%90%E4%B8%8E%E4%BC%98%E5%8C%96/">嵌入式结构体设计的对齐与优化</a>
     </h1>
   
 
@@ -93,178 +97,133 @@
     
     <div class="e-content article-entry" itemprop="articleBody">
       
-        <h2 id="功能概述"><a href="#功能概述" class="headerlink" title="功能概述"></a>功能概述</h2><p>本功能为GNSS定位系统添加了智能的静止&#x2F;动态状态检测和数据管理机制。当设备静止时，系统自动切换到低功耗模式，定期保存最优的定位数据；当设备运动时，按原有逻辑进行定位。</p>
-<h2 id="核心功能特性"><a href="#核心功能特性" class="headerlink" title="核心功能特性"></a>核心功能特性</h2><h3 id="1-运动状态检测（3种模式）"><a href="#1-运动状态检测（3种模式）" class="headerlink" title="1. 运动状态检测（3种模式）"></a>1. 运动状态检测（3种模式）</h3><h4 id="模式1：基于速度判断"><a href="#模式1：基于速度判断" class="headerlink" title="模式1：基于速度判断"></a>模式1：基于速度判断</h4><ul>
-<li><strong>判断标准</strong>：速度 &lt; 0.1 km&#x2F;h</li>
-<li><strong>适用场景</strong>：速度数据可信的环境</li>
-</ul>
-<h4 id="模式2：基于位置偏移判断"><a href="#模式2：基于位置偏移判断" class="headerlink" title="模式2：基于位置偏移判断"></a>模式2：基于位置偏移判断</h4><ul>
-<li><strong>判断标准</strong>：与上一个定位点的距离 &lt; 可配置阈值（默认50米）</li>
-<li><strong>适用场景</strong>：GPS信号不稳定，但可靠GPS坐标的环境</li>
-</ul>
-<h4 id="模式3：组合模式（推荐）"><a href="#模式3：组合模式（推荐）" class="headerlink" title="模式3：组合模式（推荐）"></a>模式3：组合模式（推荐）</h4><ul>
-<li><strong>判断标准</strong>：两个条件都满足</li>
-<li><strong>优势</strong>：最可靠，能有效过滤误判</li>
-</ul>
-<h3 id="2-GNSS数据滤波"><a href="#2-GNSS数据滤波" class="headerlink" title="2. GNSS数据滤波"></a>2. GNSS数据滤波</h3><p>系统对定位数据进行多维度评分，自动保留最优的定位点：</p>
-<p><strong>评分维度</strong>：</p>
+        <p>在嵌入式系统开发中，结构体的内存布局直接影响程序的内存占用和访问效率。</p>
+<h2 id="内存对齐"><a href="#内存对齐" class="headerlink" title="内存对齐"></a>内存对齐</h2><h3 id="什么是内存对齐"><a href="#什么是内存对齐" class="headerlink" title="什么是内存对齐"></a>什么是内存对齐</h3><p>内存对齐是指数据在内存中存储时，其起始地址必须是某个特定值的倍数。例如：</p>
 <ul>
-<li><p>HDOP值（水平精度因子）</p>
-<ul>
-<li>≤1.5：0分（最优）</li>
-<li>≤3.0：10分</li>
-<li>≤5.0：20分</li>
-<li><blockquote>
-<p>5.0：50分（差）</p>
-</blockquote>
-</li>
+<li>char类型（1字节）：可以存储在任意地址</li>
+<li>int类型（4字节）：通常要求存储在4字节对齐的地址（如0x0000, 0x0004, 0x0008…）</li>
+<li>double类型（8字节）：通常要求存储在8字节对齐的地址</li>
 </ul>
-</li>
-<li><p>定位质量标志（0&#x3D;无效，1&#x3D;有效）</p>
-<ul>
-<li>有效：0分</li>
-<li>无效：100分</li>
-</ul>
-</li>
-<li><p>卫星数量</p>
-<ul>
-<li>≥10颗：0分（最优）</li>
-<li>≥7颗：5分</li>
-<li>≥4颗：15分</li>
-<li>&lt;4颗：50分（差）</li>
-</ul>
-</li>
-<li><p>定位状态（A&#x3D;有效, V&#x3D;无效）</p>
-<ul>
-<li>有效(A)：0分</li>
-<li>无效(V)：100分</li>
-</ul>
-</li>
-</ul>
-<p>评分越低说明定位点质量越好，系统自动保留评分最低的N个点。</p>
-<h3 id="3-定时器管理"><a href="#3-定时器管理" class="headerlink" title="3. 定时器管理"></a>3. 定时器管理</h3><p>系统新增一个独立的静止状态定位定时器：</p>
-<ul>
-<li><strong>静止状态定位间隔</strong>：30分钟（默认可配置）</li>
-<li><strong>启动&#x2F;停止</strong>：通过 <code>static_location_timer_start()</code> 和 <code>static_location_timer_stop()</code> 控制</li>
-</ul>
-<h2 id="配置参数"><a href="#配置参数" class="headerlink" title="配置参数"></a>配置参数</h2><h3 id="通过MQTT远程配置"><a href="#通过MQTT远程配置" class="headerlink" title="通过MQTT远程配置"></a>通过MQTT远程配置</h3><table>
+<h3 id="为什么要关注内存对齐"><a href="#为什么要关注内存对齐" class="headerlink" title="为什么要关注内存对齐"></a>为什么要关注内存对齐</h3><p>在嵌入式系统中，内存对齐主要影响两个方面：</p>
+<ol>
+<li><strong>访问效率</strong> ：ARM Cortex-M系列CPU访问对齐数据时只需1个时钟周期，而访问非对齐数据可能需要2-3个时钟周期，甚至触发硬件异常（如Cortex-M0不支持非对齐访问）。</li>
+<li><strong>内存占用</strong> ：不合理的结构体设计会产生大量填充字节，浪费宝贵的RAM和Flash资源。</li>
+</ol>
+<h3 id="对齐vs非对齐访问验证"><a href="#对齐vs非对齐访问验证" class="headerlink" title="对齐vs非对齐访问验证"></a>对齐vs非对齐访问验证</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">//在STM32F407上验证测试</span><br><span class="line">// 对齐访问测试</span><br><span class="line">volatileuint32_t aligned_data __attribute__((aligned(4))) = 0;</span><br><span class="line">uint32_t start = DWT-&gt;CYCCNT;</span><br><span class="line">for(int i=0; i&lt;1000000; i++) &#123;</span><br><span class="line">    aligned_data++;  // 对齐访问</span><br><span class="line">&#125;</span><br><span class="line">uint32_t aligned_cycles = DWT-&gt;CYCCNT - start;</span><br><span class="line"></span><br><span class="line">// 非对齐访问测试</span><br><span class="line">volatileuint8_t buffer[5] = &#123;0&#125;;</span><br><span class="line">volatileuint32_t* unaligned_data = (uint32_t*)&amp;buffer[1];</span><br><span class="line">start = DWT-&gt;CYCCNT;</span><br><span class="line">for(int i=0; i&lt;1000000; i++) &#123;</span><br><span class="line">    *unaligned_data = 0;  // 非对齐访问</span><br><span class="line">&#125;</span><br><span class="line">uint32_t unaligned_cycles = DWT-&gt;CYCCNT - start;</span><br></pre></td></tr></table></figure>
+
+<h2 id="内存对齐规则"><a href="#内存对齐规则" class="headerlink" title="内存对齐规则"></a>内存对齐规则</h2><h3 id="基本对齐规则"><a href="#基本对齐规则" class="headerlink" title="基本对齐规则"></a>基本对齐规则</h3><p>编译器遵循以下对齐规则：</p>
+<ol>
+<li><strong>第一个成员</strong> ：永远放在结构体起始位置（偏移量0）</li>
+<li><strong>后续成员</strong> ：每个成员的起始地址必须是「成员类型对齐值」的整数倍</li>
+<li><strong>结构体整体</strong> ：总大小必须是「所有成员中最大对齐值」的整数倍</li>
+</ol>
+<h3 id="对齐值定义"><a href="#对齐值定义" class="headerlink" title="对齐值定义"></a>对齐值定义</h3><table>
 <thead>
 <tr>
-<th>命令类型</th>
-<th>参数</th>
-<th>说明</th>
+<th>类型</th>
+<th>大小（字节）</th>
+<th>典型对齐值（字节）</th>
 </tr>
 </thead>
 <tbody><tr>
-<td><code>cfg.static.period</code></td>
-<td>period_seconds</td>
-<td>静止状态定位间隔（秒）</td>
+<td>char</td>
+<td>1</td>
+<td>1</td>
 </tr>
 <tr>
-<td><code>cfg.static.mode</code></td>
-<td>mode (1-3)</td>
-<td>运动检测模式（1&#x3D;速度，2&#x3D;位置，3&#x3D;组合）</td>
+<td>short</td>
+<td>2</td>
+<td>2</td>
 </tr>
 <tr>
-<td><code>cfg.static.threshold</code></td>
-<td>threshold_meters</td>
-<td>位置偏移阈值（米）</td>
+<td>int</td>
+<td>4</td>
+<td>4</td>
 </tr>
 <tr>
-<td><code>cfg.static.best</code></td>
-<td>count (1-10)</td>
-<td>滤波后保留的最优点数</td>
+<td>float</td>
+<td>4</td>
+<td>4</td>
+</tr>
+<tr>
+<td>double</td>
+<td>8</td>
+<td>8</td>
+</tr>
+<tr>
+<td>指针</td>
+<td>4&#x2F;8</td>
+<td>4&#x2F;8（取决于CPU架构）</td>
 </tr>
 </tbody></table>
-<h3 id="本地默认值"><a href="#本地默认值" class="headerlink" title="本地默认值"></a>本地默认值</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> DEFAULT_STATIC_PERIOD_INTERVAL  (30 * 60 * 1000)  <span class="comment">// 30分钟</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> DEFAULT_STATIC_MOTION_MODE      GNSS_MOTION_MODE_COMBINED  <span class="comment">// 组合模式</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> DEFAULT_STATIC_POSITION_THRESHOLD  50.0  <span class="comment">// 50米</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> DEFAULT_GNSS_BUFFER_SIZE        10      <span class="comment">// 缓冲最多10个点</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> DEFAULT_BEST_POINTS_COUNT       5       <span class="comment">// 默认保留5个最优点</span></span></span><br></pre></td></tr></table></figure>
+<h3 id="结构体大小计算示例"><a href="#结构体大小计算示例" class="headerlink" title="结构体大小计算示例"></a>结构体大小计算示例</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">// 测试代码</span><br><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line"></span><br><span class="line">struct TestStruct &#123;</span><br><span class="line">    char a;      </span><br><span class="line">    int b;       </span><br><span class="line">    char c;     </span><br><span class="line">    double d;    </span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">intmain() &#123;</span><br><span class="line">    printf(&quot;Size: %zu bytes\n&quot;, sizeof(struct TestStruct));</span><br><span class="line">    printf(&quot;Offset a: %zu\n&quot;, offsetof(struct TestStruct, a));</span><br><span class="line">    printf(&quot;Offset b: %zu\n&quot;, offsetof(struct TestStruct, b));</span><br><span class="line">    printf(&quot;Offset c: %zu\n&quot;, offsetof(struct TestStruct, c));</span><br><span class="line">    printf(&quot;Offset d: %zu\n&quot;, offsetof(struct TestStruct, d));</span><br><span class="line">    return0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h2 id="导出函数接口"><a href="#导出函数接口" class="headerlink" title="导出函数接口"></a>导出函数接口</h2><h3 id="查询接口"><a href="#查询接口" class="headerlink" title="查询接口"></a>查询接口</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 获取静止状态定位周期（毫秒）</span></span><br><span class="line"><span class="type">uint32_t</span> <span class="title function_">get_static_period_interval</span><span class="params">(<span class="type">void</span>)</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取运动检测模式（1/2/3）</span></span><br><span class="line"><span class="type">uint8_t</span> <span class="title function_">get_motion_detect_mode</span><span class="params">(<span class="type">void</span>)</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取位置偏移阈值（米）</span></span><br><span class="line"><span class="type">double</span> <span class="title function_">get_position_drift_threshold</span><span class="params">(<span class="type">void</span>)</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 获取当前是否为静止状态（0=运动，1=静止）</span></span><br><span class="line"><span class="type">uint8_t</span> <span class="title function_">get_device_is_stationary</span><span class="params">(<span class="type">void</span>)</span>;</span><br></pre></td></tr></table></figure>
+<p><strong>输出结果</strong> ：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Size: 20 bytes</span><br><span class="line">Offset a: 0</span><br><span class="line">Offset b: 4</span><br><span class="line">Offset c: 8</span><br><span class="line">Offset d: 12</span><br></pre></td></tr></table></figure>
 
-<h3 id="控制接口"><a href="#控制接口" class="headerlink" title="控制接口"></a>控制接口</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 启动静止状态定位定时器</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">static_location_timer_start</span><span class="params">(<span class="type">void</span>)</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 停止静止状态定位定时器</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">static_location_timer_stop</span><span class="params">(<span class="type">void</span>)</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 处理新的GNSS定位数据（由gnss_main.c调用）</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">gnss_static_buffer_add</span><span class="params">(<span class="type">gnss_t</span>* point)</span>;</span><br></pre></td></tr></table></figure>
+<h2 id="结构体优化技巧"><a href="#结构体优化技巧" class="headerlink" title="结构体优化技巧"></a>结构体优化技巧</h2><h3 id="成员顺序优化"><a href="#成员顺序优化" class="headerlink" title="成员顺序优化"></a>成员顺序优化</h3><p><strong>优化原则</strong> ：将占用空间大的成员放在前面，小的放在后面，相同类型的成员放在一起</p>
+<p><strong>传感器数据结构优化示例</strong> ：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">// 优化前：24字节</span><br><span class="line">struct SensorData &#123;</span><br><span class="line">    char sensor_id;          // 1字节</span><br><span class="line">    float temperature;       // 4字节  --&gt; 偏移4（填充3字节）</span><br><span class="line">    float humidity;          // 4字节  --&gt; 偏移8</span><br><span class="line">    char status;             // 1字节  --&gt; 偏移12（填充3字节）</span><br><span class="line">    uint32_t timestamp;      // 4字节  --&gt; 偏移16</span><br><span class="line">    uint16_t battery;        // 2字节  --&gt; 偏移20（总大小24字节，填充2字节）</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">// 优化后：16字节</span><br><span class="line">struct OptimizedSensorData &#123;</span><br><span class="line">    float temperature;       // 4字节  --&gt; 偏移0</span><br><span class="line">    float humidity;          // 4字节  --&gt; 偏移4</span><br><span class="line">    uint32_t timestamp;      // 4字节  --&gt; 偏移8</span><br><span class="line">    uint16_t battery;        // 2字节  --&gt; 偏移12</span><br><span class="line">    char sensor_id;          // 1字节  --&gt; 偏移14</span><br><span class="line">    char status;             // 1字节  --&gt; 偏移15</span><br><span class="line">&#125;;  // 总大小16字节，无填充</span><br></pre></td></tr></table></figure>
 
-<h2 id="内部实现函数"><a href="#内部实现函数" class="headerlink" title="内部实现函数"></a>内部实现函数</h2><h3 id="运动状态判断"><a href="#运动状态判断" class="headerlink" title="运动状态判断"></a>运动状态判断</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">uint8_t</span> <span class="title function_">is_device_stationary</span><span class="params">(<span class="type">const</span> <span class="type">gnss_t</span>* last_point,</span></span><br><span class="line"><span class="params">                                   <span class="type">const</span> <span class="type">gnss_t</span>* current_point)</span>;</span><br></pre></td></tr></table></figure>
+<h3 id="位域优化"><a href="#位域优化" class="headerlink" title="位域优化"></a>位域优化</h3><p><strong>适用场景</strong> ：只有几个可能取值的状态标志、配置位</p>
+<p><strong>电机控制状态优化示例</strong> ：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">// 优化前：5字节（实际占用8字节）</span><br><span class="line">struct MotorStatus &#123;</span><br><span class="line">    char running;            // 运行状态：0/1</span><br><span class="line">    char direction;          // 方向：0/1</span><br><span class="line">    char error;              // 错误标志：0/1</span><br><span class="line">    char warning;            // 警告标志：0/1</span><br><span class="line">    char mode;               // 模式：0-3</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">// 优化后：4字节</span><br><span class="line">struct OptimizedMotorStatus &#123;</span><br><span class="line">    uint32_t running : 1;    // 1位，0/1</span><br><span class="line">    uint32_t direction : 1;  // 1位，0/1</span><br><span class="line">    uint32_t error : 1;      // 1位，0/1</span><br><span class="line">    uint32_t warning : 1;    // 1位，0/1</span><br><span class="line">    uint32_t mode : 2;       // 2位，0-3</span><br><span class="line">    uint32_t reserved : 26;  // 保留位</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 
-<h3 id="GNSS点质量评分"><a href="#GNSS点质量评分" class="headerlink" title="GNSS点质量评分"></a>GNSS点质量评分</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">uint32_t</span> <span class="title function_">gnss_point_score</span><span class="params">(<span class="type">const</span> <span class="type">gnss_t</span>* point)</span>;</span><br></pre></td></tr></table></figure>
+<h3 id="结构体打包"><a href="#结构体打包" class="headerlink" title="结构体打包"></a>结构体打包</h3><p><strong>适用场景</strong> ：直接访问硬件寄存器、通信协议解析，仅在必要时使用，避免降低访问效率</p>
+<p><strong>I2C寄存器结构体示例</strong> ：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">// 场景：I2C传感器寄存器映射，硬件手册定义如下：</span><br><span class="line">// 地址0x00: 状态寄存器 (8位)</span><br><span class="line">// 地址0x01: 测量值低8位</span><br><span class="line">// 地址0x02: 测量值高8位</span><br><span class="line">// 总长度：3字节，必须精确匹配</span><br><span class="line"></span><br><span class="line">// ⚠️ 错误做法：未打包导致填充，无法正确映射硬件</span><br><span class="line">struct SensorReg_Unpacked &#123;</span><br><span class="line">    uint8_t status;      // 偏移0</span><br><span class="line">    uint16_t value;      // 偏移2（填充1字节！）</span><br><span class="line">&#125;;  // 大小4字节，与硬件不匹配</span><br><span class="line"></span><br><span class="line">// ✅ 正确做法：精确映射3字节硬件布局</span><br><span class="line">struct __attribute__((packed)) SensorReg &#123;</span><br><span class="line">    volatileuint8_t status;    // 偏移0，状态标志</span><br><span class="line">    volatileuint16_t value;    // 偏移1，16位测量值（非对齐！）</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 
-<h3 id="GNSS数据滤波"><a href="#GNSS数据滤波" class="headerlink" title="GNSS数据滤波"></a>GNSS数据滤波</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">uint8_t</span> <span class="title function_">filter_gnss_data</span><span class="params">(<span class="type">gnss_t</span>* points, <span class="type">uint8_t</span> count, <span class="type">uint8_t</span> best_count)</span>;</span><br></pre></td></tr></table></figure>
+<h3 id="联合体优化"><a href="#联合体优化" class="headerlink" title="联合体优化"></a>联合体优化</h3><p><strong>适用场景</strong> ：同一内存区域需要以不同方式访问（如寄存器位域与整数值）</p>
+<p><strong>ADC数据处理示例</strong> ：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">// ADC原始数据和转换结果共用内存</span><br><span class="line">union ADC_Data &#123;</span><br><span class="line">    struct &#123;</span><br><span class="line">        uint16_t value : 12;    // ADC实际值（12位）</span><br><span class="line">        uint16_t channel : 4;   // 通道号（4位）</span><br><span class="line">    &#125; bitfield;</span><br><span class="line">    uint16_t raw;               // 原始16位数据</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">// 使用示例</span><br><span class="line">voidadc_callback(union ADC_Data data) &#123;</span><br><span class="line">    // 直接访问位域</span><br><span class="line">    uint16_t adc_value = data.bitfield.value;</span><br><span class="line">    uint8_t channel = data.bitfield.channel;</span><br><span class="line">    </span><br><span class="line">    // 或者访问原始值</span><br><span class="line">    uint16_t raw_data = data.raw;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h3 id="距离计算（Haversine公式）"><a href="#距离计算（Haversine公式）" class="headerlink" title="距离计算（Haversine公式）"></a>距离计算（Haversine公式）</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">double</span> <span class="title function_">calculate_distance</span><span class="params">(<span class="type">double</span> lat1, <span class="type">double</span> lon1,</span></span><br><span class="line"><span class="params">                                 <span class="type">double</span> lat2, <span class="type">double</span> lon2)</span>;</span><br></pre></td></tr></table></figure>
+<h3 id="混合优化"><a href="#混合优化" class="headerlink" title="混合优化"></a>混合优化</h3><p><strong>优化示例</strong> ：结合位域、联合体和成员顺序优化</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">// CAN数据帧结构体优化</span><br><span class="line">struct CAN_Frame &#123;</span><br><span class="line">    union &#123;</span><br><span class="line">        uint32_t id;           // 完整ID</span><br><span class="line">        struct &#123;</span><br><span class="line">            uint32_t std_id : 11;  // 标准ID（11位）</span><br><span class="line">            uint32_t ext_id : 18;  // 扩展ID（18位）</span><br><span class="line">            uint32_t ide : 1;      // ID类型</span><br><span class="line">            uint32_t rtr : 1;      // 远程传输请求</span><br><span class="line">            uint32_t reserved : 1; // 保留位</span><br><span class="line">        &#125; id_bits;</span><br><span class="line">    &#125;;</span><br><span class="line">    uint8_t dlc;               // 数据长度（0-8）</span><br><span class="line">    uint8_t data[8];           // 数据字段</span><br><span class="line">    uint8_t flags;             // 状态标志</span><br><span class="line">&#125; __attribute__((packed));  // 总大小：16字节</span><br></pre></td></tr></table></figure>
 
-<h2 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h2><h3 id="gnss-buffer-t-结构体（在gnss-location-ringbuffer-h中）"><a href="#gnss-buffer-t-结构体（在gnss-location-ringbuffer-h中）" class="headerlink" title="gnss_buffer_t 结构体（在gnss_location_ringbuffer.h中）"></a>gnss_buffer_t 结构体（在gnss_location_ringbuffer.h中）</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="type">gnss_t</span> points[<span class="number">10</span>];                    <span class="comment">// 最多保留10个定位点</span></span><br><span class="line">    <span class="type">uint8_t</span> count;                        <span class="comment">// 当前缓冲点数</span></span><br><span class="line">    <span class="type">uint8_t</span> capacity;                     <span class="comment">// 缓冲容量</span></span><br><span class="line"></span><br><span class="line">    <span class="type">gnss_t</span> last_valid_point;              <span class="comment">// 上一个有效定位点</span></span><br><span class="line">    <span class="type">uint8_t</span> has_last_point;               <span class="comment">// 是否有有效的上一个点</span></span><br><span class="line"></span><br><span class="line">    <span class="type">uint8_t</span> motion_detect_mode;           <span class="comment">// 运动检测模式</span></span><br><span class="line">    <span class="type">double</span> position_drift_threshold;      <span class="comment">// 位置偏移阈值（米）</span></span><br><span class="line"></span><br><span class="line">    <span class="type">uint8_t</span> best_points_count;            <span class="comment">// 要保留的最优点数</span></span><br><span class="line">    <span class="type">uint8_t</span> is_stationary;                <span class="comment">// 当前是否为静止状态</span></span><br><span class="line">    <span class="type">uint32_t</span> last_report_tick;            <span class="comment">// 上次报告时间</span></span><br><span class="line">&#125; <span class="type">gnss_buffer_t</span>;</span><br></pre></td></tr></table></figure>
+<h2 id="编译器优化选项"><a href="#编译器优化选项" class="headerlink" title="编译器优化选项"></a>编译器优化选项</h2><h3 id="GCC编译器属性"><a href="#GCC编译器属性" class="headerlink" title="GCC编译器属性"></a>GCC编译器属性</h3><table>
+<thead>
+<tr>
+<th>属性</th>
+<th>功能</th>
+<th>嵌入式应用场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>&lt;span leaf=&quot;&quot;&gt;__attribute__((aligned(n)))&lt;/span&gt;</code></td>
+<td>设置对齐值为n字节</td>
+<td>缓冲区对齐、提高访问效率</td>
+</tr>
+<tr>
+<td><code>&lt;span leaf=&quot;&quot;&gt;__attribute__((packed))&lt;/span&gt;</code></td>
+<td>取消对齐，按实际大小存储</td>
+<td>硬件寄存器映射、节省内存</td>
+</tr>
+<tr>
+<td><code>&lt;span leaf=&quot;&quot;&gt;__attribute__((section(&quot;RAM1&quot;)))&lt;/span&gt;</code></td>
+<td>将变量放入指定内存段</td>
+<td>特殊内存区域访问</td>
+</tr>
+</tbody></table>
+<h3 id="条件编译处理不同平台"><a href="#条件编译处理不同平台" class="headerlink" title="条件编译处理不同平台"></a>条件编译处理不同平台</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">// 跨平台对齐处理</span><br><span class="line">#ifdef __ARMCC_VERSION  // ARM编译器</span><br><span class="line">    #define PACKED __packed</span><br><span class="line">#elif defined(__GNUC__)  // GCC编译器</span><br><span class="line">    #define PACKED __attribute__((packed))</span><br><span class="line">#else</span><br><span class="line">    #define PACKED</span><br><span class="line">#endif</span><br><span class="line"></span><br><span class="line">// 跨平台使用</span><br><span class="line">struct HardwareReg PACKED &#123;</span><br><span class="line">    uint8_t reg1;</span><br><span class="line">    uint32_t reg2;</span><br><span class="line">    uint16_t reg3;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 
-<h2 id="工作流程"><a href="#工作流程" class="headerlink" title="工作流程"></a>工作流程</h2><ol>
-<li><p><strong>获取定位数据</strong></p>
-<ul>
-<li>gnss_main.c 通过 nmea_parse_packet() 获得新的定位数据</li>
-<li>调用 <code>gnss_static_buffer_add()</code> 传入定位数据</li>
-</ul>
-</li>
-<li><p><strong>状态判断</strong></p>
-<ul>
-<li>根据配置的运动检测模式判断设备是否静止</li>
-<li>保存当前定位点为”上一个有效点”</li>
-</ul>
-</li>
-<li><p><strong>数据管理</strong></p>
-<ul>
-<li>如果静止：保存定位点到缓冲</li>
-<li>如果运动：按原有逻辑处理</li>
-</ul>
-</li>
-<li><p><strong>定时上报</strong></p>
-<ul>
-<li>静止状态定位定时器触发时，发送保留的最优定位数据</li>
-<li>每30分钟（可配）强制发送一次，保持设备在线</li>
-</ul>
-</li>
-<li><p><strong>远程配置</strong></p>
-<ul>
-<li>后台通过MQTT下发配置命令</li>
-<li>设备实时更新相关参数</li>
-</ul>
-</li>
-</ol>
-<h2 id="集成说明"><a href="#集成说明" class="headerlink" title="集成说明"></a>集成说明</h2><h3 id="已修改文件"><a href="#已修改文件" class="headerlink" title="已修改文件"></a>已修改文件</h3><ol>
-<li><p><strong>gnss_location_ringbuffer.h</strong></p>
-<ul>
-<li>添加 <code>gnss_motion_detect_mode_t</code> 枚举</li>
-<li>添加 <code>gnss_buffer_t</code> 结构体</li>
-</ul>
-</li>
-<li><p><strong>_client.c</strong></p>
-<ul>
-<li>扩展 <code>ClientCtx_t</code> 结构体</li>
-<li>添加静止状态定位定时器</li>
-<li>实现所有功能函数</li>
-<li>添加MQTT配置命令处理</li>
-</ul>
-</li>
-<li><p><strong>gnss_main.c</strong></p>
-<ul>
-<li>在 nmea_parse_packet() 中调用 <code>gnss_static_buffer_add()</code></li>
-</ul>
-</li>
-</ol>
-<h2 id="使用示例"><a href="#使用示例" class="headerlink" title="使用示例"></a>使用示例</h2><h3 id="远程配置示例"><a href="#远程配置示例" class="headerlink" title="远程配置示例"></a>远程配置示例</h3><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 设置静止状态定位周期为60分钟</span></span><br><span class="line"><span class="punctuation">&#123;</span><span class="attr">&quot;type&quot;</span><span class="punctuation">:</span><span class="string">&quot;cfg.static.period&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;cmd_id&quot;</span><span class="punctuation">:</span><span class="number">1</span><span class="punctuation">,</span> <span class="attr">&quot;val&quot;</span><span class="punctuation">:</span><span class="number">3600</span><span class="punctuation">&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 设置运动检测模式为组合模式</span></span><br><span class="line"><span class="punctuation">&#123;</span><span class="attr">&quot;type&quot;</span><span class="punctuation">:</span><span class="string">&quot;cfg.static.mode&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;cmd_id&quot;</span><span class="punctuation">:</span><span class="number">2</span><span class="punctuation">,</span> <span class="attr">&quot;val&quot;</span><span class="punctuation">:</span><span class="number">3</span><span class="punctuation">&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 设置位置偏移阈值为100米</span></span><br><span class="line"><span class="punctuation">&#123;</span><span class="attr">&quot;type&quot;</span><span class="punctuation">:</span><span class="string">&quot;cfg.static.threshold&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;cmd_id&quot;</span><span class="punctuation">:</span><span class="number">3</span><span class="punctuation">,</span> <span class="attr">&quot;val&quot;</span><span class="punctuation">:</span><span class="number">100</span><span class="punctuation">&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 设置保留最优点数为7个</span></span><br><span class="line"><span class="punctuation">&#123;</span><span class="attr">&quot;type&quot;</span><span class="punctuation">:</span><span class="string">&quot;cfg.static.best&quot;</span><span class="punctuation">,</span> <span class="attr">&quot;cmd_id&quot;</span><span class="punctuation">:</span><span class="number">4</span><span class="punctuation">,</span> <span class="attr">&quot;val&quot;</span><span class="punctuation">:</span><span class="number">7</span><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<h3 id="内存优化工具使用"><a href="#内存优化工具使用" class="headerlink" title="内存优化工具使用"></a>内存优化工具使用</h3><p><strong>1. 使用size命令查看段大小</strong> ：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">arm-none-eabi-size your_program.elf</span><br></pre></td></tr></table></figure>
 
-<h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><ol>
-<li><p><strong>内存占用</strong>：最多占用 sizeof(gnss_t) * 10 个字节的额外内存用于缓冲</p>
-</li>
-<li><p><strong>精度权衡</strong>：建议使用组合模式（mode&#x3D;3）获得最高的准确性</p>
-</li>
-<li><p><strong>电源管理</strong>：静止时应配合PM模块降低功耗</p>
-</li>
-<li><p><strong>时间戳同步</strong>：确保RTC时间准确，影响距离计算的精确性</p>
-</li>
-</ol>
+<p><strong>2. 使用objdump查看内存布局</strong> ：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">arm-none-eabi-objdump -t your_program.elf | grep &quot;your_struct&quot;</span><br></pre></td></tr></table></figure>
+
+<p><strong>3. 使用gdb调试查看内存</strong> ：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">p sizeof(struct your_struct)</span><br><span class="line">p &amp;your_struct_var</span><br><span class="line">x/10x &amp;your_struct_var  # 查看内存布局</span><br></pre></td></tr></table></figure>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2026/01/28/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/%E9%9D%99%E6%AD%A2%E5%AE%9A%E4%BD%8D%E6%A8%A1%E5%BC%8F/" data-id="cuidvBMmtPFfu_yFMa3yx29vL" data-title="GNSS 静止状态定位功能实现文档" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2026/01/29/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E7%BB%93%E6%9E%84%E4%BD%93%E8%AE%BE%E8%AE%A1%E7%9A%84%E5%AF%B9%E9%BD%90%E4%B8%8E%E4%BC%98%E5%8C%96/" data-id="cuidovZ7wVYqEdtFz8d9A55Ik" data-title="嵌入式结构体设计的对齐与优化" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96/" rel="tag">内存优化</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" rel="tag">嵌入式学习</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/" rel="tag">结构体</a></li></ul>
+
     </footer>
   </div>
   
@@ -393,7 +352,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E9%AB%98%E6%95%88%E6%95%B0%E6%8D%AE%E4%BA%A4%E6%8D%A2/" data-id="cuidUl8pGpLCTKuTgKzx0JWql" data-title="嵌入式设备如何实现高效数据交换" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E9%AB%98%E6%95%88%E6%95%B0%E6%8D%AE%E4%BA%A4%E6%8D%A2/" data-id="cuidb7BnvPn_uIXHLu-9K33nd" data-title="嵌入式设备如何实现高效数据交换" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -1169,11 +1128,113 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%98%E5%82%A8%E5%BC%80%E5%8F%91%E9%AB%98%E6%95%88%E5%BA%94%E7%94%A8/" data-id="cuidysEMATcocKfyZhOE8Jfwc" data-title="嵌入式存储开发高效应用" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%98%E5%82%A8%E5%BC%80%E5%8F%91%E9%AB%98%E6%95%88%E5%BA%94%E7%94%A8/" data-id="cuidN9Z5ltqyYbwaOMyiTsTwz" data-title="嵌入式存储开发高效应用" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" rel="tag">嵌入式学习</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" rel="tag">数据存储</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-博客撰写方法/静态博客撰写方法（整理后）" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2026/01/18/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95%EF%BC%88%E6%95%B4%E7%90%86%E5%90%8E%EF%BC%89/" class="article-date">
+  <time class="dt-published" datetime="2026-01-17T16:00:00.000Z" itemprop="datePublished">2026-01-18</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2026/01/18/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95%EF%BC%88%E6%95%B4%E7%90%86%E5%90%8E%EF%BC%89/">博客撰写方法(整理后)</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="嵌入式开发者：Hexo-博客搭建与双环境同步全指南"><a href="#嵌入式开发者：Hexo-博客搭建与双环境同步全指南" class="headerlink" title="嵌入式开发者：Hexo 博客搭建与双环境同步全指南"></a>嵌入式开发者：Hexo 博客搭建与双环境同步全指南</h1><h2 id="第一阶段：环境初始化与云端配置"><a href="#第一阶段：环境初始化与云端配置" class="headerlink" title="第一阶段：环境初始化与云端配置"></a>第一阶段：环境初始化与云端配置</h2><p>在开始写代码前，先建立两个 GitHub 仓库，分别存放“毛坯房（源码）”和“装修房（网页）”。</p>
+<h3 id="1-准备-GitHub-仓库"><a href="#1-准备-GitHub-仓库" class="headerlink" title="1. 准备 GitHub 仓库"></a>1. 准备 GitHub 仓库</h3><ul>
+<li><strong>仓库 A (网页库)</strong>：名称必须为 <code>你的用户名.github.io</code>。设为 <strong>Public</strong>。</li>
+<li><strong>仓库 B (源码库)</strong>：名称自定义（如 <code>blog-source</code>）。建议设为 <strong>Private</strong>，用于存放所有 <code>.md</code> 原稿和配置文件。</li>
+</ul>
+<h3 id="2-安装核心组件-双端通用"><a href="#2-安装核心组件-双端通用" class="headerlink" title="2. 安装核心组件 (双端通用)"></a>2. 安装核心组件 (双端通用)</h3><p>无论在 Windows 还是全志开发板（Ubuntu&#x2F;Debian）上，均需安装：</p>
+<ul>
+<li><strong>Node.js</strong>: 运行环境。</li>
+<li><strong>Git</strong>: 版本控制与发布工具。</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Linux (开发板/虚拟机) 安装命令</span></span><br><span class="line"><span class="built_in">sudo</span> apt update &amp;&amp; <span class="built_in">sudo</span> apt install nodejs npm git -y</span><br><span class="line"></span><br><span class="line"><span class="comment"># Windows 建议直接从官网下载 .msi 安装包</span></span><br><span class="line"><span class="comment"># 安装完成后，全局安装 Hexo 命令行工具：</span></span><br><span class="line">npm install -g hexo-cli</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="第二阶段：本地架构搭建（以-Windows-为例）"><a href="#第二阶段：本地架构搭建（以-Windows-为例）" class="headerlink" title="第二阶段：本地架构搭建（以 Windows 为例）"></a>第二阶段：本地架构搭建（以 Windows 为例）</h2><h3 id="1-初始化-Hexo"><a href="#1-初始化-Hexo" class="headerlink" title="1. 初始化 Hexo"></a>1. 初始化 Hexo</h3><p>找一个纯净的文件夹，执行以下操作：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">hexo init my_blog</span><br><span class="line"><span class="built_in">cd</span> my_blog</span><br><span class="line">npm install</span><br><span class="line">npm install hexo<span class="literal">-deployer-git</span> <span class="literal">--save</span>  <span class="comment"># 预装部署插件</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-关联源码仓库（实现备份-同步）"><a href="#2-关联源码仓库（实现备份-同步）" class="headerlink" title="2. 关联源码仓库（实现备份&#x2F;同步）"></a>2. 关联源码仓库（实现备份&#x2F;同步）</h3><p>这一步是为了让你在 Windows 写完后，能随时在开发板上拉取最新的笔记。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git init</span><br><span class="line">git remote add origin https://github.com/你的用户名/blog<span class="literal">-source</span>.git</span><br><span class="line">git branch <span class="literal">-M</span> main</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="第三阶段：写作规范与-Front-Matter"><a href="#第三阶段：写作规范与-Front-Matter" class="headerlink" title="第三阶段：写作规范与 Front Matter"></a>第三阶段：写作规范与 Front Matter</h2><p>Hexo 文章的核心在于文件头部的 <strong>YAML</strong> 格式配置。</p>
+<h3 id="1-标准文章头模板"><a href="#1-标准文章头模板" class="headerlink" title="1. 标准文章头模板"></a>1. 标准文章头模板</h3><p>在 <code>source/_posts/</code> 下新建 <code>.md</code> 文件，必须包含以下信息：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">title:</span> <span class="string">&quot;笔记: open()函数使用&quot;</span>   <span class="comment"># 若包含特殊符号，务必加双引号</span></span><br><span class="line"><span class="attr">date:</span> <span class="number">2026-01-20 10:00:00</span></span><br><span class="line"><span class="attr">tags:</span> </span><br><span class="line">  <span class="bullet">-</span> <span class="string">Linux</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">Driver</span></span><br><span class="line"><span class="attr">categories:</span> <span class="string">学习笔记</span></span><br><span class="line"><span class="attr">sticky:</span> <span class="number">0</span>                     <span class="comment"># 置顶等级</span></span><br><span class="line"><span class="attr">mathjax:</span> <span class="literal">true</span>                  <span class="comment"># 开启公式支持</span></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="meta"></span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>⚠️ 避坑准则：</strong></p>
+<ul>
+<li><strong>冒号后必加空格</strong>（例如 <code>title: Hello</code>）。</li>
+<li><strong>禁用 Tab 缩进</strong>，只能使用空格。</li>
+</ul>
+</blockquote>
+<hr>
+<h2 id="第四阶段：发布与双端同步工作流"><a href="#第四阶段：发布与双端同步工作流" class="headerlink" title="第四阶段：发布与双端同步工作流"></a>第四阶段：发布与双端同步工作流</h2><p>这是开发者最常用的“闭环”操作，建议直接保存以下流程：</p>
+<h3 id="1-发布流程（从本地到互联网）"><a href="#1-发布流程（从本地到互联网）" class="headerlink" title="1. 发布流程（从本地到互联网）"></a>1. 发布流程（从本地到互联网）</h3><p>修改根目录 <code>_config.yml</code> 底部：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">deploy:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">git</span></span><br><span class="line">  <span class="attr">repo:</span> <span class="string">https://github.com/你的用户名/你的用户名.github.io.git</span></span><br><span class="line">  <span class="attr">branch:</span> <span class="string">main</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>执行发布三连：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">hexo clean    <span class="comment"># 清理旧文件</span></span><br><span class="line">hexo g        <span class="comment"># 生成静态网页</span></span><br><span class="line">hexo d        <span class="comment"># 部署到 GitHub Pages</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-源码同步流程（从本地-A-到本地-B）"><a href="#2-源码同步流程（从本地-A-到本地-B）" class="headerlink" title="2. 源码同步流程（从本地 A 到本地 B）"></a>2. 源码同步流程（从本地 A 到本地 B）</h3><p><strong>在 Windows 端完成更新后：</strong></p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git add .</span><br><span class="line">git commit <span class="literal">-m</span> <span class="string">&quot;新增 Linux IO 笔记&quot;</span></span><br><span class="line">git push origin main</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>在全志开发板&#x2F;Linux 端获取更新：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git pull origin main</span><br><span class="line"><span class="comment"># 这样你在开发板上也能看到同样的 .md 文稿了</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="第五阶段：补充建议（进阶方案）"><a href="#第五阶段：补充建议（进阶方案）" class="headerlink" title="第五阶段：补充建议（进阶方案）"></a>第五阶段：补充建议（进阶方案）</h2><h3 id="1-自动生成-YAML-头部-VS-Code-用户必备"><a href="#1-自动生成-YAML-头部-VS-Code-用户必备" class="headerlink" title="1. 自动生成 YAML 头部 (VS Code 用户必备)"></a>1. 自动生成 YAML 头部 (VS Code 用户必备)</h3><p>为了避免每次手动写 Front Matter 报错，建议在 VS Code 中配置 <strong>User Snippets (用户代码片段)</strong>。</p>
+<p>将你提供的 JSON 模板加入 <code>markdown.json</code> 中，以后只需输入 <code>blog</code> 即可一键生成标准头部。</p>
+<h3 id="2-资源路径处理"><a href="#2-资源路径处理" class="headerlink" title="2. 资源路径处理"></a>2. 资源路径处理</h3><p>对于嵌入式开发者，文章中经常包含实验截图。</p>
+<ul>
+<li><strong>建议方案</strong>：修改 <code>_config.yml</code> 中的 <code>post_asset_folder: true</code>。</li>
+<li><strong>效果</strong>：每次新建文章会同步生成一个同名文件夹，你直接把图片放进去，用 <code>![描述](图片名.png)</code> 即可引用，方便管理。</li>
+</ul>
+<h3 id="3-轻量化尝试：Hugo"><a href="#3-轻量化尝试：Hugo" class="headerlink" title="3. 轻量化尝试：Hugo"></a>3. 轻量化尝试：Hugo</h3><p>如果你觉得 Hexo (Node.js) 在全志开发板上运行太重、生成速度慢，可以尝试 <strong>Hugo</strong>（Go 语言编写）。</p>
+<ul>
+<li><strong>优势</strong>：单个二进制文件，无需安装成百上千的 npm 包，极其适合资源受限的嵌入式系统。</li>
+</ul>
+<hr>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2026/01/18/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95%EF%BC%88%E6%95%B4%E7%90%86%E5%90%8E%EF%BC%89/" data-id="cuidxAilbkR1JgAzU7rLGoPnb" data-title="博客撰写方法(整理后)" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" rel="tag">学习记录</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" rel="tag">工具使用</a></li></ul>
 
     </footer>
   </div>
@@ -1352,113 +1413,11 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2026/01/18/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/" data-id="cuidY1u67NTdbXfnwR-p4bnqY" data-title="博客撰写方法" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2026/01/18/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/" data-id="cuidkKUGsiHhN7JxPvprgphPV" data-title="博客撰写方法" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" rel="tag">工具使用</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-博客撰写方法/静态博客撰写方法（整理后）" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2026/01/18/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95%EF%BC%88%E6%95%B4%E7%90%86%E5%90%8E%EF%BC%89/" class="article-date">
-  <time class="dt-published" datetime="2026-01-17T16:00:00.000Z" itemprop="datePublished">2026-01-18</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2026/01/18/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95%EF%BC%88%E6%95%B4%E7%90%86%E5%90%8E%EF%BC%89/">博客撰写方法(整理后)</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <h1 id="嵌入式开发者：Hexo-博客搭建与双环境同步全指南"><a href="#嵌入式开发者：Hexo-博客搭建与双环境同步全指南" class="headerlink" title="嵌入式开发者：Hexo 博客搭建与双环境同步全指南"></a>嵌入式开发者：Hexo 博客搭建与双环境同步全指南</h1><h2 id="第一阶段：环境初始化与云端配置"><a href="#第一阶段：环境初始化与云端配置" class="headerlink" title="第一阶段：环境初始化与云端配置"></a>第一阶段：环境初始化与云端配置</h2><p>在开始写代码前，先建立两个 GitHub 仓库，分别存放“毛坯房（源码）”和“装修房（网页）”。</p>
-<h3 id="1-准备-GitHub-仓库"><a href="#1-准备-GitHub-仓库" class="headerlink" title="1. 准备 GitHub 仓库"></a>1. 准备 GitHub 仓库</h3><ul>
-<li><strong>仓库 A (网页库)</strong>：名称必须为 <code>你的用户名.github.io</code>。设为 <strong>Public</strong>。</li>
-<li><strong>仓库 B (源码库)</strong>：名称自定义（如 <code>blog-source</code>）。建议设为 <strong>Private</strong>，用于存放所有 <code>.md</code> 原稿和配置文件。</li>
-</ul>
-<h3 id="2-安装核心组件-双端通用"><a href="#2-安装核心组件-双端通用" class="headerlink" title="2. 安装核心组件 (双端通用)"></a>2. 安装核心组件 (双端通用)</h3><p>无论在 Windows 还是全志开发板（Ubuntu&#x2F;Debian）上，均需安装：</p>
-<ul>
-<li><strong>Node.js</strong>: 运行环境。</li>
-<li><strong>Git</strong>: 版本控制与发布工具。</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Linux (开发板/虚拟机) 安装命令</span></span><br><span class="line"><span class="built_in">sudo</span> apt update &amp;&amp; <span class="built_in">sudo</span> apt install nodejs npm git -y</span><br><span class="line"></span><br><span class="line"><span class="comment"># Windows 建议直接从官网下载 .msi 安装包</span></span><br><span class="line"><span class="comment"># 安装完成后，全局安装 Hexo 命令行工具：</span></span><br><span class="line">npm install -g hexo-cli</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<hr>
-<h2 id="第二阶段：本地架构搭建（以-Windows-为例）"><a href="#第二阶段：本地架构搭建（以-Windows-为例）" class="headerlink" title="第二阶段：本地架构搭建（以 Windows 为例）"></a>第二阶段：本地架构搭建（以 Windows 为例）</h2><h3 id="1-初始化-Hexo"><a href="#1-初始化-Hexo" class="headerlink" title="1. 初始化 Hexo"></a>1. 初始化 Hexo</h3><p>找一个纯净的文件夹，执行以下操作：</p>
-<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">hexo init my_blog</span><br><span class="line"><span class="built_in">cd</span> my_blog</span><br><span class="line">npm install</span><br><span class="line">npm install hexo<span class="literal">-deployer-git</span> <span class="literal">--save</span>  <span class="comment"># 预装部署插件</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h3 id="2-关联源码仓库（实现备份-同步）"><a href="#2-关联源码仓库（实现备份-同步）" class="headerlink" title="2. 关联源码仓库（实现备份&#x2F;同步）"></a>2. 关联源码仓库（实现备份&#x2F;同步）</h3><p>这一步是为了让你在 Windows 写完后，能随时在开发板上拉取最新的笔记。</p>
-<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git init</span><br><span class="line">git remote add origin https://github.com/你的用户名/blog<span class="literal">-source</span>.git</span><br><span class="line">git branch <span class="literal">-M</span> main</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<hr>
-<h2 id="第三阶段：写作规范与-Front-Matter"><a href="#第三阶段：写作规范与-Front-Matter" class="headerlink" title="第三阶段：写作规范与 Front Matter"></a>第三阶段：写作规范与 Front Matter</h2><p>Hexo 文章的核心在于文件头部的 <strong>YAML</strong> 格式配置。</p>
-<h3 id="1-标准文章头模板"><a href="#1-标准文章头模板" class="headerlink" title="1. 标准文章头模板"></a>1. 标准文章头模板</h3><p>在 <code>source/_posts/</code> 下新建 <code>.md</code> 文件，必须包含以下信息：</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">title:</span> <span class="string">&quot;笔记: open()函数使用&quot;</span>   <span class="comment"># 若包含特殊符号，务必加双引号</span></span><br><span class="line"><span class="attr">date:</span> <span class="number">2026-01-20 10:00:00</span></span><br><span class="line"><span class="attr">tags:</span> </span><br><span class="line">  <span class="bullet">-</span> <span class="string">Linux</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">Driver</span></span><br><span class="line"><span class="attr">categories:</span> <span class="string">学习笔记</span></span><br><span class="line"><span class="attr">sticky:</span> <span class="number">0</span>                     <span class="comment"># 置顶等级</span></span><br><span class="line"><span class="attr">mathjax:</span> <span class="literal">true</span>                  <span class="comment"># 开启公式支持</span></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="meta"></span></span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p><strong>⚠️ 避坑准则：</strong></p>
-<ul>
-<li><strong>冒号后必加空格</strong>（例如 <code>title: Hello</code>）。</li>
-<li><strong>禁用 Tab 缩进</strong>，只能使用空格。</li>
-</ul>
-</blockquote>
-<hr>
-<h2 id="第四阶段：发布与双端同步工作流"><a href="#第四阶段：发布与双端同步工作流" class="headerlink" title="第四阶段：发布与双端同步工作流"></a>第四阶段：发布与双端同步工作流</h2><p>这是开发者最常用的“闭环”操作，建议直接保存以下流程：</p>
-<h3 id="1-发布流程（从本地到互联网）"><a href="#1-发布流程（从本地到互联网）" class="headerlink" title="1. 发布流程（从本地到互联网）"></a>1. 发布流程（从本地到互联网）</h3><p>修改根目录 <code>_config.yml</code> 底部：</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">deploy:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">git</span></span><br><span class="line">  <span class="attr">repo:</span> <span class="string">https://github.com/你的用户名/你的用户名.github.io.git</span></span><br><span class="line">  <span class="attr">branch:</span> <span class="string">main</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p><strong>执行发布三连：</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">hexo clean    <span class="comment"># 清理旧文件</span></span><br><span class="line">hexo g        <span class="comment"># 生成静态网页</span></span><br><span class="line">hexo d        <span class="comment"># 部署到 GitHub Pages</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h3 id="2-源码同步流程（从本地-A-到本地-B）"><a href="#2-源码同步流程（从本地-A-到本地-B）" class="headerlink" title="2. 源码同步流程（从本地 A 到本地 B）"></a>2. 源码同步流程（从本地 A 到本地 B）</h3><p><strong>在 Windows 端完成更新后：</strong></p>
-<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git add .</span><br><span class="line">git commit <span class="literal">-m</span> <span class="string">&quot;新增 Linux IO 笔记&quot;</span></span><br><span class="line">git push origin main</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p><strong>在全志开发板&#x2F;Linux 端获取更新：</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git pull origin main</span><br><span class="line"><span class="comment"># 这样你在开发板上也能看到同样的 .md 文稿了</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<hr>
-<h2 id="第五阶段：补充建议（进阶方案）"><a href="#第五阶段：补充建议（进阶方案）" class="headerlink" title="第五阶段：补充建议（进阶方案）"></a>第五阶段：补充建议（进阶方案）</h2><h3 id="1-自动生成-YAML-头部-VS-Code-用户必备"><a href="#1-自动生成-YAML-头部-VS-Code-用户必备" class="headerlink" title="1. 自动生成 YAML 头部 (VS Code 用户必备)"></a>1. 自动生成 YAML 头部 (VS Code 用户必备)</h3><p>为了避免每次手动写 Front Matter 报错，建议在 VS Code 中配置 <strong>User Snippets (用户代码片段)</strong>。</p>
-<p>将你提供的 JSON 模板加入 <code>markdown.json</code> 中，以后只需输入 <code>blog</code> 即可一键生成标准头部。</p>
-<h3 id="2-资源路径处理"><a href="#2-资源路径处理" class="headerlink" title="2. 资源路径处理"></a>2. 资源路径处理</h3><p>对于嵌入式开发者，文章中经常包含实验截图。</p>
-<ul>
-<li><strong>建议方案</strong>：修改 <code>_config.yml</code> 中的 <code>post_asset_folder: true</code>。</li>
-<li><strong>效果</strong>：每次新建文章会同步生成一个同名文件夹，你直接把图片放进去，用 <code>![描述](图片名.png)</code> 即可引用，方便管理。</li>
-</ul>
-<h3 id="3-轻量化尝试：Hugo"><a href="#3-轻量化尝试：Hugo" class="headerlink" title="3. 轻量化尝试：Hugo"></a>3. 轻量化尝试：Hugo</h3><p>如果你觉得 Hexo (Node.js) 在全志开发板上运行太重、生成速度慢，可以尝试 <strong>Hugo</strong>（Go 语言编写）。</p>
-<ul>
-<li><strong>优势</strong>：单个二进制文件，无需安装成百上千的 npm 包，极其适合资源受限的嵌入式系统。</li>
-</ul>
-<hr>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2026/01/18/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95%EF%BC%88%E6%95%B4%E7%90%86%E5%90%8E%EF%BC%89/" data-id="cuidAvd7efhCX8WhfZSVmq4-Y" data-title="博客撰写方法(整理后)" class="article-share-link"><span class="fa fa-share">Share</span></a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" rel="tag">学习记录</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" rel="tag">工具使用</a></li></ul>
 
     </footer>
   </div>
@@ -1612,7 +1571,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2023/01/18/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/Linux%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B0/" data-id="cuidZwTh909UoUAwLuG3_xCRj" data-title="Linux入门笔记" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2023/01/18/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/Linux%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B0/" data-id="cuidQmsww_4ZjPbi4WzywEbO_" data-title="Linux入门笔记" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -1646,7 +1605,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" rel="tag">学习记录</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" rel="tag">嵌入式学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" rel="tag">工具使用</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" rel="tag">数据传输</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" rel="tag">数据存储</a></li></ul>
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96/" rel="tag">内存优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" rel="tag">学习记录</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" rel="tag">嵌入式学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" rel="tag">工具使用</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" rel="tag">数据传输</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" rel="tag">数据存储</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/" rel="tag">结构体</a></li></ul>
     </div>
   </div>
 
@@ -1656,7 +1615,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" style="font-size: 10px;">学习记录</a> <a href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" style="font-size: 20px;">嵌入式学习</a> <a href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" style="font-size: 15px;">工具使用</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" style="font-size: 10px;">数据传输</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" style="font-size: 10px;">数据存储</a>
+      <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96/" style="font-size: 10px;">内存优化</a> <a href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" style="font-size: 10px;">学习记录</a> <a href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" style="font-size: 20px;">嵌入式学习</a> <a href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" style="font-size: 15px;">工具使用</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" style="font-size: 10px;">数据传输</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" style="font-size: 10px;">数据存储</a> <a href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/" style="font-size: 10px;">结构体</a>
     </div>
   </div>
 
@@ -1678,7 +1637,7 @@
       <ul>
         
           <li>
-            <a href="/2026/01/28/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/%E9%9D%99%E6%AD%A2%E5%AE%9A%E4%BD%8D%E6%A8%A1%E5%BC%8F/">GNSS 静止状态定位功能实现文档</a>
+            <a href="/2026/01/29/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E7%BB%93%E6%9E%84%E4%BD%93%E8%AE%BE%E8%AE%A1%E7%9A%84%E5%AF%B9%E9%BD%90%E4%B8%8E%E4%BC%98%E5%8C%96/">嵌入式结构体设计的对齐与优化</a>
           </li>
         
           <li>
@@ -1690,11 +1649,11 @@
           </li>
         
           <li>
-            <a href="/2026/01/18/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/">博客撰写方法</a>
+            <a href="/2026/01/18/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95%EF%BC%88%E6%95%B4%E7%90%86%E5%90%8E%EF%BC%89/">博客撰写方法(整理后)</a>
           </li>
         
           <li>
-            <a href="/2026/01/18/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95%EF%BC%88%E6%95%B4%E7%90%86%E5%90%8E%EF%BC%89/">博客撰写方法(整理后)</a>
+            <a href="/2026/01/18/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/">博客撰写方法</a>
           </li>
         
       </ul>
