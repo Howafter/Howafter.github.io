@@ -71,6 +71,192 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-git 使用/简略使用指南" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2026/02/08/git%20%E4%BD%BF%E7%94%A8/%E7%AE%80%E7%95%A5%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/" class="article-date">
+  <time class="dt-published" datetime="2026-02-08T10:00:00.000Z" itemprop="datePublished">2026-02-08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2026/02/08/git%20%E4%BD%BF%E7%94%A8/%E7%AE%80%E7%95%A5%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/">git 简略使用指南</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <hr>
+<h3 id="1-核心概念-必读"><a href="#1-核心概念-必读" class="headerlink" title="1. 核心概念 (必读)"></a>1. 核心概念 (必读)</h3><p>在输入命令之前，理解 Git 的“三个区域”至关重要：</p>
+<ol>
+<li><strong>工作区 (Working Directory):</strong> 你电脑里能看到的文件夹，你在这里修改文件。</li>
+<li><strong>暂存区 (Staging Area&#x2F;Index):</strong> 一个临时区域，保存了你打算提交的修改（<code>git add</code> 后的状态）。</li>
+<li><strong>版本库 (Repository):</strong> 存储所有历史版本的地方（<code>git commit</code> 后的状态）。</li>
+</ol>
+<p><strong>基本流程：</strong> 修改文件  添加到暂存区  提交到版本库。</p>
+<hr>
+<h3 id="2-初次安装与配置"><a href="#2-初次安装与配置" class="headerlink" title="2. 初次安装与配置"></a>2. 初次安装与配置</h3><p>安装 Git 后，第一件事是设置你的身份（这就好比给你的代码盖章）：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 设置你的用户名</span></span><br><span class="line">git config --global user.name <span class="string">&quot;你的名字&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置你的邮箱</span></span><br><span class="line">git config --global user.email <span class="string">&quot;你的邮箱@example.com&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看配置信息</span></span><br><span class="line">git config --list</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="3-基础操作流程-日常使用"><a href="#3-基础操作流程-日常使用" class="headerlink" title="3. 基础操作流程 (日常使用)"></a>3. 基础操作流程 (日常使用)</h3><p>这是你 90% 的时间都在用的命令：</p>
+<h4 id="A-开始项目"><a href="#A-开始项目" class="headerlink" title="A. 开始项目"></a>A. 开始项目</h4><ul>
+<li><strong>新项目初始化：</strong></li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git init</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>克隆远程项目：</strong></li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> &lt;远程仓库地址&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="B-提交代码-三部曲"><a href="#B-提交代码-三部曲" class="headerlink" title="B. 提交代码 (三部曲)"></a>B. 提交代码 (三部曲)</h4><ol>
+<li><strong>查看状态 (最常用)：</strong><br>随时查看哪些文件被修改了、哪些在暂存区。</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git status</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><strong>添加到暂存区：</strong></li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git add 文件名    <span class="comment"># 添加指定文件</span></span><br><span class="line">git add .        <span class="comment"># 添加所有修改过的文件（推荐）</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li><strong>提交到版本库：</strong></li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git commit -m <span class="string">&quot;这里写清晰的提交说明，例如：修复登录页面的Bug&quot;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="C-查看历史"><a href="#C-查看历史" class="headerlink" title="C. 查看历史"></a>C. 查看历史</h4><ul>
+<li><strong>查看提交日志：</strong></li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">log</span></span><br><span class="line">git <span class="built_in">log</span> --oneline  <span class="comment"># 简洁模式，一行显示一个提交</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="4-分支管理-Git-的杀手锏"><a href="#4-分支管理-Git-的杀手锏" class="headerlink" title="4. 分支管理 (Git 的杀手锏)"></a>4. 分支管理 (Git 的杀手锏)</h3><p>分支让你可以在不影响主线（main&#x2F;master）的情况下开发新功能。</p>
+<ul>
+<li><strong>创建并切换分支 (推荐)：</strong></li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git checkout -b feature-login</span><br><span class="line"><span class="comment"># 或者新版命令：</span></span><br><span class="line">git switch -c feature-login</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>查看所有分支：</strong></li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git branch</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>切换回主分支：</strong></li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git checkout main</span><br><span class="line"><span class="comment"># 或者：</span></span><br><span class="line">git switch main</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>合并分支：</strong><br>先切换回主分支，然后把功能分支合并进来。</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git merge feature-login</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>删除分支：</strong></li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git branch -d feature-login</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="5-远程协作-GitHub-GitLab"><a href="#5-远程协作-GitHub-GitLab" class="headerlink" title="5. 远程协作 (GitHub&#x2F;GitLab)"></a>5. 远程协作 (GitHub&#x2F;GitLab)</h3><ul>
+<li><strong>关联远程仓库：</strong></li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git remote add origin &lt;远程仓库地址&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>推送到远程 (上传)：</strong></li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 第一次推送时需要关联分支</span></span><br><span class="line">git push -u origin main</span><br><span class="line"></span><br><span class="line"><span class="comment"># 之后的推送只需</span></span><br><span class="line">git push</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>拉取远程代码 (下载并合并)：</strong><br>当别人更新了代码，你需要同步到本地。</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git pull</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="6-“后悔药”操作-撤销与回滚"><a href="#6-“后悔药”操作-撤销与回滚" class="headerlink" title="6. “后悔药”操作 (撤销与回滚)"></a>6. “后悔药”操作 (撤销与回滚)</h3><ul>
+<li><strong>撤销工作区的修改 (文件还没 add)：</strong><br><em>如果你把文件改乱了，想恢复到上次 commit 的状态。</em></li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git checkout -- 文件名</span><br><span class="line"><span class="comment"># 或者新版命令：</span></span><br><span class="line">git restore 文件名</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>撤销暂存区的修改 (文件已经 add，但还没 commit)：</strong><br><em>如果你手快 add 了不该提交的文件。</em></li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git reset HEAD 文件名</span><br><span class="line"><span class="comment"># 或者新版命令：</span></span><br><span class="line">git restore --staged 文件名</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>修改上一次提交 (Commit)：</strong><br><em>如果你提交后发现漏了文件，或者提交信息写错了。</em></li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git commit --amend</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="7-常见场景速查表"><a href="#7-常见场景速查表" class="headerlink" title="7. 常见场景速查表"></a>7. 常见场景速查表</h3><table>
+<thead>
+<tr>
+<th>场景</th>
+<th>关键命令</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>我想把所有修改暂存</strong></td>
+<td><code>git add .</code></td>
+</tr>
+<tr>
+<td><strong>我不知道现在是什么情况</strong></td>
+<td><code>git status</code></td>
+</tr>
+<tr>
+<td><strong>我想看看这行代码是谁写的</strong></td>
+<td><code>git blame 文件名</code></td>
+</tr>
+<tr>
+<td><strong>出现了冲突 (Conflict)</strong></td>
+<td>打开文件 -&gt; 手动修代码 -&gt;<code>git add</code> -&gt; <code>git commit</code></td>
+</tr>
+<tr>
+<td><strong>我想暂时保存工作去修 Bug</strong></td>
+<td><code>git stash</code> (保存), <code>git stash pop</code> (恢复)</td>
+</tr>
+<tr>
+<td><strong>我想丢弃本地所有修改，强制与远程一致</strong></td>
+<td><code>git reset --hard origin/main</code> (慎用!)</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="建议的最佳实践"><a href="#建议的最佳实践" class="headerlink" title="建议的最佳实践"></a>建议的最佳实践</h3><ol>
+<li><strong>勤提交：</strong> 尽量保持原子性提交（一个 Commit 只做一件事），方便回滚。</li>
+<li><strong>写好 Commit Message：</strong> 清楚地描述“做了什么”，而不是“更新了代码”。</li>
+<li><strong>不要提交大文件&#x2F;敏感文件：</strong> 使用 <code>.gitignore</code> 文件来忽略不需要版本控制的文件（如密码文件、编译生成的 <code>node_modules</code> 或 <code>dist</code> 目录）。</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2026/02/08/git%20%E4%BD%BF%E7%94%A8/%E7%AE%80%E7%95%A5%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/" data-id="cuidxWreY4CdvgG5Eok9XlDTR" data-title="git 简略使用指南" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/git/" rel="tag">git</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" rel="tag">嵌入式学习</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-Linux 学习记录/03_Linux常用命令" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2026/02/08/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/03_Linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" class="article-date">
@@ -205,7 +391,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2026/02/08/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/03_Linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" data-id="cuidTBeop72CvKK1d1cpDPhNQ" data-title="Linux常用命令" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2026/02/08/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/03_Linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" data-id="cuidscOL8J1IyimrRhIScwKfb" data-title="Linux常用命令" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -312,7 +498,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2026/01/30/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" data-id="cuid8unLYV7VQQP_yoZHZtJxb" data-title="博客hexo环境搭建" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2026/01/30/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" data-id="cuidp2osTwccoRys_neh5VvAT" data-title="博客hexo环境搭建" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -473,7 +659,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2026/01/29/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E7%BB%93%E6%9E%84%E4%BD%93%E8%AE%BE%E8%AE%A1%E7%9A%84%E5%AF%B9%E9%BD%90%E4%B8%8E%E4%BC%98%E5%8C%96/" data-id="cuidwiyTNEuk52dwBqc14wAQJ" data-title="嵌入式结构体设计的对齐与优化" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2026/01/29/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E7%BB%93%E6%9E%84%E4%BD%93%E8%AE%BE%E8%AE%A1%E7%9A%84%E5%AF%B9%E9%BD%90%E4%B8%8E%E4%BC%98%E5%8C%96/" data-id="cuidw4dLszApuvkbTzfulHeY6" data-title="嵌入式结构体设计的对齐与优化" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -607,7 +793,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E9%AB%98%E6%95%88%E6%95%B0%E6%8D%AE%E4%BA%A4%E6%8D%A2/" data-id="cuid-0aeRLImlhX3f0SKDrvdk" data-title="嵌入式设备如何实现高效数据交换" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E9%AB%98%E6%95%88%E6%95%B0%E6%8D%AE%E4%BA%A4%E6%8D%A2/" data-id="cuidyylO0zHqfnoJWLm5WM7o9" data-title="嵌入式设备如何实现高效数据交换" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -1383,7 +1569,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%98%E5%82%A8%E5%BC%80%E5%8F%91%E9%AB%98%E6%95%88%E5%BA%94%E7%94%A8/" data-id="cuid15Zb1WrelcFcx4Xqu23gw" data-title="嵌入式存储开发高效应用" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%98%E5%82%A8%E5%BC%80%E5%8F%91%E9%AB%98%E6%95%88%E5%BA%94%E7%94%A8/" data-id="cuid6haubP8Y2SpS4JeVXycfw" data-title="嵌入式存储开发高效应用" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -1566,7 +1752,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2026/01/18/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/" data-id="cuidMLMuUFcqcWne6LlaUvBAu" data-title="博客撰写方法" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2026/01/18/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/" data-id="cuidLQDYXs5pymVvdlHIzZS45" data-title="博客撰写方法" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -1668,7 +1854,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2026/01/18/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95%EF%BC%88%E6%95%B4%E7%90%86%E5%90%8E%EF%BC%89/" data-id="cuidIxrUxVZwE1YfC9KS9nqTh" data-title="博客撰写方法(整理后)" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2026/01/18/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95%EF%BC%88%E6%95%B4%E7%90%86%E5%90%8E%EF%BC%89/" data-id="cuidXsuXzSI4HrdSFXfcTKX-8" data-title="博客撰写方法(整理后)" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -1740,7 +1926,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2023/01/18/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/01_%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95%E5%8F%8A%E8%B7%AF%E7%BA%BF/" data-id="cuidEtzbmAFymAHMgEspFV6-J" data-title="学习方法及路线" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2023/01/18/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/01_%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95%E5%8F%8A%E8%B7%AF%E7%BA%BF/" data-id="cuidnqZv5lpXRmR5YJ1G5JIx1" data-title="学习方法及路线" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -1870,7 +2056,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2023/01/18/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/02_%E6%96%87%E4%BB%B6%E6%9D%83%E9%99%90/" data-id="cuidHu7_DZI6nVlqFg_ZsMu0V" data-title="Linux|RTOS区别及权限" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2023/01/18/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/02_%E6%96%87%E4%BB%B6%E6%9D%83%E9%99%90/" data-id="cuidp27-1fc0MrUsTwq76yW-6" data-title="Linux|RTOS区别及权限" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -1904,7 +2090,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96/" rel="tag">内存优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="tag">博客环境搭建</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" rel="tag">学习记录</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" rel="tag">嵌入式学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" rel="tag">工具使用</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" rel="tag">数据传输</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" rel="tag">数据存储</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/" rel="tag">结构体</a></li></ul>
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96/" rel="tag">内存优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="tag">博客环境搭建</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" rel="tag">学习记录</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" rel="tag">嵌入式学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" rel="tag">工具使用</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" rel="tag">数据传输</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" rel="tag">数据存储</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/" rel="tag">结构体</a></li></ul>
     </div>
   </div>
 
@@ -1914,7 +2100,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96/" style="font-size: 10px;">内存优化</a> <a href="/tags/%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" style="font-size: 10px;">博客环境搭建</a> <a href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" style="font-size: 10px;">学习记录</a> <a href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" style="font-size: 20px;">嵌入式学习</a> <a href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" style="font-size: 15px;">工具使用</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" style="font-size: 10px;">数据传输</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" style="font-size: 10px;">数据存储</a> <a href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/" style="font-size: 10px;">结构体</a>
+      <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96/" style="font-size: 10px;">内存优化</a> <a href="/tags/%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" style="font-size: 10px;">博客环境搭建</a> <a href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" style="font-size: 10px;">学习记录</a> <a href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" style="font-size: 20px;">嵌入式学习</a> <a href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" style="font-size: 15px;">工具使用</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" style="font-size: 10px;">数据传输</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" style="font-size: 10px;">数据存储</a> <a href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/" style="font-size: 10px;">结构体</a>
     </div>
   </div>
 
@@ -1936,6 +2122,10 @@
       <ul>
         
           <li>
+            <a href="/2026/02/08/git%20%E4%BD%BF%E7%94%A8/%E7%AE%80%E7%95%A5%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/">git 简略使用指南</a>
+          </li>
+        
+          <li>
             <a href="/2026/02/08/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/03_Linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/">Linux常用命令</a>
           </li>
         
@@ -1949,10 +2139,6 @@
         
           <li>
             <a href="/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E9%AB%98%E6%95%88%E6%95%B0%E6%8D%AE%E4%BA%A4%E6%8D%A2/">嵌入式设备如何实现高效数据交换</a>
-          </li>
-        
-          <li>
-            <a href="/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%98%E5%82%A8%E5%BC%80%E5%8F%91%E9%AB%98%E6%95%88%E5%BA%94%E7%94%A8/">嵌入式存储开发高效应用</a>
           </li>
         
       </ul>
