@@ -71,6 +71,154 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-Linux 学习记录/03_Linux常用命令" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2026/02/08/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/03_Linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" class="article-date">
+  <time class="dt-published" datetime="2026-02-07T16:00:00.000Z" itemprop="datePublished">2026-02-08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2026/02/08/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/03_Linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/">Linux常用命令</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>很多小伙伴对Linux的印象，就是黑色的命令行框框，虽然我们使用的Ubuntu系统给我们提供的图形化的交互界面，但课程中我们尽可能减少使用，因为在开发过程中命令行的方式效率是会更加高的，后期我们在写一些自动化脚本时，用的也都是命令行，可能一开始学习时，你对命令不熟悉，感觉效率还不如鼠标点点点。但是相信我，在你熟悉命令后，开发效率将会大大提升。</p>
+<p>Linux的命令很多，应该说是非常多，说句实话，下方这些命令行，我也有一半是没记住的，但是这并不妨碍我学习使用Linux进行开发。</p>
+<p><a target="_blank" rel="noopener" href="https://www.runoob.com/linux/linux-command-manual.html">Linux 命令大全 | 菜鸟教程</a></p>
+<p>这里很多小伙伴会有一个思维误区，认为学习Linux常用命令，就是要把所有的命令都背下来，其实是不需要的，我们只需要了解常用的十来个指令，其它的指令，在需要用到时，使用AI工具查询即可，换句话说，所有的命令都不需要去背，在你用得多后自然就会记住，记不住的查询下即可。</p>
+<p>下面我们来了解下最常用的几个命令，如何打开命令行交互窗口呢？可以按快捷键Ctrl+Alt+T,或者左下角软件中搜索Terminal即可</p>
+<p><img src="https://x509p6c8to.feishu.cn/space/api/box/stream/download/asynccode/?code=ZDlkNjYyMWQwY2ZlYzg5MDRhYmY4MzM0YjMzZjRmMWZfTHI1YUVRUVUyOVF3b1NGSDE5MGN5VThXcjJ2bFZDSEhfVG9rZW46TDhhSWJGT3Vvb1RJcGt4SE5mSWNSdVR3bm1kXzE3NzA1Mzk4NDQ6MTc3MDU0MzQ0NF9WNA"></p>
+<p>接下来我们就来看几个常见的命令吧：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">ls（英文全拼：list files）: 列出目录及文件名</span><br><span class="line">chmod（Change Mode）用于修改 文件或目录的权限</span><br><span class="line">cd（英文全拼：change directory）：切换目录</span><br><span class="line">pwd（英文全拼：print work directory）：显示目前的目录</span><br><span class="line">mkdir（英文全拼：make directory）：创建一个新的目录</span><br><span class="line">cp（英文全拼：<span class="keyword">copy</span> file）: 复制文件或目录</span><br><span class="line">rm（英文全拼：remove）: 删除文件或目录</span><br><span class="line">mv（英文全拼：move file）: 移动文件与目录，或修改文件与目录的名称</span><br><span class="line">tar (Tape Archive) 是 Linux 中最常用的归档工具，用于将多个文件<span class="operator">/</span>目录打包成单个文件（支持压缩）。</span><br><span class="line">df（Disk Filesystem）是 Linux 系统中用于查看磁盘空间使用情况的命令</span><br></pre></td></tr></table></figure>
+
+<p><strong>ls（英文全拼：list files）: 列出目录及文件名</strong></p>
+<figure class="highlight plaintext"><figcaption><span>Text</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">ls [选项] [文件/目录...]</span><br><span class="line">基本用法</span><br><span class="line">ls          # 列出当前目录内容</span><br><span class="line">ls /etc     # 列出 /etc 目录的内容</span><br><span class="line">ls -l       # 列出详细信息</span><br><span class="line"></span><br><span class="line">drwxr-xr-x 2 xiaozhi xiaozhi 4096 Jun 17 07:08 Desktop</span><br><span class="line">drwxr-xr-x 2 xiaozhi xiaozhi 4096 Jun 17 07:08 Documents</span><br><span class="line">drwxr-xr-x 3 xiaozhi xiaozhi 4096 Jun 18 07:12 Downloads</span><br><span class="line">-rw-r--r-- 1 xiaozhi xiaozhi 8980 Jun 17 07:05 examples.desktop</span><br><span class="line">-rw-r--r-- 1 user group 1.2K Mar 10 15:30 file.txt</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">-rw-r--r--：文件类型和权限（- 表示普通文件，rw- 所有者权限，r-- 组权限，r-- 其他用户权限）。</span><br><span class="line">1：硬链接数。</span><br><span class="line">user：文件所有者。</span><br><span class="line">group：所属用户组。</span><br><span class="line">1.2K：文件大小。</span><br><span class="line">Mar 10 15:30：最后修改时间。</span><br><span class="line">file.txt：文件名。</span><br></pre></td></tr></table></figure>
+
+<p>Linux 文件权限分为 3 类用户，</p>
+<!--br {mso-data-placement:same-cell;}--> td {white-space:nowrap;border:0.5pt solid #dee0e3;font-size:10pt;font-style:normal;font-weight:normal;vertical-align:middle;word-break:normal;word-wrap:normal;}| 用户类型   | 说明       |
+
+<p>| ———— | ———— |<br>| u (user)   | 文件所有者 |<br>| g (group)  | 所属用户组 |<br>| o (others) | 其他用户   |</p>
+<p><strong><code>chmod</code></strong> <strong>（Change Mode）用于修改文件或目录的权限</strong></p>
+<p>测试脚本，创建test.sh，仅用于打印日志，验证权限问题，无其它功能</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="comment"># 这是一个最简单的 Bash 脚本</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;Hello, World!&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>指令格式</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chmod &lt;权限模式&gt; &lt;文件或目录&gt;</span><br></pre></td></tr></table></figure>
+
+<p>3 种权限</p>
+<!--br {mso-data-placement:same-cell;}--> td {white-space:nowrap;border:0.5pt solid #dee0e3;font-size:10pt;font-style:normal;font-weight:normal;vertical-align:middle;word-break:normal;word-wrap:normal;}| 权限           | 符号 | 数字 | 说明                                 |
+
+<p>| —————- | —— | —— | ————————————– |<br>| 读 (Read)      | r    | 4    | 允许读取文件内容 &#x2F; 列出目录内容      |<br>| 写 (Write)     | w    | 2    | 允许修改文件 &#x2F; 在目录中创建&#x2F;删除文件 |<br>| 执行 (Execute) | x    | 1    | 允许执行文件 &#x2F; 进入目录              |</p>
+<p>例子</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">chmod <span class="number">755</span> file.txt</span><br><span class="line"><span class="number">7</span> (u): <span class="number">4</span>(r) + <span class="number">2</span>(w) + <span class="number">1</span>(x) = 读 + 写 + 执行</span><br><span class="line"><span class="number">5</span> (g): <span class="number">4</span>(r) + <span class="number">1</span>(x) = 读 + 执行</span><br><span class="line"><span class="number">5</span> (o): <span class="number">4</span>(r) + <span class="number">1</span>(x) = 读 + 执行</span><br></pre></td></tr></table></figure>
+
+<p><strong>mkdir（英文全拼：make directory）：创建一个新的目录</strong></p>
+<!--br {mso-data-placement:same-cell;}--> td {white-space:nowrap;border:0.5pt solid #dee0e3;font-size:10pt;font-style:normal;font-weight:normal;vertical-align:middle;word-break:normal;word-wrap:normal;}| 命令           | 作用             |
+
+<p>| —————- | —————— |<br>| mkdir dir      | 创建单个目录     |<br>| mkdir -p a&#x2F;b&#x2F;c | 递归创建多级目录 |</p>
+<p><strong>文本编辑vi</strong></p>
+<p>其实工作中使用vi文本编辑器很少了，有UI的系统，我们直接用gedit，没有的我们一般使用ssh，在window访问，但是，我们也稍微了解下，知道有这么一个东西即可。</p>
+<ol>
+<li><strong>启动 vi</strong> ：</li>
+</ol>
+<p><code>vi filename</code></p>
+<ol start="2">
+<li><strong>退出 vi</strong> ：<ol>
+<li>输入 <code>:q</code> 退出（如果文件未修改）。</li>
+<li>输入 <code>:q!</code> 强制退出，不保存更改。</li>
+<li>输入 <code>:wq</code> 保存并退出。</li>
+</ol>
+</li>
+</ol>
+<p><strong>模式切换</strong></p>
+<p><strong>vi</strong> 有两种主要模式：插入模式和命令模式。</p>
+<ol>
+<li><strong>插入模式</strong> ：<ol>
+<li>命令模式按 <code>i</code> 进入插入模式，在当前光标位置插入文本。</li>
+</ol>
+</li>
+<li><strong>命令模式</strong> ：<ol>
+<li>插入模式按ESC可返回命令模式，输入命令后按 <code>Enter</code> 执行。</li>
+</ol>
+</li>
+</ol>
+<p><strong>示例</strong></p>
+<ol>
+<li><strong>打开文件并进行编辑</strong> ：</li>
+<li><code>vi example.txt</code><ol>
+<li>按 <code>i</code> 进入插入模式，编辑文件。</li>
+<li>按 <code>Esc</code> 返回正常模式。</li>
+<li>输入 <code>:wq</code> 保存文件。</li>
+<li>输入 <code>:q</code> 退出 Vi。</li>
+</ol>
+</li>
+</ol>
+<p><strong>cd（英文全拼：change directory）：切换目录</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd [目录路径]</span><br><span class="line">切换目录使用的cd指令，其实和在window下使用鼠标点击的效果是一样的，可以进入不同路径的目录。</span><br></pre></td></tr></table></figure>
+
+<!--br {mso-data-placement:same-cell;}--> td {white-space:nowrap;border:0.5pt solid #dee0e3;font-size:10pt;font-style:normal;font-weight:normal;vertical-align:middle;word-break:normal;word-wrap:normal;}| 命令            | 作用             |
+
+<p>| —————– | —————— |<br>| cd              | 回到家目录       |<br>| cd ~            | 回到家目录       |<br>| cd &#x2F;path&#x2F;to&#x2F;dir | 进入绝对路径目录 |<br>| cd ..           | 返回上级目录     |<br>| cd -            | 返回上一次目录   |</p>
+<p><strong>pwd（英文全拼：print work directory）：显示目前的目录</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">可以显示当前所在的目录路径</span><br></pre></td></tr></table></figure>
+
+<p><strong>cp（英文全拼：copy file）: 复制文件或目录</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">文件复制</span><br><span class="line">cp file.txt /backup/       # 复制到目录</span><br><span class="line"></span><br><span class="line">目录复制</span><br><span class="line">cp -r dir1/ dir2/         # 递归复制目录</span><br></pre></td></tr></table></figure>
+
+<p><strong>rm（英文全拼：remove）: 删除文件或目录</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">rm file.txt              # 删除单个文件</span><br><span class="line">rm file1.txt file2.txt   # 删除多个文件</span><br><span class="line">rm *.tmp                 # 删除所有.tmp文件</span><br><span class="line">rm -r dir/               # 递归删除目录</span><br><span class="line"></span><br><span class="line">rm 是 Linux 中最危险的命令之一，使用时请务必三思而后行！</span><br></pre></td></tr></table></figure>
+
+<p><strong>mv（英文全拼：move file）: 移动文件与目录，或修改文件与目录的名称</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">mv document.pdf ~/Documents/  # 移动文件</span><br><span class="line">mv *.png ~/Pictures/          # 移动所有png文件</span><br><span class="line">mv file1.txt file2.txt dir/   # 移动多个文件到目录</span><br><span class="line">mv dir/ ~/backups/            # 移动目录</span><br><span class="line"></span><br><span class="line">mv old_name.txt new_name.txt  # 重命名</span><br></pre></td></tr></table></figure>
+
+<p><strong><code>tar</code></strong>** (Tape Archive) 是 Linux 中最常用的归档工具，用于将多个文件&#x2F;目录打包成单个文件（支持压缩）。**</p>
+<!--br {mso-data-placement:same-cell;}--> td {white-space:nowrap;border:0.5pt solid #dee0e3;font-size:10pt;font-style:normal;font-weight:normal;vertical-align:middle;word-break:normal;word-wrap:normal;}| 操作     | 命令                            |
+
+<p>| ———- | ——————————— |<br>| 打包     | tar -cvf archive.tar files&#x2F;     |<br>| gzip压缩 | tar -czvf archive.tar.gz files&#x2F; |<br>| 解包     | tar -xvf archive.tar            |<br>| 解压gzip | tar -xzvf archive.tar.gz        |</p>
+<p><strong>主操作模式</strong></p>
+<!--br {mso-data-placement:same-cell;}--> td {white-space:nowrap;border:0.5pt solid #dee0e3;font-size:10pt;font-style:normal;font-weight:normal;vertical-align:middle;word-break:normal;word-wrap:normal;}| 选项 | 说明       |
+
+<p>| —— | ———— |<br>| -c   | 创建新归档 |<br>| -x   | 解压归档   |</p>
+<p><strong>辅助选项</strong></p>
+<!--br {mso-data-placement:same-cell;}--> td {white-space:nowrap;border:0.5pt solid #dee0e3;font-size:10pt;font-style:normal;font-weight:normal;vertical-align:middle;word-break:normal;word-wrap:normal;}| 选项 | 说明                           |
+
+<p>| —— | ——————————– |<br>| -v   | 显示详细过程                   |<br>| -f   | 指定归档文件名（必须放在最后） |<br>| -z   | 使用gzip压缩&#x2F;解压（.tar.gz）   |<br>| -j   | 使用bzip2压缩&#x2F;解压（.tar.bz2） |</p>
+<p><strong><code>df</code></strong> <strong>（Disk Filesystem）是 Linux 系统中用于 查看磁盘空间使用情况 的命令</strong></p>
+<p>可以显示文件系统的总容量、已用空间、可用空间及挂载点信息。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">df -h</span><br><span class="line">Filesystem      Size  Used Avail Use% Mounted on</span><br><span class="line">/dev/sda1       <span class="number">100</span>G  <span class="number">5.0</span>G   <span class="number">95</span>G   <span class="number">5</span>% /</span><br><span class="line">tmpfs           <span class="number">800</span>M     <span class="number">0</span>  <span class="number">800</span>M   <span class="number">0</span>% /dev/shm</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2026/02/08/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/03_Linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" data-id="cuidTBeop72CvKK1d1cpDPhNQ" data-title="Linux常用命令" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" rel="tag">嵌入式学习</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-博客撰写方法/环境搭建" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2026/01/30/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="article-date">
@@ -164,7 +312,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2026/01/30/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" data-id="cuid_Od_zvh5147JLhJGbglAO" data-title="博客hexo环境搭建" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2026/01/30/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" data-id="cuid8unLYV7VQQP_yoZHZtJxb" data-title="博客hexo环境搭建" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -325,7 +473,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2026/01/29/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E7%BB%93%E6%9E%84%E4%BD%93%E8%AE%BE%E8%AE%A1%E7%9A%84%E5%AF%B9%E9%BD%90%E4%B8%8E%E4%BC%98%E5%8C%96/" data-id="cuidovZ7wVYqEdtFz8d9A55Ik" data-title="嵌入式结构体设计的对齐与优化" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2026/01/29/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E7%BB%93%E6%9E%84%E4%BD%93%E8%AE%BE%E8%AE%A1%E7%9A%84%E5%AF%B9%E9%BD%90%E4%B8%8E%E4%BC%98%E5%8C%96/" data-id="cuidwiyTNEuk52dwBqc14wAQJ" data-title="嵌入式结构体设计的对齐与优化" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -459,7 +607,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E9%AB%98%E6%95%88%E6%95%B0%E6%8D%AE%E4%BA%A4%E6%8D%A2/" data-id="cuidb7BnvPn_uIXHLu-9K33nd" data-title="嵌入式设备如何实现高效数据交换" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E9%AB%98%E6%95%88%E6%95%B0%E6%8D%AE%E4%BA%A4%E6%8D%A2/" data-id="cuid-0aeRLImlhX3f0SKDrvdk" data-title="嵌入式设备如何实现高效数据交换" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -1235,113 +1383,11 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%98%E5%82%A8%E5%BC%80%E5%8F%91%E9%AB%98%E6%95%88%E5%BA%94%E7%94%A8/" data-id="cuidN9Z5ltqyYbwaOMyiTsTwz" data-title="嵌入式存储开发高效应用" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%98%E5%82%A8%E5%BC%80%E5%8F%91%E9%AB%98%E6%95%88%E5%BA%94%E7%94%A8/" data-id="cuid15Zb1WrelcFcx4Xqu23gw" data-title="嵌入式存储开发高效应用" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" rel="tag">嵌入式学习</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" rel="tag">数据存储</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-博客撰写方法/静态博客撰写方法（整理后）" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2026/01/18/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95%EF%BC%88%E6%95%B4%E7%90%86%E5%90%8E%EF%BC%89/" class="article-date">
-  <time class="dt-published" datetime="2026-01-17T16:00:00.000Z" itemprop="datePublished">2026-01-18</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2026/01/18/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95%EF%BC%88%E6%95%B4%E7%90%86%E5%90%8E%EF%BC%89/">博客撰写方法(整理后)</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <h1 id="嵌入式开发者：Hexo-博客搭建与双环境同步全指南"><a href="#嵌入式开发者：Hexo-博客搭建与双环境同步全指南" class="headerlink" title="嵌入式开发者：Hexo 博客搭建与双环境同步全指南"></a>嵌入式开发者：Hexo 博客搭建与双环境同步全指南</h1><h2 id="第一阶段：环境初始化与云端配置"><a href="#第一阶段：环境初始化与云端配置" class="headerlink" title="第一阶段：环境初始化与云端配置"></a>第一阶段：环境初始化与云端配置</h2><p>在开始写代码前，先建立两个 GitHub 仓库，分别存放“毛坯房（源码）”和“装修房（网页）”。</p>
-<h3 id="1-准备-GitHub-仓库"><a href="#1-准备-GitHub-仓库" class="headerlink" title="1. 准备 GitHub 仓库"></a>1. 准备 GitHub 仓库</h3><ul>
-<li><strong>仓库 A (网页库)</strong>：名称必须为 <code>你的用户名.github.io</code>。设为 <strong>Public</strong>。</li>
-<li><strong>仓库 B (源码库)</strong>：名称自定义（如 <code>blog-source</code>）。建议设为 <strong>Private</strong>，用于存放所有 <code>.md</code> 原稿和配置文件。</li>
-</ul>
-<h3 id="2-安装核心组件-双端通用"><a href="#2-安装核心组件-双端通用" class="headerlink" title="2. 安装核心组件 (双端通用)"></a>2. 安装核心组件 (双端通用)</h3><p>无论在 Windows 还是全志开发板（Ubuntu&#x2F;Debian）上，均需安装：</p>
-<ul>
-<li><strong>Node.js</strong>: 运行环境。</li>
-<li><strong>Git</strong>: 版本控制与发布工具。</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Linux (开发板/虚拟机) 安装命令</span></span><br><span class="line"><span class="built_in">sudo</span> apt update &amp;&amp; <span class="built_in">sudo</span> apt install nodejs npm git -y</span><br><span class="line"></span><br><span class="line"><span class="comment"># Windows 建议直接从官网下载 .msi 安装包</span></span><br><span class="line"><span class="comment"># 安装完成后，全局安装 Hexo 命令行工具：</span></span><br><span class="line">npm install -g hexo-cli</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<hr>
-<h2 id="第二阶段：本地架构搭建（以-Windows-为例）"><a href="#第二阶段：本地架构搭建（以-Windows-为例）" class="headerlink" title="第二阶段：本地架构搭建（以 Windows 为例）"></a>第二阶段：本地架构搭建（以 Windows 为例）</h2><h3 id="1-初始化-Hexo"><a href="#1-初始化-Hexo" class="headerlink" title="1. 初始化 Hexo"></a>1. 初始化 Hexo</h3><p>找一个纯净的文件夹，执行以下操作：</p>
-<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">hexo init my_blog</span><br><span class="line"><span class="built_in">cd</span> my_blog</span><br><span class="line">npm install</span><br><span class="line">npm install hexo<span class="literal">-deployer-git</span> <span class="literal">--save</span>  <span class="comment"># 预装部署插件</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h3 id="2-关联源码仓库（实现备份-同步）"><a href="#2-关联源码仓库（实现备份-同步）" class="headerlink" title="2. 关联源码仓库（实现备份&#x2F;同步）"></a>2. 关联源码仓库（实现备份&#x2F;同步）</h3><p>这一步是为了让你在 Windows 写完后，能随时在开发板上拉取最新的笔记。</p>
-<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git init</span><br><span class="line">git remote add origin https://github.com/你的用户名/blog<span class="literal">-source</span>.git</span><br><span class="line">git branch <span class="literal">-M</span> main</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<hr>
-<h2 id="第三阶段：写作规范与-Front-Matter"><a href="#第三阶段：写作规范与-Front-Matter" class="headerlink" title="第三阶段：写作规范与 Front Matter"></a>第三阶段：写作规范与 Front Matter</h2><p>Hexo 文章的核心在于文件头部的 <strong>YAML</strong> 格式配置。</p>
-<h3 id="1-标准文章头模板"><a href="#1-标准文章头模板" class="headerlink" title="1. 标准文章头模板"></a>1. 标准文章头模板</h3><p>在 <code>source/_posts/</code> 下新建 <code>.md</code> 文件，必须包含以下信息：</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">title:</span> <span class="string">&quot;笔记: open()函数使用&quot;</span>   <span class="comment"># 若包含特殊符号，务必加双引号</span></span><br><span class="line"><span class="attr">date:</span> <span class="number">2026-01-20 10:00:00</span></span><br><span class="line"><span class="attr">tags:</span> </span><br><span class="line">  <span class="bullet">-</span> <span class="string">Linux</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">Driver</span></span><br><span class="line"><span class="attr">categories:</span> <span class="string">学习笔记</span></span><br><span class="line"><span class="attr">sticky:</span> <span class="number">0</span>                     <span class="comment"># 置顶等级</span></span><br><span class="line"><span class="attr">mathjax:</span> <span class="literal">true</span>                  <span class="comment"># 开启公式支持</span></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="meta"></span></span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p><strong>⚠️ 避坑准则：</strong></p>
-<ul>
-<li><strong>冒号后必加空格</strong>（例如 <code>title: Hello</code>）。</li>
-<li><strong>禁用 Tab 缩进</strong>，只能使用空格。</li>
-</ul>
-</blockquote>
-<hr>
-<h2 id="第四阶段：发布与双端同步工作流"><a href="#第四阶段：发布与双端同步工作流" class="headerlink" title="第四阶段：发布与双端同步工作流"></a>第四阶段：发布与双端同步工作流</h2><p>这是开发者最常用的“闭环”操作，建议直接保存以下流程：</p>
-<h3 id="1-发布流程（从本地到互联网）"><a href="#1-发布流程（从本地到互联网）" class="headerlink" title="1. 发布流程（从本地到互联网）"></a>1. 发布流程（从本地到互联网）</h3><p>修改根目录 <code>_config.yml</code> 底部：</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">deploy:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">git</span></span><br><span class="line">  <span class="attr">repo:</span> <span class="string">https://github.com/你的用户名/你的用户名.github.io.git</span></span><br><span class="line">  <span class="attr">branch:</span> <span class="string">main</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p><strong>执行发布三连：</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">hexo clean    <span class="comment"># 清理旧文件</span></span><br><span class="line">hexo g        <span class="comment"># 生成静态网页</span></span><br><span class="line">hexo d        <span class="comment"># 部署到 GitHub Pages</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h3 id="2-源码同步流程（从本地-A-到本地-B）"><a href="#2-源码同步流程（从本地-A-到本地-B）" class="headerlink" title="2. 源码同步流程（从本地 A 到本地 B）"></a>2. 源码同步流程（从本地 A 到本地 B）</h3><p><strong>在 Windows 端完成更新后：</strong></p>
-<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git add .</span><br><span class="line">git commit <span class="literal">-m</span> <span class="string">&quot;新增 Linux IO 笔记&quot;</span></span><br><span class="line">git push origin main</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p><strong>在全志开发板&#x2F;Linux 端获取更新：</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git pull origin main</span><br><span class="line"><span class="comment"># 这样你在开发板上也能看到同样的 .md 文稿了</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<hr>
-<h2 id="第五阶段：补充建议（进阶方案）"><a href="#第五阶段：补充建议（进阶方案）" class="headerlink" title="第五阶段：补充建议（进阶方案）"></a>第五阶段：补充建议（进阶方案）</h2><h3 id="1-自动生成-YAML-头部-VS-Code-用户必备"><a href="#1-自动生成-YAML-头部-VS-Code-用户必备" class="headerlink" title="1. 自动生成 YAML 头部 (VS Code 用户必备)"></a>1. 自动生成 YAML 头部 (VS Code 用户必备)</h3><p>为了避免每次手动写 Front Matter 报错，建议在 VS Code 中配置 <strong>User Snippets (用户代码片段)</strong>。</p>
-<p>将你提供的 JSON 模板加入 <code>markdown.json</code> 中，以后只需输入 <code>blog</code> 即可一键生成标准头部。</p>
-<h3 id="2-资源路径处理"><a href="#2-资源路径处理" class="headerlink" title="2. 资源路径处理"></a>2. 资源路径处理</h3><p>对于嵌入式开发者，文章中经常包含实验截图。</p>
-<ul>
-<li><strong>建议方案</strong>：修改 <code>_config.yml</code> 中的 <code>post_asset_folder: true</code>。</li>
-<li><strong>效果</strong>：每次新建文章会同步生成一个同名文件夹，你直接把图片放进去，用 <code>![描述](图片名.png)</code> 即可引用，方便管理。</li>
-</ul>
-<h3 id="3-轻量化尝试：Hugo"><a href="#3-轻量化尝试：Hugo" class="headerlink" title="3. 轻量化尝试：Hugo"></a>3. 轻量化尝试：Hugo</h3><p>如果你觉得 Hexo (Node.js) 在全志开发板上运行太重、生成速度慢，可以尝试 <strong>Hugo</strong>（Go 语言编写）。</p>
-<ul>
-<li><strong>优势</strong>：单个二进制文件，无需安装成百上千的 npm 包，极其适合资源受限的嵌入式系统。</li>
-</ul>
-<hr>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2026/01/18/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95%EF%BC%88%E6%95%B4%E7%90%86%E5%90%8E%EF%BC%89/" data-id="cuidxAilbkR1JgAzU7rLGoPnb" data-title="博客撰写方法(整理后)" class="article-share-link"><span class="fa fa-share">Share</span></a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" rel="tag">学习记录</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" rel="tag">工具使用</a></li></ul>
 
     </footer>
   </div>
@@ -1520,7 +1566,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2026/01/18/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/" data-id="cuidkKUGsiHhN7JxPvprgphPV" data-title="博客撰写方法" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2026/01/18/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/" data-id="cuidMLMuUFcqcWne6LlaUvBAu" data-title="博客撰写方法" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -1534,9 +1580,111 @@
 
 
   
-    <article id="post-Linux 学习记录/Linux入门笔记" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+    <article id="post-博客撰写方法/静态博客撰写方法（整理后）" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
-    <a href="/2023/01/18/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/Linux%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B0/" class="article-date">
+    <a href="/2026/01/18/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95%EF%BC%88%E6%95%B4%E7%90%86%E5%90%8E%EF%BC%89/" class="article-date">
+  <time class="dt-published" datetime="2026-01-17T16:00:00.000Z" itemprop="datePublished">2026-01-18</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2026/01/18/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95%EF%BC%88%E6%95%B4%E7%90%86%E5%90%8E%EF%BC%89/">博客撰写方法(整理后)</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="嵌入式开发者：Hexo-博客搭建与双环境同步全指南"><a href="#嵌入式开发者：Hexo-博客搭建与双环境同步全指南" class="headerlink" title="嵌入式开发者：Hexo 博客搭建与双环境同步全指南"></a>嵌入式开发者：Hexo 博客搭建与双环境同步全指南</h1><h2 id="第一阶段：环境初始化与云端配置"><a href="#第一阶段：环境初始化与云端配置" class="headerlink" title="第一阶段：环境初始化与云端配置"></a>第一阶段：环境初始化与云端配置</h2><p>在开始写代码前，先建立两个 GitHub 仓库，分别存放“毛坯房（源码）”和“装修房（网页）”。</p>
+<h3 id="1-准备-GitHub-仓库"><a href="#1-准备-GitHub-仓库" class="headerlink" title="1. 准备 GitHub 仓库"></a>1. 准备 GitHub 仓库</h3><ul>
+<li><strong>仓库 A (网页库)</strong>：名称必须为 <code>你的用户名.github.io</code>。设为 <strong>Public</strong>。</li>
+<li><strong>仓库 B (源码库)</strong>：名称自定义（如 <code>blog-source</code>）。建议设为 <strong>Private</strong>，用于存放所有 <code>.md</code> 原稿和配置文件。</li>
+</ul>
+<h3 id="2-安装核心组件-双端通用"><a href="#2-安装核心组件-双端通用" class="headerlink" title="2. 安装核心组件 (双端通用)"></a>2. 安装核心组件 (双端通用)</h3><p>无论在 Windows 还是全志开发板（Ubuntu&#x2F;Debian）上，均需安装：</p>
+<ul>
+<li><strong>Node.js</strong>: 运行环境。</li>
+<li><strong>Git</strong>: 版本控制与发布工具。</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Linux (开发板/虚拟机) 安装命令</span></span><br><span class="line"><span class="built_in">sudo</span> apt update &amp;&amp; <span class="built_in">sudo</span> apt install nodejs npm git -y</span><br><span class="line"></span><br><span class="line"><span class="comment"># Windows 建议直接从官网下载 .msi 安装包</span></span><br><span class="line"><span class="comment"># 安装完成后，全局安装 Hexo 命令行工具：</span></span><br><span class="line">npm install -g hexo-cli</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="第二阶段：本地架构搭建（以-Windows-为例）"><a href="#第二阶段：本地架构搭建（以-Windows-为例）" class="headerlink" title="第二阶段：本地架构搭建（以 Windows 为例）"></a>第二阶段：本地架构搭建（以 Windows 为例）</h2><h3 id="1-初始化-Hexo"><a href="#1-初始化-Hexo" class="headerlink" title="1. 初始化 Hexo"></a>1. 初始化 Hexo</h3><p>找一个纯净的文件夹，执行以下操作：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">hexo init my_blog</span><br><span class="line"><span class="built_in">cd</span> my_blog</span><br><span class="line">npm install</span><br><span class="line">npm install hexo<span class="literal">-deployer-git</span> <span class="literal">--save</span>  <span class="comment"># 预装部署插件</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-关联源码仓库（实现备份-同步）"><a href="#2-关联源码仓库（实现备份-同步）" class="headerlink" title="2. 关联源码仓库（实现备份&#x2F;同步）"></a>2. 关联源码仓库（实现备份&#x2F;同步）</h3><p>这一步是为了让你在 Windows 写完后，能随时在开发板上拉取最新的笔记。</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git init</span><br><span class="line">git remote add origin https://github.com/你的用户名/blog<span class="literal">-source</span>.git</span><br><span class="line">git branch <span class="literal">-M</span> main</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="第三阶段：写作规范与-Front-Matter"><a href="#第三阶段：写作规范与-Front-Matter" class="headerlink" title="第三阶段：写作规范与 Front Matter"></a>第三阶段：写作规范与 Front Matter</h2><p>Hexo 文章的核心在于文件头部的 <strong>YAML</strong> 格式配置。</p>
+<h3 id="1-标准文章头模板"><a href="#1-标准文章头模板" class="headerlink" title="1. 标准文章头模板"></a>1. 标准文章头模板</h3><p>在 <code>source/_posts/</code> 下新建 <code>.md</code> 文件，必须包含以下信息：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">title:</span> <span class="string">&quot;笔记: open()函数使用&quot;</span>   <span class="comment"># 若包含特殊符号，务必加双引号</span></span><br><span class="line"><span class="attr">date:</span> <span class="number">2026-01-20 10:00:00</span></span><br><span class="line"><span class="attr">tags:</span> </span><br><span class="line">  <span class="bullet">-</span> <span class="string">Linux</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">Driver</span></span><br><span class="line"><span class="attr">categories:</span> <span class="string">学习笔记</span></span><br><span class="line"><span class="attr">sticky:</span> <span class="number">0</span>                     <span class="comment"># 置顶等级</span></span><br><span class="line"><span class="attr">mathjax:</span> <span class="literal">true</span>                  <span class="comment"># 开启公式支持</span></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="meta"></span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>⚠️ 避坑准则：</strong></p>
+<ul>
+<li><strong>冒号后必加空格</strong>（例如 <code>title: Hello</code>）。</li>
+<li><strong>禁用 Tab 缩进</strong>，只能使用空格。</li>
+</ul>
+</blockquote>
+<hr>
+<h2 id="第四阶段：发布与双端同步工作流"><a href="#第四阶段：发布与双端同步工作流" class="headerlink" title="第四阶段：发布与双端同步工作流"></a>第四阶段：发布与双端同步工作流</h2><p>这是开发者最常用的“闭环”操作，建议直接保存以下流程：</p>
+<h3 id="1-发布流程（从本地到互联网）"><a href="#1-发布流程（从本地到互联网）" class="headerlink" title="1. 发布流程（从本地到互联网）"></a>1. 发布流程（从本地到互联网）</h3><p>修改根目录 <code>_config.yml</code> 底部：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">deploy:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">git</span></span><br><span class="line">  <span class="attr">repo:</span> <span class="string">https://github.com/你的用户名/你的用户名.github.io.git</span></span><br><span class="line">  <span class="attr">branch:</span> <span class="string">main</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>执行发布三连：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">hexo clean    <span class="comment"># 清理旧文件</span></span><br><span class="line">hexo g        <span class="comment"># 生成静态网页</span></span><br><span class="line">hexo d        <span class="comment"># 部署到 GitHub Pages</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-源码同步流程（从本地-A-到本地-B）"><a href="#2-源码同步流程（从本地-A-到本地-B）" class="headerlink" title="2. 源码同步流程（从本地 A 到本地 B）"></a>2. 源码同步流程（从本地 A 到本地 B）</h3><p><strong>在 Windows 端完成更新后：</strong></p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git add .</span><br><span class="line">git commit <span class="literal">-m</span> <span class="string">&quot;新增 Linux IO 笔记&quot;</span></span><br><span class="line">git push origin main</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><strong>在全志开发板&#x2F;Linux 端获取更新：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git pull origin main</span><br><span class="line"><span class="comment"># 这样你在开发板上也能看到同样的 .md 文稿了</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="第五阶段：补充建议（进阶方案）"><a href="#第五阶段：补充建议（进阶方案）" class="headerlink" title="第五阶段：补充建议（进阶方案）"></a>第五阶段：补充建议（进阶方案）</h2><h3 id="1-自动生成-YAML-头部-VS-Code-用户必备"><a href="#1-自动生成-YAML-头部-VS-Code-用户必备" class="headerlink" title="1. 自动生成 YAML 头部 (VS Code 用户必备)"></a>1. 自动生成 YAML 头部 (VS Code 用户必备)</h3><p>为了避免每次手动写 Front Matter 报错，建议在 VS Code 中配置 <strong>User Snippets (用户代码片段)</strong>。</p>
+<p>将你提供的 JSON 模板加入 <code>markdown.json</code> 中，以后只需输入 <code>blog</code> 即可一键生成标准头部。</p>
+<h3 id="2-资源路径处理"><a href="#2-资源路径处理" class="headerlink" title="2. 资源路径处理"></a>2. 资源路径处理</h3><p>对于嵌入式开发者，文章中经常包含实验截图。</p>
+<ul>
+<li><strong>建议方案</strong>：修改 <code>_config.yml</code> 中的 <code>post_asset_folder: true</code>。</li>
+<li><strong>效果</strong>：每次新建文章会同步生成一个同名文件夹，你直接把图片放进去，用 <code>![描述](图片名.png)</code> 即可引用，方便管理。</li>
+</ul>
+<h3 id="3-轻量化尝试：Hugo"><a href="#3-轻量化尝试：Hugo" class="headerlink" title="3. 轻量化尝试：Hugo"></a>3. 轻量化尝试：Hugo</h3><p>如果你觉得 Hexo (Node.js) 在全志开发板上运行太重、生成速度慢，可以尝试 <strong>Hugo</strong>（Go 语言编写）。</p>
+<ul>
+<li><strong>优势</strong>：单个二进制文件，无需安装成百上千的 npm 包，极其适合资源受限的嵌入式系统。</li>
+</ul>
+<hr>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2026/01/18/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95%EF%BC%88%E6%95%B4%E7%90%86%E5%90%8E%EF%BC%89/" data-id="cuidIxrUxVZwE1YfC9KS9nqTh" data-title="博客撰写方法(整理后)" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" rel="tag">学习记录</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" rel="tag">工具使用</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-Linux 学习记录/01_学习方法及路线" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2023/01/18/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/01_%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95%E5%8F%8A%E8%B7%AF%E7%BA%BF/" class="article-date">
   <time class="dt-published" datetime="2023-01-17T16:00:00.000Z" itemprop="datePublished">2023-01-18</time>
 </a>
     
@@ -1552,7 +1700,7 @@
         
   
     <h1 itemprop="name">
-      <a class="p-name article-title" href="/2023/01/18/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/Linux%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B0/">Linux入门笔记</a>
+      <a class="p-name article-title" href="/2023/01/18/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/01_%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95%E5%8F%8A%E8%B7%AF%E7%BA%BF/">学习方法及路线</a>
     </h1>
   
 
@@ -1588,7 +1736,51 @@
 <li>记录主要有两个目的：1.自己遗忘时可随时打开回顾；2.为自己工作&#x2F;升学面试所使用的简历添加内容（当然作为学生竞赛获奖也能证明自己的实力）</li>
 </ol>
 <hr>
-<h1 id="1-Linux和RTOS的区别？"><a href="#1-Linux和RTOS的区别？" class="headerlink" title="1. Linux和RTOS的区别？"></a>1. Linux和RTOS的区别？</h1><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">硬件支持</span><br><span class="line">FreeRTOS：通常用于资源受限的嵌入式系统，如微控制器（MCU）。它的内存占用较小，代码体积紧凑。</span><br><span class="line">Linux：适用于资源较丰富的系统，如高端嵌入式板卡和服务器。</span><br><span class="line"></span><br><span class="line">生态系统和社区支持</span><br><span class="line">FreeRTOS：虽然也有活跃的社区，但相对于 Linux，其生态系统和工具链相对较小。</span><br><span class="line">Linux：拥有庞大的开发者社区和丰富的软件生态。大量的开源项目、开发工具和库使得开发更加高效。</span><br><span class="line"></span><br><span class="line">安全性</span><br><span class="line">FreeRTOS：安全性主要依赖于开发者的设计和实现。</span><br><span class="line">Linux：提供了丰富的安全机制，如 SELinux、AppArmor、防火墙等，适用于需要高安全性的应用。</span><br><span class="line"></span><br><span class="line">实时性</span><br><span class="line">FreeRTOS：设计为实时操作系统，提供了确定性的响应时间和低延迟。</span><br><span class="line">Linux：虽然不是传统的实时操作系统，但可以通过配置（如使用实时补丁）来实现接近实时的性能。</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2023/01/18/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/01_%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95%E5%8F%8A%E8%B7%AF%E7%BA%BF/" data-id="cuidEtzbmAFymAHMgEspFV6-J" data-title="学习方法及路线" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" rel="tag">嵌入式学习</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-Linux 学习记录/02_文件权限" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2023/01/18/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/02_%E6%96%87%E4%BB%B6%E6%9D%83%E9%99%90/" class="article-date">
+  <time class="dt-published" datetime="2023-01-17T16:00:00.000Z" itemprop="datePublished">2023-01-18</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2023/01/18/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/02_%E6%96%87%E4%BB%B6%E6%9D%83%E9%99%90/">Linux|RTOS区别及权限</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="1-Linux和RTOS的区别？"><a href="#1-Linux和RTOS的区别？" class="headerlink" title="1. Linux和RTOS的区别？"></a>1. Linux和RTOS的区别？</h1><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">硬件支持</span><br><span class="line">FreeRTOS：通常用于资源受限的嵌入式系统，如微控制器（MCU）。它的内存占用较小，代码体积紧凑。</span><br><span class="line">Linux：适用于资源较丰富的系统，如高端嵌入式板卡和服务器。</span><br><span class="line"></span><br><span class="line">生态系统和社区支持</span><br><span class="line">FreeRTOS：虽然也有活跃的社区，但相对于 Linux，其生态系统和工具链相对较小。</span><br><span class="line">Linux：拥有庞大的开发者社区和丰富的软件生态。大量的开源项目、开发工具和库使得开发更加高效。</span><br><span class="line"></span><br><span class="line">安全性</span><br><span class="line">FreeRTOS：安全性主要依赖于开发者的设计和实现。</span><br><span class="line">Linux：提供了丰富的安全机制，如 SELinux、AppArmor、防火墙等，适用于需要高安全性的应用。</span><br><span class="line"></span><br><span class="line">实时性</span><br><span class="line">FreeRTOS：设计为实时操作系统，提供了确定性的响应时间和低延迟。</span><br><span class="line">Linux：虽然不是传统的实时操作系统，但可以通过配置（如使用实时补丁）来实现接近实时的性能。</span><br></pre></td></tr></table></figure>
 
 <p>通俗些讲，如果你的产品，在资源受限的芯片上运行，实时性要求高，那就使用RTOS。</p>
 <p>如果产品功能多（网络、安全、显示、数据库等等），芯片资源丰富，那可以直接上Linux，这样开发效率更高。</p>
@@ -1678,7 +1870,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2023/01/18/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/Linux%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B0/" data-id="cuidQmsww_4ZjPbi4WzywEbO_" data-title="Linux入门笔记" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2023/01/18/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/02_%E6%96%87%E4%BB%B6%E6%9D%83%E9%99%90/" data-id="cuidHu7_DZI6nVlqFg_ZsMu0V" data-title="Linux|RTOS区别及权限" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -1722,7 +1914,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96/" style="font-size: 10px;">内存优化</a> <a href="/tags/%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" style="font-size: 10px;">博客环境搭建</a> <a href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" style="font-size: 10px;">学习记录</a> <a href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" style="font-size: 20px;">嵌入式学习</a> <a href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" style="font-size: 15px;">工具使用</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" style="font-size: 10px;">数据传输</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" style="font-size: 10px;">数据存储</a> <a href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/" style="font-size: 10px;">结构体</a>
+      <a href="/tags/Linux/" style="font-size: 15px;">Linux</a> <a href="/tags/%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96/" style="font-size: 10px;">内存优化</a> <a href="/tags/%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" style="font-size: 10px;">博客环境搭建</a> <a href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" style="font-size: 10px;">学习记录</a> <a href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" style="font-size: 20px;">嵌入式学习</a> <a href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" style="font-size: 15px;">工具使用</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" style="font-size: 10px;">数据传输</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" style="font-size: 10px;">数据存储</a> <a href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/" style="font-size: 10px;">结构体</a>
     </div>
   </div>
 
@@ -1731,7 +1923,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/01/">January 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">January 2023</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/02/">February 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/01/">January 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">January 2023</a></li></ul>
     </div>
   </div>
 
@@ -1742,6 +1934,10 @@
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2026/02/08/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/03_Linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/">Linux常用命令</a>
+          </li>
         
           <li>
             <a href="/2026/01/30/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/">博客hexo环境搭建</a>
@@ -1757,10 +1953,6 @@
         
           <li>
             <a href="/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%98%E5%82%A8%E5%BC%80%E5%8F%91%E9%AB%98%E6%95%88%E5%BA%94%E7%94%A8/">嵌入式存储开发高效应用</a>
-          </li>
-        
-          <li>
-            <a href="/2026/01/18/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95%EF%BC%88%E6%95%B4%E7%90%86%E5%90%8E%EF%BC%89/">博客撰写方法(整理后)</a>
           </li>
         
       </ul>
