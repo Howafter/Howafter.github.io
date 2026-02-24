@@ -4,14 +4,14 @@
   <meta charset="utf-8">
   
   
-  <title>Linux入门笔记 | Hexo</title>
+  <title>Linux|RTOS区别及权限 | Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="嵌入式学习路线1. 嵌入式学习的三个阶段第一阶段：裸机开发 (Bare Metal)这是直接在芯片上“裸奔”写程序。你不需要操作系统，直接操控寄存器。  重点： C语言（指针、位运算）、单片机架构（如 STM32&#x2F;ARM Cortex-M）、GPIO、中断、UART、I2C、SPI。 目标： 理解底层硬件是如何工作的。当你点亮第一个 LED 灯时，你就完成了硬件控制的第一步。  第二阶段">
+  <meta name="description" content="1. Linux和RTOS的区别？123456789101112131415硬件支持FreeRTOS：通常用于资源受限的嵌入式系统，如微控制器（MCU）。它的内存占用较小，代码体积紧凑。Linux：适用于资源较丰富的系统，如高端嵌入式板卡和服务器。生态系统和社区支持FreeRTOS：虽然也有活跃的社区，但相对于 Linux，其生态系统和工具链相对较小。Linux：拥有庞大的开发者社区和丰富的软件生">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Linux入门笔记">
-<meta property="og:url" content="http://example.com/2023/01/18/Linux%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:title" content="Linux|RTOS区别及权限">
+<meta property="og:url" content="http://example.com/2023/01/18/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/02_%E6%96%87%E4%BB%B6%E6%9D%83%E9%99%90/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="嵌入式学习路线1. 嵌入式学习的三个阶段第一阶段：裸机开发 (Bare Metal)这是直接在芯片上“裸奔”写程序。你不需要操作系统，直接操控寄存器。  重点： C语言（指针、位运算）、单片机架构（如 STM32&#x2F;ARM Cortex-M）、GPIO、中断、UART、I2C、SPI。 目标： 理解底层硬件是如何工作的。当你点亮第一个 LED 灯时，你就完成了硬件控制的第一步。  第二阶段">
+<meta property="og:description" content="1. Linux和RTOS的区别？123456789101112131415硬件支持FreeRTOS：通常用于资源受限的嵌入式系统，如微控制器（MCU）。它的内存占用较小，代码体积紧凑。Linux：适用于资源较丰富的系统，如高端嵌入式板卡和服务器。生态系统和社区支持FreeRTOS：虽然也有活跃的社区，但相对于 Linux，其生态系统和工具链相对较小。Linux：拥有庞大的开发者社区和丰富的软件生">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2023-01-17T16:00:00.000Z">
 <meta property="article:modified_time" content="2023-01-19T04:00:00.000Z">
@@ -75,9 +75,9 @@
 </header>
 
       <div class="outer">
-        <section id="main"><article id="post-Linux入门笔记" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+        <section id="main"><article id="post-Linux 学习记录/02_文件权限" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
-    <a href="/2023/01/18/Linux%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B0/" class="article-date">
+    <a href="/2023/01/18/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/02_%E6%96%87%E4%BB%B6%E6%9D%83%E9%99%90/" class="article-date">
   <time class="dt-published" datetime="2023-01-17T16:00:00.000Z" itemprop="datePublished">2023-01-18</time>
 </a>
     
@@ -93,7 +93,7 @@
         
   
     <h1 class="p-name article-title" itemprop="headline name">
-      Linux入门笔记
+      Linux|RTOS区别及权限
     </h1>
   
 
@@ -101,35 +101,7 @@
     
     <div class="e-content article-entry" itemprop="articleBody">
       
-        <h1 id="嵌入式学习路线"><a href="#嵌入式学习路线" class="headerlink" title="嵌入式学习路线"></a>嵌入式学习路线</h1><h2 id="1-嵌入式学习的三个阶段"><a href="#1-嵌入式学习的三个阶段" class="headerlink" title="1. 嵌入式学习的三个阶段"></a>1. 嵌入式学习的三个阶段</h2><h2 id="第一阶段：裸机开发-Bare-Metal"><a href="#第一阶段：裸机开发-Bare-Metal" class="headerlink" title="第一阶段：裸机开发 (Bare Metal)"></a>第一阶段：裸机开发 (Bare Metal)</h2><p>这是直接在芯片上“裸奔”写程序。你不需要操作系统，直接操控寄存器。</p>
-<ul>
-<li><strong>重点：</strong> C语言（指针、位运算）、单片机架构（如 STM32&#x2F;ARM Cortex-M）、GPIO、中断、UART、I2C、SPI。</li>
-<li><strong>目标：</strong> 理解底层硬件是如何工作的。当你点亮第一个 LED 灯时，你就完成了硬件控制的第一步。</li>
-</ul>
-<h2 id="第二阶段：嵌入式-Linux-系统-Embedded-Linux"><a href="#第二阶段：嵌入式-Linux-系统-Embedded-Linux" class="headerlink" title="第二阶段：嵌入式 Linux 系统 (Embedded Linux)"></a>第二阶段：嵌入式 Linux 系统 (Embedded Linux)</h2><p>当任务变得复杂（需要网络协议栈、文件系统、图形界面）时，我们就需要 Linux。</p>
-<ul>
-<li><strong>重点：</strong> Linux 常用命令、Shell 脚本、交叉编译 (Cross-Compilation)、Bootloader (U-Boot)、内核移植、根文件系统构建。</li>
-<li><strong>目标：</strong> 让 Linux 在你的开发板（如树莓派、飞凌、正点原子等）上跑起来。</li>
-</ul>
-<h2 id="第三阶段：驱动开发与应用开发"><a href="#第三阶段：驱动开发与应用开发" class="headerlink" title="第三阶段：驱动开发与应用开发"></a>第三阶段：驱动开发与应用开发</h2><p>这是目前行业内需求最大的部分。</p>
-<ul>
-<li><strong>应用层：</strong> 使用 C&#x2F;C++、Python 或 Qt 开发运行在 Linux 上的应用程序。</li>
-<li><strong>驱动层：</strong> 编写连接硬件与 Linux 内核的桥梁（如字符设备驱动）。</li>
-</ul>
-<hr>
-<h2 id="2-快速上手的“黄金建议”"><a href="#2-快速上手的“黄金建议”" class="headerlink" title="2. 快速上手的“黄金建议”"></a>2. 快速上手的“黄金建议”</h2><p>建议你不要只看书，要**“以项目驱动学习”**：</p>
-<ol>
-<li><strong>准备一块开发板：</strong> 如果你是完全的新手，STM32 是学习裸机的首选；如果你想直接攻克 Linux，树莓派 (Raspberry Pi) 或 基于 IMX6ULL 的开发板非常适合。</li>
-<li><strong>不要纠结于背后的深层原理：</strong> 先通过“抄”代码让程序跑通，看到现象后再去深挖底层的寄存器配置或内核源码。</li>
-<li><strong>拥抱 Linux 环境：</strong> 尽早抛弃 Windows 下的各种 IDE，学会使用 Ubuntu 系统，尝试在终端里用 <code>gcc</code> 编译你的第一个 “Hello World”。</li>
-</ol>
-<hr>
-<h2 id="3-学习的过程中要有所总结和记录"><a href="#3-学习的过程中要有所总结和记录" class="headerlink" title="3.学习的过程中要有所总结和记录"></a>3.学习的过程中要有所总结和记录</h2><ol>
-<li>总结是为了整理自己学到的东西，在整理的过程中发现自己对所学的知识的掌握</li>
-<li>记录主要有两个目的：1.自己遗忘时可随时打开回顾；2.为自己工作&#x2F;升学面试所使用的简历添加内容（当然作为学生竞赛获奖也能证明自己的实力）</li>
-</ol>
-<hr>
-<h1 id="1-Linux和RTOS的区别？"><a href="#1-Linux和RTOS的区别？" class="headerlink" title="1. Linux和RTOS的区别？"></a>1. Linux和RTOS的区别？</h1><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">硬件支持</span><br><span class="line">FreeRTOS：通常用于资源受限的嵌入式系统，如微控制器（MCU）。它的内存占用较小，代码体积紧凑。</span><br><span class="line">Linux：适用于资源较丰富的系统，如高端嵌入式板卡和服务器。</span><br><span class="line"></span><br><span class="line">生态系统和社区支持</span><br><span class="line">FreeRTOS：虽然也有活跃的社区，但相对于 Linux，其生态系统和工具链相对较小。</span><br><span class="line">Linux：拥有庞大的开发者社区和丰富的软件生态。大量的开源项目、开发工具和库使得开发更加高效。</span><br><span class="line"></span><br><span class="line">安全性</span><br><span class="line">FreeRTOS：安全性主要依赖于开发者的设计和实现。</span><br><span class="line">Linux：提供了丰富的安全机制，如 SELinux、AppArmor、防火墙等，适用于需要高安全性的应用。</span><br><span class="line"></span><br><span class="line">实时性</span><br><span class="line">FreeRTOS：设计为实时操作系统，提供了确定性的响应时间和低延迟。</span><br><span class="line">Linux：虽然不是传统的实时操作系统，但可以通过配置（如使用实时补丁）来实现接近实时的性能。</span><br></pre></td></tr></table></figure>
+        <h1 id="1-Linux和RTOS的区别？"><a href="#1-Linux和RTOS的区别？" class="headerlink" title="1. Linux和RTOS的区别？"></a>1. Linux和RTOS的区别？</h1><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">硬件支持</span><br><span class="line">FreeRTOS：通常用于资源受限的嵌入式系统，如微控制器（MCU）。它的内存占用较小，代码体积紧凑。</span><br><span class="line">Linux：适用于资源较丰富的系统，如高端嵌入式板卡和服务器。</span><br><span class="line"></span><br><span class="line">生态系统和社区支持</span><br><span class="line">FreeRTOS：虽然也有活跃的社区，但相对于 Linux，其生态系统和工具链相对较小。</span><br><span class="line">Linux：拥有庞大的开发者社区和丰富的软件生态。大量的开源项目、开发工具和库使得开发更加高效。</span><br><span class="line"></span><br><span class="line">安全性</span><br><span class="line">FreeRTOS：安全性主要依赖于开发者的设计和实现。</span><br><span class="line">Linux：提供了丰富的安全机制，如 SELinux、AppArmor、防火墙等，适用于需要高安全性的应用。</span><br><span class="line"></span><br><span class="line">实时性</span><br><span class="line">FreeRTOS：设计为实时操作系统，提供了确定性的响应时间和低延迟。</span><br><span class="line">Linux：虽然不是传统的实时操作系统，但可以通过配置（如使用实时补丁）来实现接近实时的性能。</span><br></pre></td></tr></table></figure>
 
 <p>通俗些讲，如果你的产品，在资源受限的芯片上运行，实时性要求高，那就使用RTOS。</p>
 <p>如果产品功能多（网络、安全、显示、数据库等等），芯片资源丰富，那可以直接上Linux，这样开发效率更高。</p>
@@ -219,7 +191,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2023/01/18/Linux%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B0/" data-id="cuidmRaMBgLflwLDo-PN7mC-L" data-title="Linux入门笔记" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2023/01/18/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/02_%E6%96%87%E4%BB%B6%E6%9D%83%E9%99%90/" data-id="cuidwOad3EFfn4Uk7U_49aKBu" data-title="Linux|RTOS区别及权限" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -231,11 +203,11 @@
     
 <nav id="article-nav">
   
-    <a href="/2026/01/18/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2023/01/18/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/01_%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95%E5%8F%8A%E8%B7%AF%E7%BA%BF/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Newer</strong>
       <div class="article-nav-title">
         
-          博客撰写方法
+          学习方法及路线
         
       </div>
     </a>
@@ -255,7 +227,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Categories</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E5%85%A8%E5%BF%97T113S3/">全志T113S3</a></li></ul></li></ul>
     </div>
   </div>
 
@@ -265,7 +237,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" rel="tag">嵌入式学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" rel="tag">工具使用</a></li></ul>
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96/" rel="tag">内存优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="tag">博客环境搭建</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" rel="tag">学习记录</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" rel="tag">嵌入式学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" rel="tag">工具使用</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" rel="tag">数据传输</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" rel="tag">数据存储</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/" rel="tag">结构体</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%A9%B1%E5%8A%A8%E5%B1%8F/" rel="tag">驱动屏</a></li></ul>
     </div>
   </div>
 
@@ -275,7 +247,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/Linux/" style="font-size: 10px;">Linux</a> <a href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" style="font-size: 10px;">嵌入式学习</a> <a href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" style="font-size: 20px;">工具使用</a>
+      <a href="/tags/Linux/" style="font-size: 17.5px;">Linux</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96/" style="font-size: 10px;">内存优化</a> <a href="/tags/%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" style="font-size: 10px;">博客环境搭建</a> <a href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" style="font-size: 10px;">学习记录</a> <a href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" style="font-size: 20px;">嵌入式学习</a> <a href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" style="font-size: 15px;">工具使用</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" style="font-size: 10px;">数据传输</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" style="font-size: 10px;">数据存储</a> <a href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/" style="font-size: 10px;">结构体</a> <a href="/tags/%E9%A9%B1%E5%8A%A8%E5%B1%8F/" style="font-size: 12.5px;">驱动屏</a>
     </div>
   </div>
 
@@ -284,7 +256,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/01/">January 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">January 2023</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/02/">February 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/01/">January 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/02/">February 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">January 2023</a></li></ul>
     </div>
   </div>
 
@@ -297,15 +269,23 @@
       <ul>
         
           <li>
-            <a href="/2026/01/18/first/">博客撰写方法</a>
+            <a href="/2026/02/08/git%20%E4%BD%BF%E7%94%A8/%E7%AE%80%E7%95%A5%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/">git 简略使用指南</a>
           </li>
         
           <li>
-            <a href="/2026/01/18/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/">博客撰写方法</a>
+            <a href="/2026/02/08/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/03_Linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/">Linux常用命令</a>
           </li>
         
           <li>
-            <a href="/2023/01/18/Linux%E5%85%A5%E9%97%A8%E7%AC%94%E8%AE%B0/">Linux入门笔记</a>
+            <a href="/2026/01/30/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/">博客hexo环境搭建</a>
+          </li>
+        
+          <li>
+            <a href="/2026/01/29/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E7%BB%93%E6%9E%84%E4%BD%93%E8%AE%BE%E8%AE%A1%E7%9A%84%E5%AF%B9%E9%BD%90%E4%B8%8E%E4%BC%98%E5%8C%96/">嵌入式结构体设计的对齐与优化</a>
+          </li>
+        
+          <li>
+            <a href="/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%98%E5%82%A8%E5%BC%80%E5%8F%91%E9%AB%98%E6%95%88%E5%BA%94%E7%94%A8/">嵌入式存储开发高效应用</a>
           </li>
         
       </ul>

@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>嵌入式设备如何实现高效数据交换 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="在实际项目中，经常需要在不同设备之间交换复杂数据，例如： • STM32&#x2F;ESP32 等 MCU 需要与 App 共享配置、传感器数据或固件信息；• 边缘设备需要与云端服务同步状态；• 同一产品线中的不同硬件平台需要共享统一的数据结构。• STM32&#x2F;ESP32 等 MCU 需要与 App 共享配置、传感器数据或固件信息；• 边缘设备需要与云端服务同步状态；• 同一产品线中的不">
+<meta property="og:type" content="article">
+<meta property="og:title" content="嵌入式设备如何实现高效数据交换">
+<meta property="og:url" content="http://example.com/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E9%AB%98%E6%95%88%E6%95%B0%E6%8D%AE%E4%BA%A4%E6%8D%A2/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="在实际项目中，经常需要在不同设备之间交换复杂数据，例如： • STM32&#x2F;ESP32 等 MCU 需要与 App 共享配置、传感器数据或固件信息；• 边缘设备需要与云端服务同步状态；• 同一产品线中的不同硬件平台需要共享统一的数据结构。• STM32&#x2F;ESP32 等 MCU 需要与 App 共享配置、传感器数据或固件信息；• 边缘设备需要与云端服务同步状态；• 同一产品线中的不">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2026-01-26T02:00:00.000Z">
+<meta property="article:modified_time" content="2026-01-26T02:00:00.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="嵌入式学习">
+<meta property="article:tag" content="数据传输">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-技巧学习/高效数据交换" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E9%AB%98%E6%95%88%E6%95%B0%E6%8D%AE%E4%BA%A4%E6%8D%A2/" class="article-date">
+  <time class="dt-published" datetime="2026-01-26T02:00:00.000Z" itemprop="datePublished">2026-01-26</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      嵌入式设备如何实现高效数据交换
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>在实际项目中，经常需要在不同设备之间交换复杂数据，例如：</p>
+<p>• STM32&#x2F;ESP32 等 MCU 需要与 App 共享配置、传感器数据或固件信息；<br>• 边缘设备需要与云端服务同步状态；<br>• 同一产品线中的不同硬件平台需要共享统一的数据结构。• STM32&#x2F;ESP32 等 MCU 需要与 App 共享配置、传感器数据或固件信息；<br>• 边缘设备需要与云端服务同步状态；<br>• 同一产品线中的不同硬件平台需要共享统一的数据结构。</p>
+<h2 id="Protocol-Buffers"><a href="#Protocol-Buffers" class="headerlink" title="Protocol Buffers"></a>Protocol Buffers</h2><h2 id="什么是-Protocol-Buffers？"><a href="#什么是-Protocol-Buffers？" class="headerlink" title="什么是 Protocol Buffers？"></a>什么是 Protocol Buffers？</h2><p>Protocol Buffers 是 Google 开源的结构化数据序列化机制，特点是：</p>
+<p>• 体积小：二进制编码，远小于 JSON&#x2F;XML；<br>• 速度快：序列化&#x2F;反序列化速度快，开销低；<br>• 强类型：使用 .proto 文件定义字段，自动生成代码，避免类型错误；<br>• 版本兼容：字段有标签号（tag），支持新增字段而不破坏旧版本；<br>• 多语言支持：官方支持C&#x2F;Java&#x2F;Python&#x2F;Go 等多种语言。<br>对比 JSON：</p>
+<table>
+<thead>
+<tr>
+<th>特性</th>
+<th>JSON</th>
+<th>Protocol Buffers</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>编码</td>
+<td>文本</td>
+<td>二进制</td>
+</tr>
+<tr>
+<td>体积</td>
+<td>大</td>
+<td>小（通常为 JSON 的 1&#x2F;3~1&#x2F;10）</td>
+</tr>
+<tr>
+<td>解析速度</td>
+<td>慢，需要字符串解析</td>
+<td>快，直接操作字节流</td>
+</tr>
+<tr>
+<td>强类型</td>
+<td>无</td>
+<td>有（由<code>&lt;span leaf=&quot;&quot;&gt;.proto&lt;/span&gt;</code> 定义）</td>
+</tr>
+<tr>
+<td>版本兼容</td>
+<td>依赖字段名称</td>
+<td>依赖字段编号，兼容性更强</td>
+</tr>
+<tr>
+<td>适用于嵌入式</td>
+<td>一般</td>
+<td>非常适合</td>
+</tr>
+</tbody></table>
+<p>Protobuf 数据模型<br>一个 Protobuf 消息由字段组成，每个字段具有：</p>
+<p>• 类型（int32、string、bytes 等）<br>• 名称（如 temperature）<br>• 标签编号（tag，比如 1）<br>示例 .proto 文件：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">syntax = &quot;proto3&quot;;</span><br><span class="line"></span><br><span class="line">message SensorData &#123;</span><br><span class="line">uint32 device_id = 1;</span><br><span class="line">float temperature = 2;</span><br><span class="line">float humidity = 3;</span><br><span class="line">repeated uint32 samples = 4;  // 重复字段</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="nanopb"><a href="#nanopb" class="headerlink" title="nanopb"></a>nanopb</h2><p>为什么需要 nanopb？<br>标准的 Protobuf C&#x2F;C++ 库体积较大，依赖动态内存分配，不适合资源受限的 MCU。nanopb 为嵌入式平台量身打造，具有以下特点：</p>
+<p>• 超小体积：核心库仅几 KB，生成的代码也极小；<br>• 无动态内存：默认使用静态缓冲区，避免 malloc&#x2F;free 带来的风险；<br>• 可配置性强：可以按需启用&#x2F;禁用字段、回调；<br>• 开源：遵循 zlib 许可证，商业友好；<br>• 兼容 Protobuf：与官方工具链兼容，可与手机 App、服务器使用的 Protobuf 无缝对接。<br>nanopb 的工作流程</p>
+<ol>
+<li><p>编写 .proto 文件：定义数据结构</p>
+</li>
+<li><p>使用 nanopb 的 protoc 插件生成 .pb.h&#x2F;.pb.c</p>
+</li>
+<li><p>在 MCU 工程中引入 .pb.h&#x2F;.pb.c 和 nanopb 库</p>
+</li>
+<li><p>使用 nanopb 提供的 API 进行编码&#x2F;解码</p>
+</li>
+<li><p>与手机 App&#x2F;云端共享相同的 .proto，实现跨平台数据交换<br>完整工作流<br>定义数据结构（proto 文件）<br>创建 device.proto：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">syntax = &quot;proto3&quot;;</span><br><span class="line"></span><br><span class="line">message DeviceStatus &#123;</span><br><span class="line">uint32 device_id = 1;</span><br><span class="line">bool online = 2;</span><br><span class="line">float battery_level = 3;</span><br><span class="line">string firmware_version = 4;</span><br><span class="line">repeated SensorData sensors = 5;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">message SensorData &#123;</span><br><span class="line">uint32 sensor_id = 1;</span><br><span class="line">float value = 2;</span><br><span class="line">string unit = 3;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
+</ol>
+<p>生成代码<br>在 PC 上安装 protoc 和 nanopb 插件：</p>
+<h1 id="安装-nanopb（包含插件和示例）"><a href="#安装-nanopb（包含插件和示例）" class="headerlink" title="安装 nanopb（包含插件和示例）"></a>安装 nanopb（包含插件和示例）</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/nanopb/nanopb.git</span><br><span class="line">cd nanopb/generator</span><br><span class="line">python3 nanopb_generator.py --help</span><br></pre></td></tr></table></figure>
+
+<h1 id="生成代码"><a href="#生成代码" class="headerlink" title="生成代码"></a>生成代码</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">protoc --nanopb_out=. device.proto</span><br></pre></td></tr></table></figure>
+
+<h1 id="输出：device-pb-h、device-pb-c"><a href="#输出：device-pb-h、device-pb-c" class="headerlink" title="输出：device.pb.h、device.pb.c"></a>输出：device.pb.h、device.pb.c</h1><p>在 MCU 中集成 nanopb</p>
+<ol>
+<li><p>将 device.pb.h&#x2F;.pb.c 和 pb.h&#x2F;pb_common.c&#x2F;pb_decode.c&#x2F;pb_encode.c 添加到工程</p>
+</li>
+<li><p>在源文件中包含头文件：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#include &quot;pb.h&quot;</span><br><span class="line">#include &quot;pb_encode.h&quot;</span><br><span class="line">#include &quot;pb_decode.h&quot;</span><br><span class="line">#include &quot;device.pb.h&quot;</span><br></pre></td></tr></table></figure></li>
+<li><p>嵌入式端编码（序列化）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">uint8_t buffer[128];</span><br><span class="line">   pb_ostream_t stream = pb_ostream_from_buffer(buffer, sizeof(buffer));</span><br><span class="line"></span><br><span class="line">DeviceStatus status = DeviceStatus_init_zero;</span><br><span class="line">status.device_id = 1001;</span><br><span class="line">status.online = true;</span><br><span class="line">status.battery_level = 78.5f;</span><br><span class="line">strncpy(status.firmware_version, &quot;1.2.3&quot;, sizeof(status.firmware_version));</span><br><span class="line"></span><br><span class="line">// 添加传感器数据</span><br><span class="line">SensorData sensor = SensorData_init_zero;</span><br><span class="line">sensor.sensor_id = 1;</span><br><span class="line">sensor.value = 36.7f;</span><br><span class="line">strncpy(sensor.unit, &quot;C&quot;, sizeof(sensor.unit));</span><br><span class="line">status.sensors[0] = sensor;</span><br><span class="line">status.sensors_count = 1;</span><br><span class="line"></span><br><span class="line">if (pb_encode(&amp;stream, DeviceStatus_fields, &amp;status)) &#123;</span><br><span class="line">size_t message_length = stream.bytes_written;</span><br><span class="line">send_bytes_over_uart(buffer, message_length);</span><br><span class="line">&#125; else &#123;</span><br><span class="line">printf(&quot;Encoding failed: %s\n&quot;, PB_GET_ERROR(&amp;stream));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<p>嵌入式端解码（反序列化）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">pb_istream_t stream = pb_istream_from_buffer(buffer, length);</span><br><span class="line">DeviceStatus status = DeviceStatus_init_zero;</span><br><span class="line"></span><br><span class="line">if (pb_decode(&amp;stream, DeviceStatus_fields, &amp;status)) &#123;</span><br><span class="line">printf(&quot;Device %d firmware %s\n&quot;, status.device_id, status.firmware_version);</span><br><span class="line">&#125; else &#123;</span><br><span class="line">printf(&quot;Decoding failed: %s\n&quot;, PB_GET_ERROR(&amp;stream));</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>手机 App 端处理<br>• App 开发者使用相同的 .proto 文件<br>• 在 Android 中使用 protoc 生成 Java&#x2F;Kotlin 代码（或使用 protoc –java_out）<br>• 在 iOS 中使用 protoc –objc_out<br>• App 直接解析来自 MCU 的 Protobuf 数据，无需额外转换<br>示例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">val status = Device.DeviceStatus.parseFrom(bytes)</span><br><span class="line">val deviceId = status.deviceId</span><br><span class="line">val battery = status.batteryLevel</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>应用场景</p>
+<ol>
+<li>设备与手机 App 数据同步：<br>• 方言：设备使用 nanopb 编码数据，通过 BLE&#x2F;UART&#x2F;WiFi 发送给 App<br>• App 使用 Protobuf 库解析，显示设备状态</li>
+<li>云端配置下发：<br>• 云端服务使用 Protobuf 定义配置数据<br>• 设备使用 nanopb 解码，实现配置下发</li>
+<li>多平台统一协议：<br>• 同一产品线的 ARM Linux、RTOS MCU、手机 App 共享同一个 .proto<br>• 实现协议标准化，减少维护成本</li>
+<li>数据日志与存储：<br>• 使用 Protobuf 将数据记录到 Flash 或 SD 卡<br>• PC 端工具使用 Protobuf 解析日志</li>
+</ol>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>借助 Protocol Buffers + nanopb，可以在嵌入式设备建立一种高效、可靠、可扩展的数据交换机制，轻松应对复杂数据结构和跨平台兼容性问题。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E9%AB%98%E6%95%88%E6%95%B0%E6%8D%AE%E4%BA%A4%E6%8D%A2/" data-id="cuidHQ_AFf-Zu_rBsOOPvjTSj" data-title="嵌入式设备如何实现高效数据交换" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" rel="tag">嵌入式学习</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" rel="tag">数据传输</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%98%E5%82%A8%E5%BC%80%E5%8F%91%E9%AB%98%E6%95%88%E5%BA%94%E7%94%A8/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          嵌入式存储开发高效应用
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2026/01/18/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">博客撰写方法</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E5%85%A8%E5%BF%97T113S3/">全志T113S3</a></li></ul></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96/" rel="tag">内存优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="tag">博客环境搭建</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" rel="tag">学习记录</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" rel="tag">嵌入式学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" rel="tag">工具使用</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" rel="tag">数据传输</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" rel="tag">数据存储</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/" rel="tag">结构体</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%A9%B1%E5%8A%A8%E5%B1%8F/" rel="tag">驱动屏</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Linux/" style="font-size: 17.5px;">Linux</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96/" style="font-size: 10px;">内存优化</a> <a href="/tags/%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" style="font-size: 10px;">博客环境搭建</a> <a href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" style="font-size: 10px;">学习记录</a> <a href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" style="font-size: 20px;">嵌入式学习</a> <a href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" style="font-size: 15px;">工具使用</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" style="font-size: 10px;">数据传输</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" style="font-size: 10px;">数据存储</a> <a href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/" style="font-size: 10px;">结构体</a> <a href="/tags/%E9%A9%B1%E5%8A%A8%E5%B1%8F/" style="font-size: 12.5px;">驱动屏</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/02/">February 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/01/">January 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/02/">February 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">January 2023</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2026/02/08/git%20%E4%BD%BF%E7%94%A8/%E7%AE%80%E7%95%A5%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/">git 简略使用指南</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/08/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/03_Linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/">Linux常用命令</a>
+          </li>
+        
+          <li>
+            <a href="/2026/01/30/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/">博客hexo环境搭建</a>
+          </li>
+        
+          <li>
+            <a href="/2026/01/29/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E7%BB%93%E6%9E%84%E4%BD%93%E8%AE%BE%E8%AE%A1%E7%9A%84%E5%AF%B9%E9%BD%90%E4%B8%8E%E4%BC%98%E5%8C%96/">嵌入式结构体设计的对齐与优化</a>
+          </li>
+        
+          <li>
+            <a href="/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%98%E5%82%A8%E5%BC%80%E5%8F%91%E9%AB%98%E6%95%88%E5%BA%94%E7%94%A8/">嵌入式存储开发高效应用</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

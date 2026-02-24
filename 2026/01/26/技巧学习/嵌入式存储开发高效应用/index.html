@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>嵌入式存储开发高效应用 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="SFUD（Serial Flash Universal Driver）是一款开源的串行 SPI Flash 通用驱动库，它提供了跨平台、易用的 API 接口，简化了不同 SPI Flash 芯片的驱动程序开发。 应用场景SFUD 可用于以下工作项目和场景： 嵌入式系统开发 IoT 智能网关 ：存储设备配置、用户数据和固件镜像，支持远程 OTA 升级 工业 PLC ：存储控制程序、工艺参数和运行日志">
+<meta property="og:type" content="article">
+<meta property="og:title" content="嵌入式存储开发高效应用">
+<meta property="og:url" content="http://example.com/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%98%E5%82%A8%E5%BC%80%E5%8F%91%E9%AB%98%E6%95%88%E5%BA%94%E7%94%A8/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="SFUD（Serial Flash Universal Driver）是一款开源的串行 SPI Flash 通用驱动库，它提供了跨平台、易用的 API 接口，简化了不同 SPI Flash 芯片的驱动程序开发。 应用场景SFUD 可用于以下工作项目和场景： 嵌入式系统开发 IoT 智能网关 ：存储设备配置、用户数据和固件镜像，支持远程 OTA 升级 工业 PLC ：存储控制程序、工艺参数和运行日志">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2026-01-26T02:00:00.000Z">
+<meta property="article:modified_time" content="2026-01-26T02:00:00.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="嵌入式学习">
+<meta property="article:tag" content="数据存储">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-技巧学习/嵌入式存储开发高效应用" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%98%E5%82%A8%E5%BC%80%E5%8F%91%E9%AB%98%E6%95%88%E5%BA%94%E7%94%A8/" class="article-date">
+  <time class="dt-published" datetime="2026-01-26T02:00:00.000Z" itemprop="datePublished">2026-01-26</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      嵌入式存储开发高效应用
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>SFUD（Serial Flash Universal Driver）是一款开源的串行 SPI Flash 通用驱动库，它提供了跨平台、易用的 API 接口，简化了不同 SPI Flash 芯片的驱动程序开发。</p>
+<h2 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h2><p>SFUD 可用于以下工作项目和场景：</p>
+<h3 id="嵌入式系统开发"><a href="#嵌入式系统开发" class="headerlink" title="嵌入式系统开发"></a>嵌入式系统开发</h3><ul>
+<li><strong>IoT 智能网关</strong> ：存储设备配置、用户数据和固件镜像，支持远程 OTA 升级</li>
+<li><strong>工业 PLC</strong> ：存储控制程序、工艺参数和运行日志，确保数据可靠性</li>
+<li><strong>智能手表</strong> ：存储用户健康数据、运动记录和系统配置</li>
+</ul>
+<h3 id="固件更新系统"><a href="#固件更新系统" class="headerlink" title="固件更新系统"></a>固件更新系统</h3><ul>
+<li><strong>远程 OTA 升级</strong> ：通过网络接收固件包，验证后写入 Flash，支持断点续传</li>
+<li><strong>双分区固件管理</strong> ：实现 A&#x2F;B 分区切换，确保升级失败时可回滚</li>
+<li><strong>固件完整性校验</strong> ：使用 MD5&#x2F;SHA 算法验证固件完整性，防止刷入损坏固件</li>
+</ul>
+<h3 id="数据存储应用"><a href="#数据存储应用" class="headerlink" title="数据存储应用"></a>数据存储应用</h3><ul>
+<li><strong>配置参数管理</strong> ：使用结构化存储方式管理设备参数，支持版本控制</li>
+<li><strong>事件日志记录</strong> ：实现循环日志，自动覆盖旧数据，确保关键事件不丢失</li>
+<li><strong>用户数据持久化</strong> ：存储用户设置和个性化配置，设备重启后保持不变</li>
+</ul>
+<h2 id="快速上手"><a href="#快速上手" class="headerlink" title="快速上手"></a>快速上手</h2><h3 id="核心-API"><a href="#核心-API" class="headerlink" title="核心 API"></a>核心 API</h3><table>
+<thead>
+<tr>
+<th>API 函数</th>
+<th>功能描述</th>
+<th>参数说明</th>
+<th>返回值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>&lt;span leaf=&quot;&quot;&gt;sfud_init()&lt;/span&gt;</code></td>
+<td>初始化 SFUD 库，加载内置 Flash 驱动表</td>
+<td>无</td>
+<td><code>&lt;span leaf=&quot;&quot;&gt;sfud_err&lt;/span&gt;</code>：操作结果，<code>&lt;span leaf=&quot;&quot;&gt;SFUD_SUCCESS&lt;/span&gt;</code> 表示成功</td>
+</tr>
+<tr>
+<td><code>&lt;span leaf=&quot;&quot;&gt;sfud_get_device()&lt;/span&gt;</code></td>
+<td>获取 Flash 设备对象</td>
+<td><code>&lt;span leaf=&quot;&quot;&gt;index&lt;/span&gt;</code>：设备索引（0 开始）</td>
+<td><code>&lt;span leaf=&quot;&quot;&gt;const sfud_flash*&lt;/span&gt;</code>：Flash 设备指针，NULL 表示失败</td>
+</tr>
+<tr>
+<td><code>&lt;span leaf=&quot;&quot;&gt;sfud_erase()&lt;/span&gt;</code></td>
+<td>擦除 Flash 区域（自动选择最佳擦除命令）</td>
+<td><code>&lt;span leaf=&quot;&quot;&gt;flash&lt;/span&gt;</code>：Flash 设备指针<br/><code>&lt;span leaf=&quot;&quot;&gt;addr&lt;/span&gt;</code>：起始地址（必须对齐到擦除块边界）<br/><code>&lt;span leaf=&quot;&quot;&gt;size&lt;/span&gt;</code>：擦除大小（必须是擦除块大小的整数倍）</td>
+<td><code>&lt;span leaf=&quot;&quot;&gt;sfud_err&lt;/span&gt;</code>：操作结果，<code>&lt;span leaf=&quot;&quot;&gt;SFUD_SUCCESS&lt;/span&gt;</code> 表示成功</td>
+</tr>
+<tr>
+<td><code>&lt;span leaf=&quot;&quot;&gt;sfud_write()&lt;/span&gt;</code></td>
+<td>写入数据到 Flash（自动处理页对齐）</td>
+<td><code>&lt;span leaf=&quot;&quot;&gt;flash&lt;/span&gt;</code>：Flash 设备指针<br/><code>&lt;span leaf=&quot;&quot;&gt;addr&lt;/span&gt;</code>：起始地址<br/><code>&lt;span leaf=&quot;&quot;&gt;size&lt;/span&gt;</code>：写入大小<br/><code>&lt;span leaf=&quot;&quot;&gt;data&lt;/span&gt;</code>：要写入的数据缓冲区</td>
+<td><code>&lt;span leaf=&quot;&quot;&gt;sfud_err&lt;/span&gt;</code>：操作结果，<code>&lt;span leaf=&quot;&quot;&gt;SFUD_SUCCESS&lt;/span&gt;</code> 表示成功</td>
+</tr>
+<tr>
+<td><code>&lt;span leaf=&quot;&quot;&gt;sfud_read()&lt;/span&gt;</code></td>
+<td>从 Flash 读取数据</td>
+<td><code>&lt;span leaf=&quot;&quot;&gt;flash&lt;/span&gt;</code>：Flash 设备指针<br/><code>&lt;span leaf=&quot;&quot;&gt;addr&lt;/span&gt;</code>：起始地址<br/><code>&lt;span leaf=&quot;&quot;&gt;size&lt;/span&gt;</code>：读取大小<br/><code>&lt;span leaf=&quot;&quot;&gt;data&lt;/span&gt;</code>：用于存储读取数据的缓冲区</td>
+<td><code>&lt;span leaf=&quot;&quot;&gt;sfud_err&lt;/span&gt;</code>：操作结果，<code>&lt;span leaf=&quot;&quot;&gt;SFUD_SUCCESS&lt;/span&gt;</code> 表示成功</td>
+</tr>
+<tr>
+<td><code>&lt;span leaf=&quot;&quot;&gt;sfud_chip_erase()&lt;/span&gt;</code></td>
+<td>擦除整个 Flash 芯片</td>
+<td><code>&lt;span leaf=&quot;&quot;&gt;flash&lt;/span&gt;</code>：Flash 设备指针</td>
+<td><code>&lt;span leaf=&quot;&quot;&gt;sfud_err&lt;/span&gt;</code>：操作结果，<code>&lt;span leaf=&quot;&quot;&gt;SFUD_SUCCESS&lt;/span&gt;</code> 表示成功</td>
+</tr>
+<tr>
+<td><code>&lt;span leaf=&quot;&quot;&gt;sfud_is_flash_busy()&lt;/span&gt;</code></td>
+<td>检查 Flash 是否处于忙状态</td>
+<td><code>&lt;span leaf=&quot;&quot;&gt;flash&lt;/span&gt;</code>：Flash 设备指针</td>
+<td><code>&lt;span leaf=&quot;&quot;&gt;bool&lt;/span&gt;</code>：<code>&lt;span leaf=&quot;&quot;&gt;true&lt;/span&gt;</code> 表示忙，<code>&lt;span leaf=&quot;&quot;&gt;false&lt;/span&gt;</code> 表示空闲</td>
+</tr>
+<tr>
+<td><code>&lt;span leaf=&quot;&quot;&gt;sfud_get_error_code_string()&lt;/span&gt;</code></td>
+<td>获取错误码对应的字符串描述</td>
+<td><code>&lt;span leaf=&quot;&quot;&gt;error_code&lt;/span&gt;</code>：错误码</td>
+<td><code>&lt;span leaf=&quot;&quot;&gt;const char*&lt;/span&gt;</code>：错误描述字符串</td>
+</tr>
+</tbody></table>
+<h3 id="API-使用示例"><a href="#API-使用示例" class="headerlink" title="API 使用示例"></a>API 使用示例</h3><p><strong>初始化和获取设备</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">// 初始化 SFUD 库</span><br><span class="line">if (sfud_init() != SFUD_SUCCESS) &#123;</span><br><span class="line">    printf(&quot;SFUD init failed\r\n&quot;);</span><br><span class="line">    return -1;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 获取第一个 Flash 设备</span><br><span class="line">const sfud_flash *flash = sfud_get_device(0);</span><br><span class="line">if (flash == NULL) &#123;</span><br><span class="line">    printf(&quot;Get flash device failed\r\n&quot;);</span><br><span class="line">    return -1;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>擦除操作</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">// 擦除 4KB 扇区</span><br><span class="line">sfud_err result = sfud_erase(flash, 0x00000000, 4096);</span><br><span class="line">if (result != SFUD_SUCCESS) &#123;</span><br><span class="line">    printf(&quot;Erase failed: %s\r\n&quot;, sfud_get_error_code_string(result));</span><br><span class="line">    return -1;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 擦除整个芯片（耗时较长）</span><br><span class="line">result = sfud_chip_erase(flash);</span><br><span class="line">if (result != SFUD_SUCCESS) &#123;</span><br><span class="line">    printf(&quot;Chip erase failed: %s\r\n&quot;, sfud_get_error_code_string(result));</span><br><span class="line">    return -1;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>读写操作</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">// 写入数据</span><br><span class="line">uint8_t write_buf[16] = &#123;0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10&#125;;</span><br><span class="line">result = sfud_write(flash, 0x00000000, sizeof(write_buf), write_buf);</span><br><span class="line">if (result != SFUD_SUCCESS) &#123;</span><br><span class="line">    printf(&quot;Write failed: %s\r\n&quot;, sfud_get_error_code_string(result));</span><br><span class="line">    return-1;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 读取数据</span><br><span class="line">uint8_t read_buf[16];</span><br><span class="line">result = sfud_read(flash, 0x00000000, sizeof(read_buf), read_buf);</span><br><span class="line">if (result != SFUD_SUCCESS) &#123;</span><br><span class="line">    printf(&quot;Read failed: %s\r\n&quot;, sfud_get_error_code_string(result));</span><br><span class="line">    return-1;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="集成实现"><a href="#集成实现" class="headerlink" title="集成实现"></a>集成实现</h2><h3 id="集成步骤"><a href="#集成步骤" class="headerlink" title="集成步骤"></a>集成步骤</h3><h4 id="获取源码"><a href="#获取源码" class="headerlink" title="获取源码"></a>获取源码</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 从 GitHub 克隆源码</span><br><span class="line">git clone https://github.com/armink/SFUD.git</span><br></pre></td></tr></table></figure>
+
+<h4 id="添加文件到项目"><a href="#添加文件到项目" class="headerlink" title="添加文件到项目"></a>添加文件到项目</h4><ul>
+<li>将 <code>&lt;span leaf=&quot;&quot;&gt;sfud.c&lt;/span&gt;</code>、<code>&lt;span leaf=&quot;&quot;&gt;sfud.h&lt;/span&gt;</code> 添加到项目源码目录</li>
+<li>将 <code>&lt;span leaf=&quot;&quot;&gt;sfud_flash_def.h&lt;/span&gt;</code> 添加到项目（包含芯片定义）</li>
+<li>根据需要添加 <code>&lt;span leaf=&quot;&quot;&gt;port&lt;/span&gt;</code> 目录下的平台适配文件</li>
+</ul>
+<h4 id="实现硬件适配函数"><a href="#实现硬件适配函数" class="headerlink" title="实现硬件适配函数"></a>实现硬件适配函数</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * SPI 接口读写函数</span><br><span class="line"> * @param spi SPI 设备结构体</span><br><span class="line"> * @param write_buf 写入缓冲区</span><br><span class="line"> * @param write_size 写入大小</span><br><span class="line"> * @param read_buf 读取缓冲区</span><br><span class="line"> * @param read_size 读取大小</span><br><span class="line"> * @return 操作结果</span><br><span class="line"> */</span><br><span class="line">static sfud_err spi_write_read(const sfud_spi *spi, const uint8_t *write_buf, size_t write_size, uint8_t *read_buf, size_t read_size)</span><br><span class="line">&#123;</span><br><span class="line">    // 片选使能</span><br><span class="line">    HAL_GPIO_WritePin(SPI_FLASH_CS_GPIO_Port, SPI_FLASH_CS_Pin, GPIO_PIN_RESET);</span><br><span class="line">    </span><br><span class="line">    // 写入数据</span><br><span class="line">    if (write_size &gt; 0) &#123;</span><br><span class="line">        HAL_SPI_Transmit(&amp;hspi1, (uint8_t *)write_buf, write_size, 1000);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    // 读取数据</span><br><span class="line">    if (read_size &gt; 0) &#123;</span><br><span class="line">        HAL_SPI_Receive(&amp;hspi1, read_buf, read_size, 1000);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    // 片选禁用</span><br><span class="line">    HAL_GPIO_WritePin(SPI_FLASH_CS_GPIO_Port, SPI_FLASH_CS_Pin, GPIO_PIN_SET);</span><br><span class="line">    </span><br><span class="line">    return SFUD_SUCCESS;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="初始化和使用-SFUD"><a href="#初始化和使用-SFUD" class="headerlink" title="初始化和使用 SFUD"></a>初始化和使用 SFUD</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line">#include &quot;sfud.h&quot;</span><br><span class="line"></span><br><span class="line">intmain(void) &#123;</span><br><span class="line">    sfud_err result = SFUD_SUCCESS;</span><br><span class="line">    const sfud_flash *flash = NULL; // 注意：标准API返回的是const指针</span><br><span class="line">    </span><br><span class="line">    // 1. 初始化SFUD库</span><br><span class="line">    result = sfud_init();</span><br><span class="line">    if (result != SFUD_SUCCESS) &#123;</span><br><span class="line">        printf(&quot;SFUD init failed: %d\r\n&quot;, result);</span><br><span class="line">        return-1;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    // 2. 获取Flash设备对象（索引号根据你在sfud_cfg.h中的配置）</span><br><span class="line">    flash = sfud_get_device(0); // 获取设备表中第一个Flash设备[citation:6]</span><br><span class="line">    if (flash == NULL) &#123;</span><br><span class="line">        printf(&quot;Get SFUD flash device failed!\r\n&quot;);</span><br><span class="line">        return-1;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    // 3. 打印Flash信息（你的原始代码部分正确）</span><br><span class="line">    printf(&quot;Flash info:\r\n&quot;);</span><br><span class="line">    printf(&quot;  Name: %s\r\n&quot;, flash-&gt;name);</span><br><span class="line">    printf(&quot;  Size: %ld bytes\r\n&quot;, flash-&gt;chip.size);</span><br><span class="line">    printf(&quot;  Sector size: %ld bytes\r\n&quot;, flash-&gt;chip.sector_size);</span><br><span class="line">    printf(&quot;  Page size: %ld bytes\r\n&quot;, flash-&gt;chip.page_size);</span><br><span class="line">    </span><br><span class="line">    // 4. 擦除第一个扇区（必须确保地址0是扇区起始地址，且size是扇区大小的整数倍）</span><br><span class="line">    result = sfud_erase(flash, 0, flash-&gt;chip.sector_size); // 使用芯片自身的扇区大小更安全</span><br><span class="line">    if (result != SFUD_SUCCESS) &#123;</span><br><span class="line">        printf(&quot;Erase failed: %d\r\n&quot;, result);</span><br><span class="line">        return-1;</span><br><span class="line">    &#125;</span><br><span class="line">    printf(&quot;Erase sector success\r\n&quot;);</span><br><span class="line">    </span><br><span class="line">    // 5. 写入数据（确保目标区域已擦除）</span><br><span class="line">    uint8_t write_data[16] = &#123;0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,</span><br><span class="line">                              0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10&#125;;</span><br><span class="line">    result = sfud_write(flash, 0, sizeof(write_data), write_data);</span><br><span class="line">    if (result != SFUD_SUCCESS) &#123;</span><br><span class="line">        printf(&quot;Write failed: %d\r\n&quot;, result);</span><br><span class="line">        return-1;</span><br><span class="line">    &#125;</span><br><span class="line">    printf(&quot;Write data success\r\n&quot;);</span><br><span class="line">    </span><br><span class="line">    // 6. 读取数据并验证（这部分代码正确，无需修改）</span><br><span class="line">    uint8_t read_data[16];</span><br><span class="line">    result = sfud_read(flash, 0, sizeof(read_data), read_data);</span><br><span class="line">    if (result != SFUD_SUCCESS) &#123;</span><br><span class="line">        printf(&quot;Read failed: %d\r\n&quot;, result);</span><br><span class="line">        return-1;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    bool data_match = true;</span><br><span class="line">    for (int i = 0; i &lt; sizeof(write_data); i++) &#123;</span><br><span class="line">        if (read_data[i] != write_data[i]) &#123;</span><br><span class="line">            data_match = false;</span><br><span class="line">            break;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    if (data_match) &#123;</span><br><span class="line">        printf(&quot;Data verify success\r\n&quot;);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        printf(&quot;Data verify failed\r\n&quot;);</span><br><span class="line">        // 注意：写入后立即读取不一致，通常是因为写入前未正确擦除[citation:7]</span><br><span class="line">        return-1;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    printf(&quot;SFUD test completed successfully!\r\n&quot;);</span><br><span class="line">    return0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="常见问题处理"><a href="#常见问题处理" class="headerlink" title="常见问题处理"></a>常见问题处理</h3><table>
+<thead>
+<tr>
+<th>问题</th>
+<th>原因</th>
+<th>解决方案</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>初始化失败</strong></td>
+<td>SPI 通信问题</td>
+<td>检查 SPI 硬件连接和时钟配置</td>
+</tr>
+<tr>
+<td><strong>芯片识别失败</strong></td>
+<td>芯片型号未支持</td>
+<td>确认芯片型号是否在支持列表中，或手动指定</td>
+</tr>
+<tr>
+<td><strong>写入失败</strong></td>
+<td>未擦除扇区</td>
+<td>确保写入前已擦除目标扇区</td>
+</tr>
+<tr>
+<td><strong>读取数据错误</strong></td>
+<td>地址计算错误</td>
+<td>检查地址范围是否正确</td>
+</tr>
+<tr>
+<td><strong>性能不佳</strong></td>
+<td>SPI 时钟速度低</td>
+<td>提高 SPI 时钟频率，最高可达芯片支持的最大值</td>
+</tr>
+</tbody></table>
+<hr>
+<h1 id="SFUD-Serial-Flash-Universal-Driver-串行-Flash-通用驱动库"><a href="#SFUD-Serial-Flash-Universal-Driver-串行-Flash-通用驱动库" class="headerlink" title="SFUD (Serial Flash Universal Driver) 串行 Flash 通用驱动库"></a>SFUD (Serial Flash Universal Driver) 串行 Flash 通用驱动库</h1><hr>
+<h2 id="0、SFUD-是什么"><a href="#0、SFUD-是什么" class="headerlink" title="0、SFUD 是什么"></a>0、SFUD 是什么</h2><p><a target="_blank" rel="noopener" href="https://github.com/armink/SFUD">SFUD</a> 是一款开源的串行 SPI Flash 通用驱动库。由于现有市面的串行 Flash 种类居多，各个 Flash 的规格及命令存在差异， SFUD 就是为了解决这些 Flash 的差异现状而设计，让我们的产品能够支持不同品牌及规格的 Flash，提高了涉及到 Flash 功能的软件的可重用性及可扩展性，同时也可以规避 Flash 缺货或停产给产品所带来的风险。</p>
+<ul>
+<li>主要特点：支持 SPI&#x2F;QSPI 接口、面向对象（同时支持多个 Flash 对象）、可灵活裁剪、扩展性强、支持 4 字节地址</li>
+<li>资源占用<ul>
+<li>标准占用：RAM:0.2KB ROM:5.5KB</li>
+<li>最小占用：RAM:0.1KB ROM:3.6KB</li>
+</ul>
+</li>
+<li>设计思路：<ul>
+<li><strong>什么是 SFDP</strong> ：它是 JEDEC （固态技术协会）制定的串行 Flash 功能的参数表标准，最新版 V1.6B （<a target="_blank" rel="noopener" href="https://www.jedec.org/standards-documents/docs/jesd216b">点击这里查看</a>）。该标准规定了，每个 Flash 中会存在一个参数表，该表中会存放 Flash 容量、写粒度、擦除命令、地址模式等 Flash 规格参数。目前，除了部分厂家旧款 Flash 型号会不支持该标准，其他绝大多数新出厂的 Flash 均已支持 SFDP 标准。所以该库在初始化时会优先读取 SFDP 表参数。</li>
+<li><strong>不支持 SFDP 怎么办</strong> ：如果该 Flash 不支持 SFDP 标准，SFUD 会查询配置文件 ( <a target="_blank" rel="noopener" href="https://github.com/armink/SFUD/blob/4bee2d0417a7ce853cc7aa3639b03fe825611fd9/sfud/inc/sfud_flash_def.h#L116-L142"><code>/sfud/inc/sfud_flash_def.h</code></a> ) 中提供的 <strong>Flash 参数信息表</strong> 中是否支持该款 Flash。如果不支持，则可以在配置文件中添加该款 Flash 的参数信息（添加方法详细见 <a href="#25-%E6%B7%BB%E5%8A%A0%E5%BA%93%E7%9B%AE%E5%89%8D%E4%B8%8D%E6%94%AF%E6%8C%81%E7%9A%84-flash">2.5 添加库目前不支持的 Flash</a>）。获取到了 Flash 的规格参数后，就可以实现对 Flash 的全部操作。</li>
+</ul>
+</li>
+</ul>
+<h2 id="1、为什么选择-SFUD"><a href="#1、为什么选择-SFUD" class="headerlink" title="1、为什么选择 SFUD"></a>1、为什么选择 SFUD</h2><ul>
+<li>避免项目因 Flash 缺货、Flash 停产或产品扩容而带来的风险；</li>
+<li>越来越多的项目将固件存储到串行 Flash 中，例如：ESP8266 的固件、主板中的 BIOS 及其他常见电子产品中的固件等等，但是各种 Flash 规格及命令不统一。使用 SFUD 即可避免，在相同功能的软件平台基础下，无法适配不同 Flash 种类的硬件平台的问题，提高软件的可重用性；</li>
+<li>简化软件流程，降低开发难度。现在只需要配置好 SPI 通信，即可畅快的开始玩串行 Flash 了；</li>
+<li>可以用来制作 Flash 编程器&#x2F;烧写器</li>
+</ul>
+<h2 id="2、SFUD-如何使用"><a href="#2、SFUD-如何使用" class="headerlink" title="2、SFUD 如何使用"></a>2、SFUD 如何使用</h2><h3 id="2-1-已支持-Flash"><a href="#2-1-已支持-Flash" class="headerlink" title="2.1 已支持 Flash"></a>2.1 已支持 Flash</h3><p>下表为所有已在 Demo 平台上进行过真机测试过的 Flash。显示为 <strong>不支持</strong> SFDP 标准的 Flash 已经在 Flash 参数信息表中定义，更多不支持 SFDP 标准的 Flash 需要大家以后 <strong>共同来完善和维护</strong>  <strong>(<a target="_blank" rel="noopener" href="https://github.com/armink/SFUD">Github</a>|<a target="_blank" rel="noopener" href="http://git.oschina.net/armink/SFUD">OSChina</a>|<a target="_blank" rel="noopener" href="https://coding.net/u/armink/p/SFUD/git">Coding</a>)</strong> 。</p>
+<p>如果觉得这个开源项目很赞，可以点击 <a target="_blank" rel="noopener" href="https://github.com/armink/SFUD">项目主页</a> 右上角的 <strong>Star</strong> ，同时把它推荐给更多有需要的朋友。</p>
+<table>
+<thead>
+<tr>
+<th align="center">型号</th>
+<th align="center">制造商</th>
+<th align="center">容量</th>
+<th align="center">最高速度</th>
+<th align="center">SFDP  标准</th>
+<th align="center">QSPI 模式</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><a target="_blank" rel="noopener" href="http://microchip.ua/esp8266/W25Q40BV(EOL).pdf">W25Q40BV</a></td>
+<td align="center">Winbond</td>
+<td align="center">4Mb</td>
+<td align="center">50Mhz</td>
+<td align="center">不支持</td>
+<td align="center">双线</td>
+<td>已停产</td>
+</tr>
+<tr>
+<td align="center"><a target="_blank" rel="noopener" href="http://www.winbond.com/resource-files/w25q80dv_revg_07212015.pdf">W25Q80DV</a></td>
+<td align="center">Winbond</td>
+<td align="center">8Mb</td>
+<td align="center">104Mhz</td>
+<td align="center">支持</td>
+<td align="center">双线</td>
+<td></td>
+</tr>
+<tr>
+<td align="center"><a target="_blank" rel="noopener" href="https://media.digikey.com/pdf/Data%20Sheets/Winbond%20PDFs/W25Q16BV.pdf">W25Q16BV</a></td>
+<td align="center">Winbond</td>
+<td align="center">16Mb</td>
+<td align="center">104Mhz</td>
+<td align="center">不支持</td>
+<td align="center">双线</td>
+<td>by <a target="_blank" rel="noopener" href="https://github.com/slipperstree">slipperstree</a></td>
+</tr>
+<tr>
+<td align="center"><a target="_blank" rel="noopener" href="http://www.winbond.com/resource-files/da00-w25q16cvf1.pdf">W25Q16CV</a></td>
+<td align="center">Winbond</td>
+<td align="center">16Mb</td>
+<td align="center">104Mhz</td>
+<td align="center">支持</td>
+<td align="center">未测试</td>
+<td></td>
+</tr>
+<tr>
+<td align="center"><a target="_blank" rel="noopener" href="http://www.winbond.com/resource-files/w25q16dv%20revk%2005232016%20doc.pdf">W25Q16DV</a></td>
+<td align="center">Winbond</td>
+<td align="center">16Mb</td>
+<td align="center">104Mhz</td>
+<td align="center">支持</td>
+<td align="center">未测试</td>
+<td>by <a target="_blank" rel="noopener" href="https://github.com/slipperstree">slipperstree</a></td>
+</tr>
+<tr>
+<td align="center"><a target="_blank" rel="noopener" href="http://www.winbond.com/resource-files/w25q32bv_revi_100413_wo_automotive.pdf">W25Q32BV</a></td>
+<td align="center">Winbond</td>
+<td align="center">32Mb</td>
+<td align="center">104Mhz</td>
+<td align="center">支持</td>
+<td align="center">双线</td>
+<td></td>
+</tr>
+<tr>
+<td align="center"><a target="_blank" rel="noopener" href="http://www.winbond.com/resource-files/w25q64cv_revh_052214[2].pdf">W25Q64CV</a></td>
+<td align="center">Winbond</td>
+<td align="center">64Mb</td>
+<td align="center">80Mhz</td>
+<td align="center">支持</td>
+<td align="center">四线</td>
+<td></td>
+</tr>
+<tr>
+<td align="center"><a target="_blank" rel="noopener" href="http://www.winbond.com/resource-files/w25q128bv_revh_100313_wo_automotive.pdf">W25Q128BV</a></td>
+<td align="center">Winbond</td>
+<td align="center">128Mb</td>
+<td align="center">104Mhz</td>
+<td align="center">支持</td>
+<td align="center">四线</td>
+<td></td>
+</tr>
+<tr>
+<td align="center"><a target="_blank" rel="noopener" href="http://www.winbond.com/resource-files/w25q256fv%20revi%2002262016%20kms.pdf">W25Q256FV</a></td>
+<td align="center">Winbond</td>
+<td align="center">256Mb</td>
+<td align="center">104Mhz</td>
+<td align="center">支持</td>
+<td align="center">四线</td>
+<td></td>
+</tr>
+<tr>
+<td align="center"><a target="_blank" rel="noopener" href="http://www.macronix.com/Lists/DataSheet/Attachments/3199/MX25L3206E,%203V,%2032Mb,%20v1.5.pdf">MX25L3206E</a></td>
+<td align="center">Macronix</td>
+<td align="center">32Mb</td>
+<td align="center">86MHz</td>
+<td align="center">支持</td>
+<td align="center">双线</td>
+<td></td>
+</tr>
+<tr>
+<td align="center"><a target="_blank" rel="noopener" href="https://www.macronix.com/Lists/Datasheet/Attachments/8754/MX25L3233F,%203V,%2032Mb,%20v1.7.pdf">MX25L3233F</a></td>
+<td align="center">Macronix</td>
+<td align="center">32Mb</td>
+<td align="center">133MHz</td>
+<td align="center">支持</td>
+<td align="center">未测试</td>
+<td>by <a target="_blank" rel="noopener" href="https://github.com/JiapengLi">JiapengLi</a></td>
+</tr>
+<tr>
+<td align="center"><a target="_blank" rel="noopener" href="http://www.macronix.com.hk/Lists/Datasheet/Attachments/117/KH25L4006E.pdf">KH25L4006E</a></td>
+<td align="center">Macronix</td>
+<td align="center">4Mb</td>
+<td align="center">86Mhz</td>
+<td align="center">支持</td>
+<td align="center">未测试</td>
+<td>by <a target="_blank" rel="noopener" href="https://github.com/JiapengLi">JiapengLi</a></td>
+</tr>
+<tr>
+<td align="center"><a target="_blank" rel="noopener" href="http://www.macronix.com.hk/Lists/Datasheet/Attachments/131/KH25L3206E.pdf">KH25L3206E</a></td>
+<td align="center">Macronix</td>
+<td align="center">32Mb</td>
+<td align="center">86Mhz</td>
+<td align="center">支持</td>
+<td align="center">双线</td>
+<td></td>
+</tr>
+<tr>
+<td align="center"><a target="_blank" rel="noopener" href="http://ww1.microchip.com/downloads/en/DeviceDoc/20005044C.pdf">SST25VF016B</a></td>
+<td align="center">Microchip</td>
+<td align="center">16Mb</td>
+<td align="center">50MHz</td>
+<td align="center">不支持</td>
+<td align="center">不支持</td>
+<td>SST 已被 Microchip 收购</td>
+</tr>
+<tr>
+<td align="center"><a target="_blank" rel="noopener" href="https://www.micron.com/~/media/documents/products/data-sheet/nor-flash/serial-nor/m25p/m25p40.pdf">M25P40</a></td>
+<td align="center">Micron</td>
+<td align="center">4Mb</td>
+<td align="center">75Mhz</td>
+<td align="center">不支持</td>
+<td align="center">未测试</td>
+<td>by <a target="_blank" rel="noopener" href="https://github.com/redocCheng">redocCheng</a></td>
+</tr>
+<tr>
+<td align="center"><a target="_blank" rel="noopener" href="https://www.micron.com/~/media/documents/products/data-sheet/nor-flash/serial-nor/m25p/m25p80.pdf">M25P80</a></td>
+<td align="center">Micron</td>
+<td align="center">8Mb</td>
+<td align="center">75Mhz</td>
+<td align="center">不支持</td>
+<td align="center">未测试</td>
+<td>by <a target="_blank" rel="noopener" href="https://github.com/redocCheng">redocCheng</a></td>
+</tr>
+<tr>
+<td align="center"><a target="_blank" rel="noopener" href="https://www.micron.com/~/media/documents/products/data-sheet/nor-flash/serial-nor/m25p/m25p32.pdf">M25P32</a></td>
+<td align="center">Micron</td>
+<td align="center">32Mb</td>
+<td align="center">75Mhz</td>
+<td align="center">不支持</td>
+<td align="center">不支持</td>
+<td></td>
+</tr>
+<tr>
+<td align="center"><a target="_blank" rel="noopener" href="http://www.kean.com.au/oshw/WR703N/teardown/EN25Q32B%2032Mbit%20SPI%20Flash.pdf">EN25Q32B</a></td>
+<td align="center">EON</td>
+<td align="center">32Mb</td>
+<td align="center">104MHz</td>
+<td align="center">不支持</td>
+<td align="center">未测试</td>
+<td></td>
+</tr>
+<tr>
+<td align="center"><a target="_blank" rel="noopener" href="http://www.gigadevice.com/product/detail/5/410.html">GD25Q16B</a></td>
+<td align="center">GigaDevice</td>
+<td align="center">16Mb</td>
+<td align="center">120Mhz</td>
+<td align="center">不支持</td>
+<td align="center">未测试</td>
+<td>by <a target="_blank" rel="noopener" href="https://github.com/TanekLiang">TanekLiang</a></td>
+</tr>
+<tr>
+<td align="center"><a target="_blank" rel="noopener" href="http://www.gigadevice.com/product/detail/5/410.html">GD25Q32C</a></td>
+<td align="center">GigaDevice</td>
+<td align="center">32Mb</td>
+<td align="center">120Mhz</td>
+<td align="center">不支持</td>
+<td align="center">未测试</td>
+<td>by <a target="_blank" rel="noopener" href="https://github.com/gaupen1186">gaupen1186</a></td>
+</tr>
+<tr>
+<td align="center"><a target="_blank" rel="noopener" href="http://www.gigadevice.com/product/detail/5/364.html">GD25Q64B</a></td>
+<td align="center">GigaDevice</td>
+<td align="center">64Mb</td>
+<td align="center">120Mhz</td>
+<td align="center">不支持</td>
+<td align="center">双线</td>
+<td></td>
+</tr>
+<tr>
+<td align="center"><a target="_blank" rel="noopener" href="http://www.cypress.com/file/197346/download">S25FL216K</a></td>
+<td align="center">Cypress</td>
+<td align="center">16Mb</td>
+<td align="center">65Mhz</td>
+<td align="center">不支持</td>
+<td align="center">双线</td>
+<td></td>
+</tr>
+<tr>
+<td align="center"><a target="_blank" rel="noopener" href="http://www.cypress.com/file/196861/download">S25FL032P</a></td>
+<td align="center">Cypress</td>
+<td align="center">32Mb</td>
+<td align="center">104Mhz</td>
+<td align="center">不支持</td>
+<td align="center">未测试</td>
+<td>by <a target="_blank" rel="noopener" href="https://gitee.com/yc_911">yc_911</a></td>
+</tr>
+<tr>
+<td align="center"><a target="_blank" rel="noopener" href="http://www.cypress.com/file/196886/download">S25FL164K</a></td>
+<td align="center">Cypress</td>
+<td align="center">64Mb</td>
+<td align="center">108Mhz</td>
+<td align="center">支持</td>
+<td align="center">未测试</td>
+<td></td>
+</tr>
+<tr>
+<td align="center"><a target="_blank" rel="noopener" href="http://www.amictechnology.com/datasheets/A25L080.pdf">A25L080</a></td>
+<td align="center">AMIC</td>
+<td align="center">8Mb</td>
+<td align="center">100Mhz</td>
+<td align="center">不支持</td>
+<td align="center">双线</td>
+<td></td>
+</tr>
+<tr>
+<td align="center"><a target="_blank" rel="noopener" href="http://www.amictechnology.com/datasheets/A25LQ64.pdf">A25LQ64</a></td>
+<td align="center">AMIC</td>
+<td align="center">64Mb</td>
+<td align="center">104Mhz</td>
+<td align="center">支持</td>
+<td align="center">支持</td>
+<td></td>
+</tr>
+<tr>
+<td align="center"><a target="_blank" rel="noopener" href="http://www.esmt.com.tw/db/manager/upload/f25l004.pdf">F25L004</a></td>
+<td align="center">ESMT</td>
+<td align="center">4Mb</td>
+<td align="center">100Mhz</td>
+<td align="center">不支持</td>
+<td align="center">不支持</td>
+<td></td>
+</tr>
+<tr>
+<td align="center"><a target="_blank" rel="noopener" href="http://pctgroup.com.tw/attachments/files/files/248_25VF016B-P.pdf">PCT25VF016B</a></td>
+<td align="center">PCT</td>
+<td align="center">16Mb</td>
+<td align="center">80Mhz</td>
+<td align="center">不支持</td>
+<td align="center">不支持</td>
+<td>SST 授权许可，会被识别为 SST25VF016B</td>
+</tr>
+<tr>
+<td align="center"><a target="_blank" rel="noopener" href="http://www.adestotech.com/wp-content/uploads/doc8782.pdf">AT45DB161E</a></td>
+<td align="center">ADESTO</td>
+<td align="center">16Mb</td>
+<td align="center">85MHz</td>
+<td align="center">不支持</td>
+<td align="center">不支持</td>
+<td>ADESTO 收购 Atmel 串行闪存产品线</td>
+</tr>
+<tr>
+<td align="center"><a target="_blank" rel="noopener" href="http://www.normem.com/product/278082170">NM25Q128EV</a></td>
+<td align="center">Nor_Mem</td>
+<td align="center">128Mb</td>
+<td align="center">未测试</td>
+<td align="center">不支持</td>
+<td align="center">未测试</td>
+<td>SFDP可能会读取到信息后识别为超过32Gb</td>
+</tr>
+<tr>
+<td align="center"><a target="_blank" rel="noopener" href="https://item.szlcsc.com/583103.html">P25D40H</a></td>
+<td align="center">PUYA</td>
+<td align="center">4Mb</td>
+<td align="center">未测试</td>
+<td align="center">支持</td>
+<td align="center">未测试</td>
+<td>by Shan</td>
+</tr>
+<tr>
+<td align="center"><a target="_blank" rel="noopener" href="https://item.szlcsc.com/8512446.html">P25Q80H</a></td>
+<td align="center">PUYA</td>
+<td align="center">8Mb</td>
+<td align="center">未测试</td>
+<td align="center">支持</td>
+<td align="center">未测试</td>
+<td>by Shan</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>注：QSPI 模式中，双线表示支持双线快读，四线表示支持四线快读。</p>
+<p>一般情况下，支持四线快读的 FLASH 也支持双线快读。</p>
+</blockquote>
+<h3 id="2-2-API-说明"><a href="#2-2-API-说明" class="headerlink" title="2.2 API 说明"></a>2.2 API 说明</h3><p>先说明下本库主要使用的一个结构体 <code>sfud_flash</code> 。其定义位于 <code>/sfud/inc/sfud_def.h</code>。每个 SPI Flash 会对应一个该结构体，该结构体指针下面统称为 Flash 设备对象。初始化成功后在 <code>sfud_flash-&gt;chip</code> 结构体中会存放 SPI Flash  的常见参数。如果  SPI Flash  还支持 SFDP ，还可以通过  <code>sfud_flash-&gt;sfdp</code> 看到更加全面的参数信息。以下很多函数都将使用 Flash 设备对象作为第一个入参，实现对指定 SPI Flash 的操作。</p>
+<h4 id="2-2-1-初始化-SFUD-库"><a href="#2-2-1-初始化-SFUD-库" class="headerlink" title="2.2.1 初始化 SFUD 库"></a>2.2.1 初始化 SFUD 库</h4><p>将会调用 <code>sfud_device_init</code> ，初始化 Flash 设备表中的全部设备。如果只有一个 Flash 也可以只使用 <code>sfud_device_init</code> 进行单一初始化。</p>
+<blockquote>
+<p><strong>注意</strong>：初始化完的 SPI Flash 默认都 <strong>已取消写保护</strong> 状态，如需开启写保护，请使用 sfud_write_status 函数修改 SPI Flash 状态。</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sfud_err <span class="title function_">sfud_init</span><span class="params">(<span class="type">void</span>)</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="2-2-2-初始化指定的-Flash-设备"><a href="#2-2-2-初始化指定的-Flash-设备" class="headerlink" title="2.2.2 初始化指定的 Flash 设备"></a>2.2.2 初始化指定的 Flash 设备</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sfud_err <span class="title function_">sfud_device_init</span><span class="params">(sfud_flash *flash)</span></span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th align="left">参数</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">flash</td>
+<td align="left">待初始化的 Flash 设备</td>
+</tr>
+</tbody></table>
+<h4 id="2-2-3-使能快速读模式（仅当-SFUD-开启-QSPI-模式后可用）"><a href="#2-2-3-使能快速读模式（仅当-SFUD-开启-QSPI-模式后可用）" class="headerlink" title="2.2.3 使能快速读模式（仅当 SFUD 开启 QSPI 模式后可用）"></a>2.2.3 使能快速读模式（仅当 SFUD 开启 QSPI 模式后可用）</h4><p>当 SFUD 开启 QSPI 模式后，SFUD 中的 Flash 驱动支持使用 QSPI 总线进行通信。相比传统的 SPI 模式，使用 QSPI 能够加速 Flash 数据的读取，但当数据需要写入时，由于 Flash 本身的数据写入速度慢于 SPI 传输速度，所以 QSPI 模式下的数据写入速度提升并不明显。</p>
+<p>所以 SFUD 对于 QSPI 模式的支持仅限于快速读命令。通过该函数可以配置 Flash 所使用的 QSPI 总线的实际支持的数据线最大宽度，例如：1 线（默认值，即传统的 SPI 模式）、2 线、4 线。</p>
+<p>设置后，SFUD 会去结合当前设定的 QSPI 总线数据线宽度，去 <a target="_blank" rel="noopener" href="https://github.com/armink/SFUD/blob/069d2b409ec239f84d675b2c3d37894e908829e6/sfud/inc/sfud_flash_def.h#L149-L177">QSPI Flash 扩展信息表</a> 中匹配最合适的、速度最快的快速读命令，之后用户在调用 sfud_read() 时，会使用 QSPI 模式的传输函数发送该命令。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sfud_err <span class="title function_">sfud_qspi_fast_read_enable</span><span class="params">(sfud_flash *flash, <span class="type">uint8_t</span> data_line_width)</span></span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th align="left">参数</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">flash</td>
+<td align="left">Flash 设备</td>
+</tr>
+<tr>
+<td align="left">data_line_width</td>
+<td align="left">QSPI 总线支持的数据线最大宽度，例如：1、2、4</td>
+</tr>
+</tbody></table>
+<h4 id="2-2-4-获取-Flash-设备对象"><a href="#2-2-4-获取-Flash-设备对象" class="headerlink" title="2.2.4 获取 Flash 设备对象"></a>2.2.4 获取 Flash 设备对象</h4><p>在 SFUD 配置文件中会定义 Flash 设备表，负责存放所有将要使用的 Flash 设备对象，所以 SFUD 支持多个 Flash 设备同时驱动。设备表的配置在 <code>/sfud/inc/sfud_cfg.h</code> 中 <code>SFUD_FLASH_DEVICE_TABLE</code> 宏定义，详细配置方法参照 <a href="#23-%E9%85%8D%E7%BD%AE%E6%96%B9%E6%B3%95">2.3 配置方法 Flash</a>）。本方法通过 Flash 设备位于设备表中索引值来返回 Flash 设备对象，超出设备表范围返回 <code>NULL</code> 。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sfud_flash *<span class="title function_">sfud_get_device</span><span class="params">(<span class="type">size_t</span> index)</span></span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th align="left">参数</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">index</td>
+<td align="left">Flash 设备位于 FLash 设备表中的索引值</td>
+</tr>
+</tbody></table>
+<h4 id="2-2-5-读取-Flash-数据"><a href="#2-2-5-读取-Flash-数据" class="headerlink" title="2.2.5 读取 Flash 数据"></a>2.2.5 读取 Flash 数据</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sfud_err <span class="title function_">sfud_read</span><span class="params">(<span class="type">const</span> sfud_flash *flash, <span class="type">uint32_t</span> addr, <span class="type">size_t</span> size, <span class="type">uint8_t</span> *data)</span></span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th align="left">参数</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">flash</td>
+<td align="left">Flash 设备对象</td>
+</tr>
+<tr>
+<td align="left">addr</td>
+<td align="left">起始地址</td>
+</tr>
+<tr>
+<td align="left">size</td>
+<td align="left">从起始地址开始读取数据的总大小</td>
+</tr>
+<tr>
+<td align="left">data</td>
+<td align="left">读取到的数据</td>
+</tr>
+</tbody></table>
+<h4 id="2-2-6-擦除-Flash-数据"><a href="#2-2-6-擦除-Flash-数据" class="headerlink" title="2.2.6 擦除 Flash 数据"></a>2.2.6 擦除 Flash 数据</h4><blockquote>
+<p>注意：擦除操作将会按照 Flash 芯片的擦除粒度（详见 Flash 数据手册，一般为 block 大小。初始化完成后，可以通过 <code>sfud_flash-&gt;chip.erase_gran</code> 查看）对齐，请注意保证起始地址和擦除数据大小按照 Flash 芯片的擦除粒度对齐，否则执行擦除操作后，将会导致其他数据丢失。</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sfud_err <span class="title function_">sfud_erase</span><span class="params">(<span class="type">const</span> sfud_flash *flash, <span class="type">uint32_t</span> addr, <span class="type">size_t</span> size)</span></span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th align="left">参数</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">flash</td>
+<td align="left">Flash 设备对象</td>
+</tr>
+<tr>
+<td align="left">addr</td>
+<td align="left">起始地址</td>
+</tr>
+<tr>
+<td align="left">size</td>
+<td align="left">从起始地址开始擦除数据的总大小</td>
+</tr>
+</tbody></table>
+<h4 id="2-2-7-擦除-Flash-全部数据"><a href="#2-2-7-擦除-Flash-全部数据" class="headerlink" title="2.2.7 擦除 Flash 全部数据"></a>2.2.7 擦除 Flash 全部数据</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sfud_err <span class="title function_">sfud_chip_erase</span><span class="params">(<span class="type">const</span> sfud_flash *flash)</span></span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th align="left">参数</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">flash</td>
+<td align="left">Flash 设备对象</td>
+</tr>
+</tbody></table>
+<h4 id="2-2-8-往-Flash-写数据"><a href="#2-2-8-往-Flash-写数据" class="headerlink" title="2.2.8 往 Flash 写数据"></a>2.2.8 往 Flash 写数据</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sfud_err <span class="title function_">sfud_write</span><span class="params">(<span class="type">const</span> sfud_flash *flash, <span class="type">uint32_t</span> addr, <span class="type">size_t</span> size, <span class="type">const</span> <span class="type">uint8_t</span> *data)</span></span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th align="left">参数</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">flash</td>
+<td align="left">Flash 设备对象</td>
+</tr>
+<tr>
+<td align="left">addr</td>
+<td align="left">起始地址</td>
+</tr>
+<tr>
+<td align="left">size</td>
+<td align="left">从起始地址开始写入数据的总大小</td>
+</tr>
+<tr>
+<td align="left">data</td>
+<td align="left">待写入的数据</td>
+</tr>
+</tbody></table>
+<h4 id="2-2-9-先擦除再往-Flash-写数据"><a href="#2-2-9-先擦除再往-Flash-写数据" class="headerlink" title="2.2.9 先擦除再往 Flash 写数据"></a>2.2.9 先擦除再往 Flash 写数据</h4><blockquote>
+<p>注意：擦除操作将会按照 Flash 芯片的擦除粒度（详见 Flash 数据手册，一般为 block 大小。初始化完成后，可以通过 <code>sfud_flash-&gt;chip.erase_gran</code> 查看）对齐，请注意保证起始地址和擦除数据大小按照 Flash 芯片的擦除粒度对齐，否则执行擦除操作后，将会导致其他数据丢失。</p>
+</blockquote>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sfud_err <span class="title function_">sfud_erase_write</span><span class="params">(<span class="type">const</span> sfud_flash *flash, <span class="type">uint32_t</span> addr, <span class="type">size_t</span> size, <span class="type">const</span> <span class="type">uint8_t</span> *data)</span></span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th align="left">参数</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">flash</td>
+<td align="left">Flash 设备对象</td>
+</tr>
+<tr>
+<td align="left">addr</td>
+<td align="left">起始地址</td>
+</tr>
+<tr>
+<td align="left">size</td>
+<td align="left">从起始地址开始写入数据的总大小</td>
+</tr>
+<tr>
+<td align="left">data</td>
+<td align="left">待写入的数据</td>
+</tr>
+</tbody></table>
+<h4 id="2-2-10-读取-Flash-状态"><a href="#2-2-10-读取-Flash-状态" class="headerlink" title="2.2.10 读取 Flash 状态"></a>2.2.10 读取 Flash 状态</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sfud_err <span class="title function_">sfud_read_status</span><span class="params">(<span class="type">const</span> sfud_flash *flash, <span class="type">uint8_t</span> *status)</span></span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th align="left">参数</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">flash</td>
+<td align="left">Flash 设备对象</td>
+</tr>
+<tr>
+<td align="left">status</td>
+<td align="left">当前状态寄存器值</td>
+</tr>
+</tbody></table>
+<h4 id="2-2-11-写（修改）-Flash-状态"><a href="#2-2-11-写（修改）-Flash-状态" class="headerlink" title="2.2.11 写（修改） Flash 状态"></a>2.2.11 写（修改） Flash 状态</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sfud_err <span class="title function_">sfud_write_status</span><span class="params">(<span class="type">const</span> sfud_flash *flash, <span class="type">bool</span> is_volatile, <span class="type">uint8_t</span> status)</span></span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th align="left">参数</th>
+<th align="left">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">flash</td>
+<td align="left">Flash 设备对象</td>
+</tr>
+<tr>
+<td align="left">is_volatile</td>
+<td align="left">是否为易闪失的，true: 易闪失的，及断电后会丢失</td>
+</tr>
+<tr>
+<td align="left">status</td>
+<td align="left">当前状态寄存器值</td>
+</tr>
+</tbody></table>
+<h3 id="2-3-配置方法"><a href="#2-3-配置方法" class="headerlink" title="2.3 配置方法"></a>2.3 配置方法</h3><p>所有配置位于 <code>/sfud/inc/sfud_cfg.h</code> ，请参考下面的配置介绍，选择适合自己项目的配置。</p>
+<h4 id="2-3-1-调试模式"><a href="#2-3-1-调试模式" class="headerlink" title="2.3.1 调试模式"></a>2.3.1 调试模式</h4><p>打开&#x2F;关闭 <code>SFUD_DEBUG_MODE</code> 宏定义</p>
+<h4 id="2-3-2-是否使用-SFDP-参数功能"><a href="#2-3-2-是否使用-SFDP-参数功能" class="headerlink" title="2.3.2 是否使用 SFDP 参数功能"></a>2.3.2 是否使用 SFDP 参数功能</h4><p>打开&#x2F;关闭 <code>SFUD_USING_SFDP</code> 宏定义</p>
+<blockquote>
+<p>注意：关闭后只会查询该库在  <code>/sfud/inc/sfud_flash_def.h</code> 中提供的 Flash 信息表。这样虽然会降低软件的适配性，但减少代码量。</p>
+</blockquote>
+<h4 id="2-3-3-是否使用快速读模式（SPI模式）"><a href="#2-3-3-是否使用快速读模式（SPI模式）" class="headerlink" title="2.3.3 是否使用快速读模式（SPI模式）"></a>2.3.3 是否使用快速读模式（SPI模式）</h4><p>打开&#x2F;关闭 <code>SFUD_USING_FAST_READ</code> 宏定义。许多Flash的读模式可能并不能满足较高的SPI频率（具体可查阅各Flash的数据手册交流特性部分），此时需要使能快速读模式。</p>
+<blockquote>
+<p>注意：由于快速读模式在读时插入了默认一个空字节，在SPI速率较慢时可能相较于读模式速度更慢。</p>
+</blockquote>
+<h4 id="2-3-4-是否使用该库自带的-Flash-参数信息表"><a href="#2-3-4-是否使用该库自带的-Flash-参数信息表" class="headerlink" title="2.3.4 是否使用该库自带的 Flash 参数信息表"></a>2.3.4 是否使用该库自带的 Flash 参数信息表</h4><p>打开&#x2F;关闭 <code>SFUD_USING_FLASH_INFO_TABLE</code> 宏定义</p>
+<blockquote>
+<p>注意：关闭后该库只驱动支持 SFDP 规范的 Flash，也会适当的降低部分代码量。另外 2.3.2 及 2.3.3 这两个宏定义至少定义一种，也可以两种方式都选择。</p>
+</blockquote>
+<h4 id="2-3-5-既不使用-SFDP-，也不使用-Flash-参数信息表"><a href="#2-3-5-既不使用-SFDP-，也不使用-Flash-参数信息表" class="headerlink" title="2.3.5 既不使用 SFDP ，也不使用 Flash 参数信息表"></a>2.3.5 既不使用 SFDP ，也不使用 Flash 参数信息表</h4><p>为了进一步降低代码量，<code>SFUD_USING_SFDP</code> 与 <code>SFUD_USING_FLASH_INFO_TABLE</code> 也可以 <strong>都不定义</strong> 。</p>
+<p>此时，只要在定义 Flash 设备时，指定好 Flash 参数，之后再调用 <code>sfud_device_init</code> 对该设备进行初始化。参考如下代码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">sfud_flash sfud_norflash0 = &#123;</span><br><span class="line">        .name = <span class="string">&quot;norflash0&quot;</span>,</span><br><span class="line">        .spi.name = <span class="string">&quot;SPI1&quot;</span>,</span><br><span class="line">        .chip = &#123; <span class="string">&quot;W25Q64FV&quot;</span>, SFUD_MF_ID_WINBOND, <span class="number">0x40</span>, <span class="number">0x17</span>, <span class="number">8L</span> * <span class="number">1024L</span> * <span class="number">1024L</span>, SFUD_WM_PAGE_256B, <span class="number">4096</span>, <span class="number">0x20</span> &#125; &#125;;</span><br><span class="line">......</span><br><span class="line">sfud_device_init(&amp;sfud_norflash0);</span><br><span class="line">......</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-3-6-Flash-设备表"><a href="#2-3-6-Flash-设备表" class="headerlink" title="2.3.6 Flash 设备表"></a>2.3.6 Flash 设备表</h4><p>如果产品中存在多个 Flash ，可以添加 Flash 设备表。修改 <code>SFUD_FLASH_DEVICE_TABLE</code> 这个宏定义，示例如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">enum</span> &#123;</span></span><br><span class="line">    SFUD_W25Q64CV_DEVICE_INDEX = <span class="number">0</span>,</span><br><span class="line">    SFUD_GD25Q64B_DEVICE_INDEX = <span class="number">1</span>,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> SFUD_FLASH_DEVICE_TABLE                                                \</span></span><br><span class="line"><span class="meta">&#123;                                                                              \</span></span><br><span class="line"><span class="meta">    [SFUD_W25Q64CV_DEVICE_INDEX] = &#123;.name = <span class="string">&quot;W25Q64CV&quot;</span>, .spi.name = <span class="string">&quot;SPI1&quot;</span>&#125;,   \</span></span><br><span class="line"><span class="meta">    [SFUD_GD25Q64B_DEVICE_INDEX] = &#123;.name = <span class="string">&quot;GD25Q64B&quot;</span>, .spi.name = <span class="string">&quot;SPI3&quot;</span>&#125;,   \</span></span><br><span class="line"><span class="meta">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>上面定义了两个 Flash 设备（大部分产品一个足以），两个设备的名称为 <code>&quot;W25Q64CV&quot;</code> 及 <code>&quot;GD25Q64B&quot;</code> ，分别对应 <code>&quot;SPI1&quot;</code> 及 <code>&quot;SPI3&quot;</code> 这两个 SPI 设备名称（在移植 SPI 接口时会用到，位于 <code>/sfud/port/sfud_port.c</code> ）， <code>SFUD_W25Q16CV_DEVICE_INDEX</code> 与 <code>SFUD_GD25Q64B_DEVICE_INDEX</code> 这两个枚举定义了两个设备位于设备表中的索引，可以通过 <code>sfud_get_device_table()</code> 方法获取到设备表，再配合这个索引值来访问指定的设备。</p>
+<h4 id="2-3-7-QSPI-模式"><a href="#2-3-7-QSPI-模式" class="headerlink" title="2.3.7 QSPI 模式"></a>2.3.7 QSPI 模式</h4><p>打开&#x2F;关闭 <code>SFUD_USING_QSPI</code> 宏定义</p>
+<p>开启后，SFUD 也将支持使用 QSPI 总线连接的 Flash。</p>
+<h3 id="2-4-移植说明"><a href="#2-4-移植说明" class="headerlink" title="2.4 移植说明"></a>2.4 移植说明</h3><p>移植文件位于 <code>/sfud/port/sfud_port.c</code> ，文件中的 <code>sfud_err sfud_spi_port_init(sfud_flash *flash)</code> 方法是库提供的移植方法，在里面完成各个设备 SPI 读写驱动（必选）、重试次数（必选）、重试接口（可选）及 SPI 锁（可选）的配置。更加详细的移植内容，可以参考 demo 中的各个平台的移植文件。</p>
+<h3 id="2-5-添加库目前不支持的-Flash"><a href="#2-5-添加库目前不支持的-Flash" class="headerlink" title="2.5 添加库目前不支持的 Flash"></a>2.5 添加库目前不支持的 Flash</h3><p>这里需要修改 <code>/sfud/inc/sfdu_flash_def.h</code> ，所有已经支持的 Flash 见 <code>SFUD_FLASH_CHIP_TABLE</code> 宏定义，需要提前准备的 Flash 参数内容分别为：| 名称 | 制造商 ID | 类型 ID | 容量 ID | 容量 | 写模式  | 擦除粒度（擦除的最小单位） | 擦除粒度对应的命令 | 。这里以添加 兆易创新 ( GigaDevice ) 的 <code>GD25Q64B</code> Flash 来举例。</p>
+<p>此款 Flash 为兆易创新的早期生产的型号，所以不支持 SFDP 标准。首先需要下载其数据手册，找到 0x9F 命令返回的 3 种 ID， 这里需要最后面两字节 ID ，即 <code>type id</code> 及 <code>capacity id</code> 。 <code>GD25Q64B</code> 对应这两个 ID 分别为 <code>0x40</code> 及 <code>0x17</code> 。上面要求的其他 Flash 参数都可以在数据手册中找到，这里要重点说明下 <strong>写模式</strong> 这个参数，库本身提供的写模式共计有 4 种，详见文件顶部的 <code>sfud_write_mode</code> 枚举类型，同一款 Flash 可以同时支持多种写模式，视情况而定。对于 <code>GD25Q64B</code> 而言，其支持的写模式应该为 <code>SFUD_WM_PAGE_256B</code> ，即写 1-256 字节每页。结合上述 <code>GD25Q64B</code> 的 Flash 参数应如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;&quot;GD25Q64B&quot;, SFUD_MF_ID_GIGADEVICE, 0x40, 0x17, 8*1024*1024, SFUD_WM_PAGE_256B, 4096, 0x20&#125;,</span><br></pre></td></tr></table></figure>
+
+<p>再将其增加到 <code>SFUD_FLASH_CHIP_TABLE</code> 宏定义末尾，即可完成该库对 <code>GD25Q64B</code> 的支持。</p>
+<h3 id="2-6-Demo"><a href="#2-6-Demo" class="headerlink" title="2.6 Demo"></a>2.6 Demo</h3><p>目前已支持如下平台下的 Demo</p>
+<table>
+<thead>
+<tr>
+<th align="left">路径</th>
+<th align="left">平台描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://github.com/armink/SFUD/tree/master/demo/stm32f10x_non_os">&#x2F;demo&#x2F;stm32f10x_non_os</a></td>
+<td align="left">STM32F10X 裸机平台</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://github.com/armink/SFUD/tree/master/demo/stm32f2xx_rtt">&#x2F;demo&#x2F;stm32f2xx_rtt</a></td>
+<td align="left">STM32F2XX + <a target="_blank" rel="noopener" href="http://www.rt-thread.org/">RT-Thread</a> 操作系统平台</td>
+</tr>
+<tr>
+<td align="left"><a target="_blank" rel="noopener" href="https://github.com/armink/SFUD/tree/master/demo/stm32l475_non_os_qspi">&#x2F;demo&#x2F;stm32l475_non_os_qspi</a></td>
+<td align="left">STM32L475 + QSPI 模式 裸机平台</td>
+</tr>
+<tr>
+<td align="left">&#x2F;demo&#x2F;esp32_ext_spi_flash</td>
+<td align="left">ESP32C3 + SPI外部Flash ESP-IDF框架</td>
+</tr>
+</tbody></table>
+<h3 id="2-7-许可"><a href="#2-7-许可" class="headerlink" title="2.7 许可"></a>2.7 许可</h3><p>采用 MIT 开源协议，细节请阅读项目中的 LICENSE 文件内容。</p>
+<hr>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%98%E5%82%A8%E5%BC%80%E5%8F%91%E9%AB%98%E6%95%88%E5%BA%94%E7%94%A8/" data-id="cuidJeov2U_odGfLdjsdWXQ_E" data-title="嵌入式存储开发高效应用" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" rel="tag">嵌入式学习</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" rel="tag">数据存储</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2026/01/29/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E7%BB%93%E6%9E%84%E4%BD%93%E8%AE%BE%E8%AE%A1%E7%9A%84%E5%AF%B9%E9%BD%90%E4%B8%8E%E4%BC%98%E5%8C%96/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          嵌入式结构体设计的对齐与优化
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E9%AB%98%E6%95%88%E6%95%B0%E6%8D%AE%E4%BA%A4%E6%8D%A2/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">嵌入式设备如何实现高效数据交换</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E5%85%A8%E5%BF%97T113S3/">全志T113S3</a></li></ul></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96/" rel="tag">内存优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="tag">博客环境搭建</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" rel="tag">学习记录</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" rel="tag">嵌入式学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" rel="tag">工具使用</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" rel="tag">数据传输</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" rel="tag">数据存储</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/" rel="tag">结构体</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%A9%B1%E5%8A%A8%E5%B1%8F/" rel="tag">驱动屏</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Linux/" style="font-size: 17.5px;">Linux</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96/" style="font-size: 10px;">内存优化</a> <a href="/tags/%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" style="font-size: 10px;">博客环境搭建</a> <a href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" style="font-size: 10px;">学习记录</a> <a href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" style="font-size: 20px;">嵌入式学习</a> <a href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" style="font-size: 15px;">工具使用</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" style="font-size: 10px;">数据传输</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" style="font-size: 10px;">数据存储</a> <a href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/" style="font-size: 10px;">结构体</a> <a href="/tags/%E9%A9%B1%E5%8A%A8%E5%B1%8F/" style="font-size: 12.5px;">驱动屏</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/02/">February 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/01/">January 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/02/">February 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">January 2023</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2026/02/08/git%20%E4%BD%BF%E7%94%A8/%E7%AE%80%E7%95%A5%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/">git 简略使用指南</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/08/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/03_Linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/">Linux常用命令</a>
+          </li>
+        
+          <li>
+            <a href="/2026/01/30/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/">博客hexo环境搭建</a>
+          </li>
+        
+          <li>
+            <a href="/2026/01/29/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E7%BB%93%E6%9E%84%E4%BD%93%E8%AE%BE%E8%AE%A1%E7%9A%84%E5%AF%B9%E9%BD%90%E4%B8%8E%E4%BC%98%E5%8C%96/">嵌入式结构体设计的对齐与优化</a>
+          </li>
+        
+          <li>
+            <a href="/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%98%E5%82%A8%E5%BC%80%E5%8F%91%E9%AB%98%E6%95%88%E5%BA%94%E7%94%A8/">嵌入式存储开发高效应用</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

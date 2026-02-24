@@ -1,0 +1,223 @@
+---
+title: GNSS 静止状态定位功能实现文档
+date: 2026-01-28 00:00:00
+updated: 2026-01-28 12:00:00
+---
+## 功能概述
+
+本功能为GNSS定位系统添加了智能的静止/动态状态检测和数据管理机制。当设备静止时，系统自动切换到低功耗模式，定期保存最优的定位数据；当设备运动时，按原有逻辑进行定位。
+
+## 核心功能特性
+
+### 1. 运动状态检测（3种模式）
+
+#### 模式1：基于速度判断
+- **判断标准**：速度 < 0.1 km/h
+- **适用场景**：速度数据可信的环境
+
+#### 模式2：基于位置偏移判断
+- **判断标准**：与上一个定位点的距离 < 可配置阈值（默认50米）
+- **适用场景**：GPS信号不稳定，但可靠GPS坐标的环境
+
+#### 模式3：组合模式（推荐）
+- **判断标准**：两个条件都满足
+- **优势**：最可靠，能有效过滤误判
+
+### 2. GNSS数据滤波
+
+系统对定位数据进行多维度评分，自动保留最优的定位点：
+
+**评分维度**：
+- HDOP值（水平精度因子）
+  - ≤1.5：0分（最优）
+  - ≤3.0：10分
+  - ≤5.0：20分
+  - >5.0：50分（差）
+
+- 定位质量标志（0=无效，1=有效）
+  - 有效：0分
+  - 无效：100分
+
+- 卫星数量
+  - ≥10颗：0分（最优）
+  - ≥7颗：5分
+  - ≥4颗：15分
+  - <4颗：50分（差）
+
+- 定位状态（A=有效, V=无效）
+  - 有效(A)：0分
+  - 无效(V)：100分
+
+评分越低说明定位点质量越好，系统自动保留评分最低的N个点。
+
+### 3. 定时器管理
+
+系统新增一个独立的静止状态定位定时器：
+- **静止状态定位间隔**：30分钟（默认可配置）
+- **启动/停止**：通过 `static_location_timer_start()` 和 `static_location_timer_stop()` 控制
+
+## 配置参数
+
+### 通过MQTT远程配置
+
+| 命令类型 | 参数 | 说明 |
+|---------|------|------|
+| `cfg.static.period` | period_seconds | 静止状态定位间隔（秒） |
+| `cfg.static.mode` | mode (1-3) | 运动检测模式（1=速度，2=位置，3=组合） |
+| `cfg.static.threshold` | threshold_meters | 位置偏移阈值（米） |
+| `cfg.static.best` | count (1-10) | 滤波后保留的最优点数 |
+
+### 本地默认值
+
+```c
+#define DEFAULT_STATIC_PERIOD_INTERVAL  (30 * 60 * 1000)  // 30分钟
+#define DEFAULT_STATIC_MOTION_MODE      GNSS_MOTION_MODE_COMBINED  // 组合模式
+#define DEFAULT_STATIC_POSITION_THRESHOLD  50.0  // 50米
+#define DEFAULT_GNSS_BUFFER_SIZE        10      // 缓冲最多10个点
+#define DEFAULT_BEST_POINTS_COUNT       5       // 默认保留5个最优点
+```
+
+## 导出函数接口
+
+### 查询接口
+
+```c
+// 获取静止状态定位周期（毫秒）
+uint32_t get_static_period_interval(void);
+
+// 获取运动检测模式（1/2/3）
+uint8_t get_motion_detect_mode(void);
+
+// 获取位置偏移阈值（米）
+double get_position_drift_threshold(void);
+
+// 获取当前是否为静止状态（0=运动，1=静止）
+uint8_t get_device_is_stationary(void);
+```
+
+### 控制接口
+
+```c
+// 启动静止状态定位定时器
+void static_location_timer_start(void);
+
+// 停止静止状态定位定时器
+void static_location_timer_stop(void);
+
+// 处理新的GNSS定位数据（由gnss_main.c调用）
+void gnss_static_buffer_add(gnss_t* point);
+```
+
+## 内部实现函数
+
+### 运动状态判断
+```c
+static uint8_t is_device_stationary(const gnss_t* last_point,
+                                   const gnss_t* current_point);
+```
+
+### GNSS点质量评分
+```c
+static uint32_t gnss_point_score(const gnss_t* point);
+```
+
+### GNSS数据滤波
+```c
+static uint8_t filter_gnss_data(gnss_t* points, uint8_t count, uint8_t best_count);
+```
+
+### 距离计算（Haversine公式）
+```c
+static double calculate_distance(double lat1, double lon1,
+                                 double lat2, double lon2);
+```
+
+## 数据结构
+
+### gnss_buffer_t 结构体（在gnss_location_ringbuffer.h中）
+
+```c
+typedef struct {
+    gnss_t points[10];                    // 最多保留10个定位点
+    uint8_t count;                        // 当前缓冲点数
+    uint8_t capacity;                     // 缓冲容量
+
+    gnss_t last_valid_point;              // 上一个有效定位点
+    uint8_t has_last_point;               // 是否有有效的上一个点
+
+    uint8_t motion_detect_mode;           // 运动检测模式
+    double position_drift_threshold;      // 位置偏移阈值（米）
+
+    uint8_t best_points_count;            // 要保留的最优点数
+    uint8_t is_stationary;                // 当前是否为静止状态
+    uint32_t last_report_tick;            // 上次报告时间
+} gnss_buffer_t;
+```
+
+## 工作流程
+
+1. **获取定位数据**
+   - gnss_main.c 通过 nmea_parse_packet() 获得新的定位数据
+   - 调用 `gnss_static_buffer_add()` 传入定位数据
+
+2. **状态判断**
+   - 根据配置的运动检测模式判断设备是否静止
+   - 保存当前定位点为"上一个有效点"
+
+3. **数据管理**
+   - 如果静止：保存定位点到缓冲
+   - 如果运动：按原有逻辑处理
+
+4. **定时上报**
+   - 静止状态定位定时器触发时，发送保留的最优定位数据
+   - 每30分钟（可配）强制发送一次，保持设备在线
+
+5. **远程配置**
+   - 后台通过MQTT下发配置命令
+   - 设备实时更新相关参数
+
+## 集成说明
+
+### 已修改文件
+
+1. **gnss_location_ringbuffer.h**
+   - 添加 `gnss_motion_detect_mode_t` 枚举
+   - 添加 `gnss_buffer_t` 结构体
+
+2. **_client.c**
+   - 扩展 `ClientCtx_t` 结构体
+   - 添加静止状态定位定时器
+   - 实现所有功能函数
+   - 添加MQTT配置命令处理
+
+3. **gnss_main.c**
+   - 在 nmea_parse_packet() 中调用 `gnss_static_buffer_add()`
+
+## 使用示例
+
+### 远程配置示例
+
+```json
+// 设置静止状态定位周期为60分钟
+{"type":"cfg.static.period", "cmd_id":1, "val":3600}
+
+// 设置运动检测模式为组合模式
+{"type":"cfg.static.mode", "cmd_id":2, "val":3}
+
+// 设置位置偏移阈值为100米
+{"type":"cfg.static.threshold", "cmd_id":3, "val":100}
+
+// 设置保留最优点数为7个
+{"type":"cfg.static.best", "cmd_id":4, "val":7}
+```
+
+## 注意事项
+
+1. **内存占用**：最多占用 sizeof(gnss_t) * 10 个字节的额外内存用于缓冲
+
+2. **精度权衡**：建议使用组合模式（mode=3）获得最高的准确性
+
+3. **电源管理**：静止时应配合PM模块降低功耗
+
+4. **时间戳同步**：确保RTC时间准确，影响距离计算的精确性
+

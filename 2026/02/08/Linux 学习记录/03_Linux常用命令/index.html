@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Linux常用命令 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="很多小伙伴对Linux的印象，就是黑色的命令行框框，虽然我们使用的Ubuntu系统给我们提供的图形化的交互界面，但课程中我们尽可能减少使用，因为在开发过程中命令行的方式效率是会更加高的，后期我们在写一些自动化脚本时，用的也都是命令行，可能一开始学习时，你对命令不熟悉，感觉效率还不如鼠标点点点。但是相信我，在你熟悉命令后，开发效率将会大大提升。 Linux的命令很多，应该说是非常多，说句实话，下方这">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux常用命令">
+<meta property="og:url" content="http://example.com/2026/02/08/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/03_Linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="很多小伙伴对Linux的印象，就是黑色的命令行框框，虽然我们使用的Ubuntu系统给我们提供的图形化的交互界面，但课程中我们尽可能减少使用，因为在开发过程中命令行的方式效率是会更加高的，后期我们在写一些自动化脚本时，用的也都是命令行，可能一开始学习时，你对命令不熟悉，感觉效率还不如鼠标点点点。但是相信我，在你熟悉命令后，开发效率将会大大提升。 Linux的命令很多，应该说是非常多，说句实话，下方这">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://x509p6c8to.feishu.cn/space/api/box/stream/download/asynccode/?code=ZDlkNjYyMWQwY2ZlYzg5MDRhYmY4MzM0YjMzZjRmMWZfTHI1YUVRUVUyOVF3b1NGSDE5MGN5VThXcjJ2bFZDSEhfVG9rZW46TDhhSWJGT3Vvb1RJcGt4SE5mSWNSdVR3bm1kXzE3NzA1Mzk4NDQ6MTc3MDU0MzQ0NF9WNA">
+<meta property="article:published_time" content="2026-02-07T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-02-07T16:00:00.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="嵌入式学习">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://x509p6c8to.feishu.cn/space/api/box/stream/download/asynccode/?code=ZDlkNjYyMWQwY2ZlYzg5MDRhYmY4MzM0YjMzZjRmMWZfTHI1YUVRUVUyOVF3b1NGSDE5MGN5VThXcjJ2bFZDSEhfVG9rZW46TDhhSWJGT3Vvb1RJcGt4SE5mSWNSdVR3bm1kXzE3NzA1Mzk4NDQ6MTc3MDU0MzQ0NF9WNA">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-Linux 学习记录/03_Linux常用命令" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2026/02/08/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/03_Linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" class="article-date">
+  <time class="dt-published" datetime="2026-02-07T16:00:00.000Z" itemprop="datePublished">2026-02-08</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Linux常用命令
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>很多小伙伴对Linux的印象，就是黑色的命令行框框，虽然我们使用的Ubuntu系统给我们提供的图形化的交互界面，但课程中我们尽可能减少使用，因为在开发过程中命令行的方式效率是会更加高的，后期我们在写一些自动化脚本时，用的也都是命令行，可能一开始学习时，你对命令不熟悉，感觉效率还不如鼠标点点点。但是相信我，在你熟悉命令后，开发效率将会大大提升。</p>
+<p>Linux的命令很多，应该说是非常多，说句实话，下方这些命令行，我也有一半是没记住的，但是这并不妨碍我学习使用Linux进行开发。</p>
+<p><a target="_blank" rel="noopener" href="https://www.runoob.com/linux/linux-command-manual.html">Linux 命令大全 | 菜鸟教程</a></p>
+<p>这里很多小伙伴会有一个思维误区，认为学习Linux常用命令，就是要把所有的命令都背下来，其实是不需要的，我们只需要了解常用的十来个指令，其它的指令，在需要用到时，使用AI工具查询即可，换句话说，所有的命令都不需要去背，在你用得多后自然就会记住，记不住的查询下即可。</p>
+<p>下面我们来了解下最常用的几个命令，如何打开命令行交互窗口呢？可以按快捷键Ctrl+Alt+T,或者左下角软件中搜索Terminal即可</p>
+<p><img src="https://x509p6c8to.feishu.cn/space/api/box/stream/download/asynccode/?code=ZDlkNjYyMWQwY2ZlYzg5MDRhYmY4MzM0YjMzZjRmMWZfTHI1YUVRUVUyOVF3b1NGSDE5MGN5VThXcjJ2bFZDSEhfVG9rZW46TDhhSWJGT3Vvb1RJcGt4SE5mSWNSdVR3bm1kXzE3NzA1Mzk4NDQ6MTc3MDU0MzQ0NF9WNA"></p>
+<p>接下来我们就来看几个常见的命令吧：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">ls（英文全拼：list files）: 列出目录及文件名</span><br><span class="line">chmod（Change Mode）用于修改 文件或目录的权限</span><br><span class="line">cd（英文全拼：change directory）：切换目录</span><br><span class="line">pwd（英文全拼：print work directory）：显示目前的目录</span><br><span class="line">mkdir（英文全拼：make directory）：创建一个新的目录</span><br><span class="line">cp（英文全拼：<span class="keyword">copy</span> file）: 复制文件或目录</span><br><span class="line">rm（英文全拼：remove）: 删除文件或目录</span><br><span class="line">mv（英文全拼：move file）: 移动文件与目录，或修改文件与目录的名称</span><br><span class="line">tar (Tape Archive) 是 Linux 中最常用的归档工具，用于将多个文件<span class="operator">/</span>目录打包成单个文件（支持压缩）。</span><br><span class="line">df（Disk Filesystem）是 Linux 系统中用于查看磁盘空间使用情况的命令</span><br></pre></td></tr></table></figure>
+
+<p><strong>ls（英文全拼：list files）: 列出目录及文件名</strong></p>
+<figure class="highlight plaintext"><figcaption><span>Text</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">ls [选项] [文件/目录...]</span><br><span class="line">基本用法</span><br><span class="line">ls          # 列出当前目录内容</span><br><span class="line">ls /etc     # 列出 /etc 目录的内容</span><br><span class="line">ls -l       # 列出详细信息</span><br><span class="line"></span><br><span class="line">drwxr-xr-x 2 xiaozhi xiaozhi 4096 Jun 17 07:08 Desktop</span><br><span class="line">drwxr-xr-x 2 xiaozhi xiaozhi 4096 Jun 17 07:08 Documents</span><br><span class="line">drwxr-xr-x 3 xiaozhi xiaozhi 4096 Jun 18 07:12 Downloads</span><br><span class="line">-rw-r--r-- 1 xiaozhi xiaozhi 8980 Jun 17 07:05 examples.desktop</span><br><span class="line">-rw-r--r-- 1 user group 1.2K Mar 10 15:30 file.txt</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">-rw-r--r--：文件类型和权限（- 表示普通文件，rw- 所有者权限，r-- 组权限，r-- 其他用户权限）。</span><br><span class="line">1：硬链接数。</span><br><span class="line">user：文件所有者。</span><br><span class="line">group：所属用户组。</span><br><span class="line">1.2K：文件大小。</span><br><span class="line">Mar 10 15:30：最后修改时间。</span><br><span class="line">file.txt：文件名。</span><br></pre></td></tr></table></figure>
+
+<p>Linux 文件权限分为 3 类用户，</p>
+<!--br {mso-data-placement:same-cell;}--> td {white-space:nowrap;border:0.5pt solid #dee0e3;font-size:10pt;font-style:normal;font-weight:normal;vertical-align:middle;word-break:normal;word-wrap:normal;}| 用户类型   | 说明       |
+
+<p>| ———— | ———— |<br>| u (user)   | 文件所有者 |<br>| g (group)  | 所属用户组 |<br>| o (others) | 其他用户   |</p>
+<p><strong><code>chmod</code></strong> <strong>（Change Mode）用于修改文件或目录的权限</strong></p>
+<p>测试脚本，创建test.sh，仅用于打印日志，验证权限问题，无其它功能</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="comment"># 这是一个最简单的 Bash 脚本</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;Hello, World!&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>指令格式</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chmod &lt;权限模式&gt; &lt;文件或目录&gt;</span><br></pre></td></tr></table></figure>
+
+<p>3 种权限</p>
+<!--br {mso-data-placement:same-cell;}--> td {white-space:nowrap;border:0.5pt solid #dee0e3;font-size:10pt;font-style:normal;font-weight:normal;vertical-align:middle;word-break:normal;word-wrap:normal;}| 权限           | 符号 | 数字 | 说明                                 |
+
+<p>| —————- | —— | —— | ————————————– |<br>| 读 (Read)      | r    | 4    | 允许读取文件内容 &#x2F; 列出目录内容      |<br>| 写 (Write)     | w    | 2    | 允许修改文件 &#x2F; 在目录中创建&#x2F;删除文件 |<br>| 执行 (Execute) | x    | 1    | 允许执行文件 &#x2F; 进入目录              |</p>
+<p>例子</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">chmod <span class="number">755</span> file.txt</span><br><span class="line"><span class="number">7</span> (u): <span class="number">4</span>(r) + <span class="number">2</span>(w) + <span class="number">1</span>(x) = 读 + 写 + 执行</span><br><span class="line"><span class="number">5</span> (g): <span class="number">4</span>(r) + <span class="number">1</span>(x) = 读 + 执行</span><br><span class="line"><span class="number">5</span> (o): <span class="number">4</span>(r) + <span class="number">1</span>(x) = 读 + 执行</span><br></pre></td></tr></table></figure>
+
+<p><strong>mkdir（英文全拼：make directory）：创建一个新的目录</strong></p>
+<!--br {mso-data-placement:same-cell;}--> td {white-space:nowrap;border:0.5pt solid #dee0e3;font-size:10pt;font-style:normal;font-weight:normal;vertical-align:middle;word-break:normal;word-wrap:normal;}| 命令           | 作用             |
+
+<p>| —————- | —————— |<br>| mkdir dir      | 创建单个目录     |<br>| mkdir -p a&#x2F;b&#x2F;c | 递归创建多级目录 |</p>
+<p><strong>文本编辑vi</strong></p>
+<p>其实工作中使用vi文本编辑器很少了，有UI的系统，我们直接用gedit，没有的我们一般使用ssh，在window访问，但是，我们也稍微了解下，知道有这么一个东西即可。</p>
+<ol>
+<li><strong>启动 vi</strong> ：</li>
+</ol>
+<p><code>vi filename</code></p>
+<ol start="2">
+<li><strong>退出 vi</strong> ：<ol>
+<li>输入 <code>:q</code> 退出（如果文件未修改）。</li>
+<li>输入 <code>:q!</code> 强制退出，不保存更改。</li>
+<li>输入 <code>:wq</code> 保存并退出。</li>
+</ol>
+</li>
+</ol>
+<p><strong>模式切换</strong></p>
+<p><strong>vi</strong> 有两种主要模式：插入模式和命令模式。</p>
+<ol>
+<li><strong>插入模式</strong> ：<ol>
+<li>命令模式按 <code>i</code> 进入插入模式，在当前光标位置插入文本。</li>
+</ol>
+</li>
+<li><strong>命令模式</strong> ：<ol>
+<li>插入模式按ESC可返回命令模式，输入命令后按 <code>Enter</code> 执行。</li>
+</ol>
+</li>
+</ol>
+<p><strong>示例</strong></p>
+<ol>
+<li><strong>打开文件并进行编辑</strong> ：</li>
+<li><code>vi example.txt</code><ol>
+<li>按 <code>i</code> 进入插入模式，编辑文件。</li>
+<li>按 <code>Esc</code> 返回正常模式。</li>
+<li>输入 <code>:wq</code> 保存文件。</li>
+<li>输入 <code>:q</code> 退出 Vi。</li>
+</ol>
+</li>
+</ol>
+<p><strong>cd（英文全拼：change directory）：切换目录</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd [目录路径]</span><br><span class="line">切换目录使用的cd指令，其实和在window下使用鼠标点击的效果是一样的，可以进入不同路径的目录。</span><br></pre></td></tr></table></figure>
+
+<!--br {mso-data-placement:same-cell;}--> td {white-space:nowrap;border:0.5pt solid #dee0e3;font-size:10pt;font-style:normal;font-weight:normal;vertical-align:middle;word-break:normal;word-wrap:normal;}| 命令            | 作用             |
+
+<p>| —————– | —————— |<br>| cd              | 回到家目录       |<br>| cd ~            | 回到家目录       |<br>| cd &#x2F;path&#x2F;to&#x2F;dir | 进入绝对路径目录 |<br>| cd ..           | 返回上级目录     |<br>| cd -            | 返回上一次目录   |</p>
+<p><strong>pwd（英文全拼：print work directory）：显示目前的目录</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">可以显示当前所在的目录路径</span><br></pre></td></tr></table></figure>
+
+<p><strong>cp（英文全拼：copy file）: 复制文件或目录</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">文件复制</span><br><span class="line">cp file.txt /backup/       # 复制到目录</span><br><span class="line"></span><br><span class="line">目录复制</span><br><span class="line">cp -r dir1/ dir2/         # 递归复制目录</span><br></pre></td></tr></table></figure>
+
+<p><strong>rm（英文全拼：remove）: 删除文件或目录</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">rm file.txt              # 删除单个文件</span><br><span class="line">rm file1.txt file2.txt   # 删除多个文件</span><br><span class="line">rm *.tmp                 # 删除所有.tmp文件</span><br><span class="line">rm -r dir/               # 递归删除目录</span><br><span class="line"></span><br><span class="line">rm 是 Linux 中最危险的命令之一，使用时请务必三思而后行！</span><br></pre></td></tr></table></figure>
+
+<p><strong>mv（英文全拼：move file）: 移动文件与目录，或修改文件与目录的名称</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">mv document.pdf ~/Documents/  # 移动文件</span><br><span class="line">mv *.png ~/Pictures/          # 移动所有png文件</span><br><span class="line">mv file1.txt file2.txt dir/   # 移动多个文件到目录</span><br><span class="line">mv dir/ ~/backups/            # 移动目录</span><br><span class="line"></span><br><span class="line">mv old_name.txt new_name.txt  # 重命名</span><br></pre></td></tr></table></figure>
+
+<p><strong><code>tar</code></strong>** (Tape Archive) 是 Linux 中最常用的归档工具，用于将多个文件&#x2F;目录打包成单个文件（支持压缩）。**</p>
+<!--br {mso-data-placement:same-cell;}--> td {white-space:nowrap;border:0.5pt solid #dee0e3;font-size:10pt;font-style:normal;font-weight:normal;vertical-align:middle;word-break:normal;word-wrap:normal;}| 操作     | 命令                            |
+
+<p>| ———- | ——————————— |<br>| 打包     | tar -cvf archive.tar files&#x2F;     |<br>| gzip压缩 | tar -czvf archive.tar.gz files&#x2F; |<br>| 解包     | tar -xvf archive.tar            |<br>| 解压gzip | tar -xzvf archive.tar.gz        |</p>
+<p><strong>主操作模式</strong></p>
+<!--br {mso-data-placement:same-cell;}--> td {white-space:nowrap;border:0.5pt solid #dee0e3;font-size:10pt;font-style:normal;font-weight:normal;vertical-align:middle;word-break:normal;word-wrap:normal;}| 选项 | 说明       |
+
+<p>| —— | ———— |<br>| -c   | 创建新归档 |<br>| -x   | 解压归档   |</p>
+<p><strong>辅助选项</strong></p>
+<!--br {mso-data-placement:same-cell;}--> td {white-space:nowrap;border:0.5pt solid #dee0e3;font-size:10pt;font-style:normal;font-weight:normal;vertical-align:middle;word-break:normal;word-wrap:normal;}| 选项 | 说明                           |
+
+<p>| —— | ——————————– |<br>| -v   | 显示详细过程                   |<br>| -f   | 指定归档文件名（必须放在最后） |<br>| -z   | 使用gzip压缩&#x2F;解压（.tar.gz）   |<br>| -j   | 使用bzip2压缩&#x2F;解压（.tar.bz2） |</p>
+<p><strong><code>df</code></strong> <strong>（Disk Filesystem）是 Linux 系统中用于 查看磁盘空间使用情况 的命令</strong></p>
+<p>可以显示文件系统的总容量、已用空间、可用空间及挂载点信息。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">df -h</span><br><span class="line">Filesystem      Size  Used Avail Use% Mounted on</span><br><span class="line">/dev/sda1       <span class="number">100</span>G  <span class="number">5.0</span>G   <span class="number">95</span>G   <span class="number">5</span>% /</span><br><span class="line">tmpfs           <span class="number">800</span>M     <span class="number">0</span>  <span class="number">800</span>M   <span class="number">0</span>% /dev/shm</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2026/02/08/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/03_Linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" data-id="cuid6LTsJsOcR3-DDHJnfJTtO" data-title="Linux常用命令" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" rel="tag">嵌入式学习</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2026/02/08/git%20%E4%BD%BF%E7%94%A8/%E7%AE%80%E7%95%A5%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          git 简略使用指南
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2026/01/30/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">博客hexo环境搭建</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E5%85%A8%E5%BF%97T113S3/">全志T113S3</a></li></ul></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96/" rel="tag">内存优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="tag">博客环境搭建</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" rel="tag">学习记录</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" rel="tag">嵌入式学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" rel="tag">工具使用</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" rel="tag">数据传输</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" rel="tag">数据存储</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/" rel="tag">结构体</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%A9%B1%E5%8A%A8%E5%B1%8F/" rel="tag">驱动屏</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Linux/" style="font-size: 17.5px;">Linux</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96/" style="font-size: 10px;">内存优化</a> <a href="/tags/%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" style="font-size: 10px;">博客环境搭建</a> <a href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" style="font-size: 10px;">学习记录</a> <a href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" style="font-size: 20px;">嵌入式学习</a> <a href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" style="font-size: 15px;">工具使用</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" style="font-size: 10px;">数据传输</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" style="font-size: 10px;">数据存储</a> <a href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/" style="font-size: 10px;">结构体</a> <a href="/tags/%E9%A9%B1%E5%8A%A8%E5%B1%8F/" style="font-size: 12.5px;">驱动屏</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/02/">February 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/01/">January 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/02/">February 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">January 2023</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2026/02/08/git%20%E4%BD%BF%E7%94%A8/%E7%AE%80%E7%95%A5%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/">git 简略使用指南</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/08/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/03_Linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/">Linux常用命令</a>
+          </li>
+        
+          <li>
+            <a href="/2026/01/30/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/">博客hexo环境搭建</a>
+          </li>
+        
+          <li>
+            <a href="/2026/01/29/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E7%BB%93%E6%9E%84%E4%BD%93%E8%AE%BE%E8%AE%A1%E7%9A%84%E5%AF%B9%E9%BD%90%E4%B8%8E%E4%BC%98%E5%8C%96/">嵌入式结构体设计的对齐与优化</a>
+          </li>
+        
+          <li>
+            <a href="/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%98%E5%82%A8%E5%BC%80%E5%8F%91%E9%AB%98%E6%95%88%E5%BA%94%E7%94%A8/">嵌入式存储开发高效应用</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

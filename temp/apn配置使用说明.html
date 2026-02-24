@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="APN配置完整实现文档目录 概述 功能特性 系统架构 代码实现 MQTT命令接口 使用示例 集成指南 故障排查 常见问题   概述本项目实现了通过MQTT远程配置设备APN的完整功能，支持公网卡和专网卡，配置自动持久化。 主要特点 MQTT远程配置：通过下行消息配置APN 持久化存储：配置保存到KV存储，重启不丢失 自动加载：系统启动时自动加载配置 完整功能：支持设置、查询、启用&#x2F;禁用、">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://example.com/temp/apn%E9%85%8D%E7%BD%AE%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="APN配置完整实现文档目录 概述 功能特性 系统架构 代码实现 MQTT命令接口 使用示例 集成指南 故障排查 常见问题   概述本项目实现了通过MQTT远程配置设备APN的完整功能，支持公网卡和专网卡，配置自动持久化。 主要特点 MQTT远程配置：通过下行消息配置APN 持久化存储：配置保存到KV存储，重启不丢失 自动加载：系统启动时自动加载配置 完整功能：支持设置、查询、启用&#x2F;禁用、">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2026-02-24T07:40:47.380Z">
+<meta property="article:modified_time" content="2026-02-24T07:40:47.380Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="page-" class="h-entry article article-type-page" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/temp/apn%E9%85%8D%E7%BD%AE%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E.html" class="article-date">
+  <time class="dt-published" datetime="2026-02-24T07:40:47.380Z" itemprop="datePublished">2026-02-24</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="APN配置完整实现文档"><a href="#APN配置完整实现文档" class="headerlink" title="APN配置完整实现文档"></a>APN配置完整实现文档</h1><h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ol>
+<li><a href="#%E6%A6%82%E8%BF%B0">概述</a></li>
+<li><a href="#%E5%8A%9F%E8%83%BD%E7%89%B9%E6%80%A7">功能特性</a></li>
+<li><a href="#%E7%B3%BB%E7%BB%9F%E6%9E%B6%E6%9E%84">系统架构</a></li>
+<li><a href="#%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0">代码实现</a></li>
+<li><a href="#mqtt%E5%91%BD%E4%BB%A4%E6%8E%A5%E5%8F%A3">MQTT命令接口</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8%E7%A4%BA%E4%BE%8B">使用示例</a></li>
+<li><a href="#%E9%9B%86%E6%88%90%E6%8C%87%E5%8D%97">集成指南</a></li>
+<li><a href="#%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5">故障排查</a></li>
+<li><a href="#%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98">常见问题</a></li>
+</ol>
+<hr>
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>本项目实现了通过MQTT远程配置设备APN的完整功能，支持公网卡和专网卡，配置自动持久化。</p>
+<h3 id="主要特点"><a href="#主要特点" class="headerlink" title="主要特点"></a>主要特点</h3><ul>
+<li><strong>MQTT远程配置</strong>：通过下行消息配置APN</li>
+<li><strong>持久化存储</strong>：配置保存到KV存储，重启不丢失</li>
+<li><strong>自动加载</strong>：系统启动时自动加载配置</li>
+<li><strong>完整功能</strong>：支持设置、查询、启用&#x2F;禁用、应用、清除</li>
+<li><strong>专网卡支持</strong>：支持用户名&#x2F;密码认证</li>
+<li><strong>参考实现</strong>：参照数据上报周期配置方法实现</li>
+</ul>
+<hr>
+<h2 id="功能特性"><a href="#功能特性" class="headerlink" title="功能特性"></a>功能特性</h2><h3 id="1-支持的APN类型"><a href="#1-支持的APN类型" class="headerlink" title="1. 支持的APN类型"></a>1. 支持的APN类型</h3><table>
+<thead>
+<tr>
+<th>类型</th>
+<th>说明</th>
+<th>认证</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>公网卡</td>
+<td>中国移动、联通、电信</td>
+<td>无需认证</td>
+<td>cmnet, 3gnet, ctnet</td>
+</tr>
+<tr>
+<td>专网卡</td>
+<td>物联网专网卡</td>
+<td>需要用户名密码</td>
+<td>private.apn.com</td>
+</tr>
+</tbody></table>
+<h3 id="2-支持的操作"><a href="#2-支持的操作" class="headerlink" title="2. 支持的操作"></a>2. 支持的操作</h3><table>
+<thead>
+<tr>
+<th>操作</th>
+<th>MQTT命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>设置APN</td>
+<td>cfg.apn.set</td>
+<td>配置APN名称、认证信息等</td>
+</tr>
+<tr>
+<td>查询APN</td>
+<td>cfg.apn.get</td>
+<td>查询当前APN配置</td>
+</tr>
+<tr>
+<td>启用&#x2F;禁用</td>
+<td>cfg.apn.enable</td>
+<td>切换手动&#x2F;默认Aimport json</td>
+</tr>
+<tr>
+<td>import time</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>import threading</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>from paho.mqtt import client as mqtt_client</td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<h1 id="MQTT-配置"><a href="#MQTT-配置" class="headerlink" title="&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; MQTT 配置 &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;"></a>&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; MQTT 配置 &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;</h1><p>BROKER &#x3D; “mqtt.airocov.com”<br>PORT &#x3D; 1883<br>USERNAME &#x3D; “”<br>PASSWORD &#x3D; “”</p>
+<p>KEEPALIVE &#x3D; 60<br>QOS &#x3D; 1</p>
+<h1 id="消息模板"><a href="#消息模板" class="headerlink" title="&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; 消息模板 &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;"></a>&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; 消息模板 &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;</h1><p>DEFAULT_MESSAGE_TEMPLATE &#x3D; {<br>“type”: “req.location.msg”,<br>“cmd_id”: 123<br>}</p>
+<h1 id="直接输入-IMEI"><a href="#直接输入-IMEI" class="headerlink" title="&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; 直接输入 IMEI &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;"></a>&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; 直接输入 IMEI &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;</h1><p>IMEI_LIST &#x3D; “””<br>867920070534202<br>867920077425529<br>867920070633681<br>867920077432079<br>“””</p>
+<h1 id="自动解析"><a href="#自动解析" class="headerlink" title="自动解析"></a>自动解析</h1><p>DATAS &#x3D; [{“imei”: x.strip()} for x in IMEI_LIST.split() if x.strip()]</p>
+<h1 id="工具函数"><a href="#工具函数" class="headerlink" title="&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; 工具函数 &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;"></a>&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; 工具函数 &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;</h1><p>def delay(ms):<br>time.sleep(ms &#x2F; 1000)</p>
+<p>def build_message(cmd_id):<br>msg &#x3D; DEFAULT_MESSAGE_TEMPLATE.copy()<br>msg[“cmd_id”] &#x3D; cmd_id<br>return json.dumps(msg, ensure_ascii&#x3D;False)</p>
+<h1 id="MQTT-回调"><a href="#MQTT-回调" class="headerlink" title="&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; MQTT 回调 &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;"></a>&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; MQTT 回调 &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;</h1><p>def on_connect(client, userdata, flags, rc, properties&#x3D;None):<br>if rc &#x3D;&#x3D; 0:<br>print(“ Connected to MQTT broker!”)</p>
+<h1 id="连接成功后开启一个线程去发送数据，防止阻塞-MQTT-心跳"><a href="#连接成功后开启一个线程去发送数据，防止阻塞-MQTT-心跳" class="headerlink" title="连接成功后开启一个线程去发送数据，防止阻塞 MQTT 心跳"></a>连接成功后开启一个线程去发送数据，防止阻塞 MQTT 心跳</h1><p>threading.Thread(target&#x3D;publish_loop, args&#x3D;(client,)).start()<br>else:<br>print(“ Failed to connect, code:”, rc)</p>
+<p>def on_publish(client, userdata, mid):</p>
+<h1 id="print-f”-Message-published-mid-mid-”-Optional-reduce-noise"><a href="#print-f”-Message-published-mid-mid-”-Optional-reduce-noise" class="headerlink" title="print(f” Message published, mid&#x3D;{mid}”) # Optional: reduce noise"></a>print(f” Message published, mid&#x3D;{mid}”) # Optional: reduce noise</h1><p>pass</p>
+<p>def on_disconnect(client, userdata, flags, rc&#x3D;None, properties&#x3D;None):<br>print(“ Disconnected.”)</p>
+<h1 id="发布主循环"><a href="#发布主循环" class="headerlink" title="&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; 发布主循环 &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;"></a>&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; 发布主循环 &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;</h1><p>def publish_loop(client):<br>cmd_id_counter &#x3D; 1</p>
+<h1 id="只运行一次-range-1"><a href="#只运行一次-range-1" class="headerlink" title="只运行一次 (range 1)"></a>只运行一次 (range 1)</h1><p>for _ in range(100):<br>    for data in DATAS:<br>        imei &#x3D; data[“imei”]<br>		# topic &#x3D; data.get(“topic”, f”&#x2F;ac&#x2F;{imei}&#x2F;downlink”)</p>
+<pre><code>    topic = data.get(&quot;topic&quot;, f&quot;lth/12/1/device/{imei}/downlink&quot;)
+    message = build_message(cmd_id_counter)
+    cmd_id_counter += 1
+
+    print(f&quot;[{imei}] Sending: {message}&quot;)
+
+    result = client.publish(topic, message, qos=QOS)
+    status = result[0]
+
+    if status != 0:
+        print(f&quot; Failed to publish to {topic}&quot;)
+
+# 这里的 delay 是 ms， 10*1000 = 10秒
+print(&quot; Waiting 60 seconds...&quot;)
+delay(60 * 1000)
+</code></pre>
+<h1 id="任务结束，断开连接"><a href="#任务结束，断开连接" class="headerlink" title="任务结束，断开连接"></a>任务结束，断开连接</h1><p>print(“ Task done. Disconnecting in 10s…”)<br>time.sleep(10)<br>client.disconnect()</p>
+<h1 id="主程序"><a href="#主程序" class="headerlink" title="&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; 主程序 &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;"></a>&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; 主程序 &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;</h1><p>def main():</p>
+<h1 id="—-FIX-APPLIED-HERE-Added-CallbackAPIVersion-VERSION1-—"><a href="#—-FIX-APPLIED-HERE-Added-CallbackAPIVersion-VERSION1-—" class="headerlink" title="— FIX APPLIED HERE: Added CallbackAPIVersion.VERSION1 —"></a>— FIX APPLIED HERE: Added CallbackAPIVersion.VERSION1 —</h1><p>client &#x3D; mqtt_client.Client(mqtt_client.CallbackAPIVersion.VERSION1)</p>
+<p>if USERNAME:<br>    client.username_pw_set(USERNAME, PASSWORD)</p>
+<p>client.on_connect &#x3D; on_connect<br>client.on_publish &#x3D; on_publish<br>client.on_disconnect &#x3D; on_disconnect</p>
+<p>print(f”Connecting to MQTT broker at {BROKER}:{PORT}…”)</p>
+<p>try:<br>    client.connect(BROKER, PORT, KEEPALIVE)<br>    # loop_forever blocks here until client.disconnect() is called<br>    client.loop_forever()<br>except KeyboardInterrupt:<br>    print(“User stopped script.”)<br>    client.disconnect()<br>if <strong>name</strong> &#x3D;&#x3D; “<strong>main</strong>“:<br>main()PN        |<br>| 应用配置  | cfg.apn.apply  | 重启网络使配置生效      |<br>| 清除配置  | cfg.apn.clear  | 删除配置恢复默认        |</p>
+<h3 id="3-配置参数"><a href="#3-配置参数" class="headerlink" title="3. 配置参数"></a>3. 配置参数</h3><table>
+<thead>
+<tr>
+<th>参数</th>
+<th>类型</th>
+<th>可选值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>apn</td>
+<td>string</td>
+<td>-</td>
+<td>APN名称（必填）</td>
+</tr>
+<tr>
+<td>user</td>
+<td>string</td>
+<td>-</td>
+<td>用户名（可选）</td>
+</tr>
+<tr>
+<td>pass</td>
+<td>string</td>
+<td>-</td>
+<td>密码（可选）</td>
+</tr>
+<tr>
+<td>auth</td>
+<td>number</td>
+<td>0-3</td>
+<td>0&#x3D;无, 1&#x3D;PAP, 2&#x3D;CHAP, 3&#x3D;AUTO</td>
+</tr>
+<tr>
+<td>ip_type</td>
+<td>number</td>
+<td>1-3</td>
+<td>1&#x3D;IPV4, 2&#x3D;IPV6, 3&#x3D;IPV4V6</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="系统架构"><a href="#系统架构" class="headerlink" title="系统架构"></a>系统架构</h2><h3 id="架构图"><a href="#架构图" class="headerlink" title="架构图"></a>架构图</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">┌─────────────────────────────────────────────────────────────┐</span><br><span class="line">│                        MQTT Server                           │</span><br><span class="line">│                  /ac/$&#123;imei&#125;/downlink                       │</span><br><span class="line">└───────────────────────────┬─────────────────────────────────┘</span><br><span class="line">                            │</span><br><span class="line">                            ↓</span><br><span class="line">┌─────────────────────────────────────────────────────────────┐</span><br><span class="line">│                    mqtt_apn_config.c                         │</span><br><span class="line">│  ┌──────────────────────────────────────────────────────┐   │</span><br><span class="line">│  │  cfg.apn.set     → 设置APN配置                        │   │</span><br><span class="line">│  │  cfg.apn.get     → 查询APN配置                        │   │</span><br><span class="line">│  │  cfg.apn.enable  → 启用/禁用                          │   │</span><br><span class="line">│  │  cfg.apn.apply   → 应用配置                           │   │</span><br><span class="line">│  │  cfg.apn.clear   → 清除配置                           │   │</span><br><span class="line">│  └──────────────────────────────────────────────────────┘   │</span><br><span class="line">└───────────────────────────┬─────────────────────────────────┘</span><br><span class="line">                            │</span><br><span class="line">                            ↓</span><br><span class="line">┌─────────────────────────────────────────────────────────────┐</span><br><span class="line">│              luat_network_adapter_enhanced.c                 │</span><br><span class="line">│  ┌──────────────────────────────────────────────────────┐   │</span><br><span class="line">│  │  luat_network_set_manual_apn()   设置APN             │   │</span><br><span class="line">│  │  luat_network_enable_manual_apn() 启用/禁用          │   │</span><br><span class="line">│  │  luat_network_get_apn_config()   获取配置            │   │</span><br><span class="line">│  └──────────────────────────────────────────────────────┘   │</span><br><span class="line">└───────────────────────────┬─────────────────────────────────┘</span><br><span class="line">                            │</span><br><span class="line">              ┌─────────────┴─────────────┐</span><br><span class="line">              ↓                           ↓</span><br><span class="line">    ┌──────────────────┐      ┌──────────────────┐</span><br><span class="line">    │   KV存储(FSKV)    │      │   移动网络层      │</span><br><span class="line">    │  - apn_en        │      │  - luat_mobile   │</span><br><span class="line">    │  - apn_name      │      │  - 网络协议栈     │</span><br><span class="line">    │  - apn_user      │      └──────────────────┘</span><br><span class="line">    │  - apn_pass      │</span><br><span class="line">    │  - apn_auth      │</span><br><span class="line">    │  - apn_iptype    │</span><br><span class="line">    └──────────────────┘</span><br></pre></td></tr></table></figure>
+<h3 id="数据流"><a href="#数据流" class="headerlink" title="数据流"></a>数据流</h3><ol>
+<li><strong>下行命令</strong> → MQTT接收</li>
+<li><strong>命令处理</strong> → mqtt_apn_config.c解析</li>
+<li><strong>配置存储</strong> → 写入KV存储</li>
+<li><strong>配置应用</strong> → 调用底层API</li>
+<li><strong>网络重启</strong> → 使配置生效</li>
+<li><strong>上行响应</strong> → 返回执行结果</li>
+</ol>
+<hr>
+<h2 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h2><h3 id="文件结构"><a href="#文件结构" class="headerlink" title="文件结构"></a>文件结构</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">project/</span><br><span class="line">├── my_network_adapter.h          # 头文件（API声明）</span><br><span class="line">├── luat_network_adapter_enhanced.c # 核心APN功能实现</span><br><span class="line">├── mqtt_apn_config.c                # MQTT命令处理</span><br><span class="line"> apn_config_init.c                # 初始化代码</span><br></pre></td></tr></table></figure>
+<h3 id="1-头文件-luat-network-adapter-h"><a href="#1-头文件-luat-network-adapter-h" class="headerlink" title="1. 头文件 (luat_network_adapter.h)"></a>1. 头文件 (luat_network_adapter.h)</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifndef</span> __LUAT_NETWORK_ADAPTER_EXT_H__</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> __LUAT_NETWORK_ADAPTER_EXT_H__</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdint.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// APN配置结构体</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="type">uint8_t</span> enabled;                    <span class="comment">// 是否启用手动APN配置</span></span><br><span class="line">    <span class="type">uint8_t</span> cid;                        <span class="comment">// CID (1-6)</span></span><br><span class="line">    <span class="type">uint8_t</span> ip_type;                    <span class="comment">// 1=IPV4, 2=IPV6, 3=IPV4V6</span></span><br><span class="line">    <span class="type">uint8_t</span> auth_type;                  <span class="comment">// 0=无认证, 1=PAP, 2=CHAP, 3=AUTO</span></span><br><span class="line">    <span class="type">char</span> apn_name[<span class="number">64</span>];                  <span class="comment">// APN名称</span></span><br><span class="line">    <span class="type">char</span> username[<span class="number">32</span>];                  <span class="comment">// 用户名</span></span><br><span class="line">    <span class="type">char</span> password[<span class="number">32</span>];                  <span class="comment">// 密码</span></span><br><span class="line">&#125; <span class="type">apn_config_t</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * @brief 设置手动APN配置</span></span><br><span class="line"><span class="comment"> * @return 0成功，-1失败</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">luat_network_set_manual_apn</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *apn_name,</span></span><br><span class="line"><span class="params">                                 <span class="type">const</span> <span class="type">char</span> *username,</span></span><br><span class="line"><span class="params">                                 <span class="type">const</span> <span class="type">char</span> *password,</span></span><br><span class="line"><span class="params">                                 <span class="type">uint8_t</span> auth_type,</span></span><br><span class="line"><span class="params">                                 <span class="type">uint8_t</span> ip_type)</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * @brief 启用/禁用手动APN配置</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">luat_network_enable_manual_apn</span><span class="params">(<span class="type">uint8_t</span> enable)</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * @brief 获取当前APN配置状态</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="type">const</span> <span class="type">apn_config_t</span>* <span class="title function_">luat_network_get_apn_config</span><span class="params">(<span class="type">void</span>)</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * @brief 从KV存储加载APN配置</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">load_apn_config_from_kv</span><span class="params">(<span class="type">void</span>)</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * @brief 保存APN配置到KV存储</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">save_apn_config_to_kv</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *apn_name,</span></span><br><span class="line"><span class="params">                          <span class="type">const</span> <span class="type">char</span> *username,</span></span><br><span class="line"><span class="params">                          <span class="type">const</span> <span class="type">char</span> *password,</span></span><br><span class="line"><span class="params">                          <span class="type">uint8_t</span> auth_type,</span></span><br><span class="line"><span class="params">                          <span class="type">uint8_t</span> ip_type,</span></span><br><span class="line"><span class="params">                          <span class="type">uint8_t</span> enabled)</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * @brief APN配置初始化函数</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">apn_config_init</span><span class="params">(<span class="type">void</span>)</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+<h3 id="2-核心实现-luat-network-adapter-enhanced-c"><a href="#2-核心实现-luat-network-adapter-enhanced-c" class="headerlink" title="2. 核心实现 (luat_network_adapter_enhanced.c)"></a>2. 核心实现 (luat_network_adapter_enhanced.c)</h3><p><strong>关键函数：</strong></p>
+<h4 id="luat-network-set-manual-apn"><a href="#luat-network-set-manual-apn" class="headerlink" title="luat_network_set_manual_apn()"></a>luat_network_set_manual_apn()</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">luat_network_set_manual_apn</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *apn_name,</span></span><br><span class="line"><span class="params">                                 <span class="type">const</span> <span class="type">char</span> *username,</span></span><br><span class="line"><span class="params">                                 <span class="type">const</span> <span class="type">char</span> *password,</span></span><br><span class="line"><span class="params">                                 <span class="type">uint8_t</span> auth_type,</span></span><br><span class="line"><span class="params">                                 <span class="type">uint8_t</span> ip_type)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (!apn_name || <span class="built_in">strlen</span>(apn_name) == <span class="number">0</span>) &#123;</span><br><span class="line">        LUAT_DEBUG_PRINT(<span class="string">&quot;错误：APN名称不能为空&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    g_apn_config.enabled = <span class="number">1</span>;</span><br><span class="line">    g_apn_config.ip_type = ip_type;</span><br><span class="line">    g_apn_config.auth_type = auth_type;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">strncpy</span>(g_apn_config.apn_name, apn_name, <span class="keyword">sizeof</span>(g_apn_config.apn_name) - <span class="number">1</span>);</span><br><span class="line">    <span class="comment">// ... 其他字段赋值</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="apply-manual-apn-config"><a href="#apply-manual-apn-config" class="headerlink" title="apply_manual_apn_config()"></a>apply_manual_apn_config()</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">int</span> <span class="title function_">apply_manual_apn_config</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (!g_apn_config.enabled) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    luat_mobile_user_apn_auto_active(</span><br><span class="line">        <span class="number">0</span>,</span><br><span class="line">        g_apn_config.cid,</span><br><span class="line">        g_apn_config.ip_type,</span><br><span class="line">        g_apn_config.auth_type,</span><br><span class="line">        (<span class="type">uint8_t</span>*)g_apn_config.apn_name,</span><br><span class="line">        <span class="built_in">strlen</span>(g_apn_config.apn_name),</span><br><span class="line">        (<span class="type">uint8_t</span>*)g_apn_config.username,</span><br><span class="line">        <span class="built_in">strlen</span>(g_apn_config.username),</span><br><span class="line">        (<span class="type">uint8_t</span>*)g_apn_config.password,</span><br><span class="line">        <span class="built_in">strlen</span>(g_apn_config.password)</span><br><span class="line">    );</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="网络事件回调集成"><a href="#网络事件回调集成" class="headerlink" title="网络事件回调集成"></a>网络事件回调集成</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">mobile_network_event_callback</span><span class="params">(LUAT_MOBILE_EVENT_E event,</span></span><br><span class="line"><span class="params">                                         <span class="type">uint8_t</span> index,</span></span><br><span class="line"><span class="params">                                         <span class="type">uint8_t</span> status)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">switch</span> (event)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">case</span> LUAT_MOBILE_EVENT_BEARER:</span><br><span class="line">            <span class="keyword">switch</span>(status)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">case</span> LUAT_MOBILE_BEARER_GET_DEFAULT_APN:</span><br><span class="line">                    <span class="keyword">if</span> (g_apn_config.enabled) &#123;</span><br><span class="line">                        apply_manual_apn_config();</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// ... 其他事件处理</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="3-MQTT命令处理-mqtt-apn-config-c"><a href="#3-MQTT命令处理-mqtt-apn-config-c" class="headerlink" title="3. MQTT命令处理 (mqtt_apn_config.c)"></a>3. MQTT命令处理 (mqtt_apn_config.c)</h3><p><strong>关键函数：</strong></p>
+<h4 id="dev-apn-set-config-设置APN"><a href="#dev-apn-set-config-设置APN" class="headerlink" title="dev_apn_set_config() - 设置APN"></a>dev_apn_set_config() - 设置APN</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">int</span> <span class="title function_">dev_apn_set_config</span><span class="params">(<span class="type">void</span> *object, <span class="type">uint8_t</span> *pdata,</span></span><br><span class="line"><span class="params">                              <span class="type">uint16_t</span> datalen, <span class="type">void</span> *pcontext)</span></span><br><span class="line">&#123;</span><br><span class="line">    cJSON* root = (cJSON*)object;</span><br><span class="line"></span><br><span class="line">    cJSON* apn = cJSON_GetObjectItemCaseSensitive(root, <span class="string">&quot;apn&quot;</span>);</span><br><span class="line">    cJSON* user = cJSON_GetObjectItemCaseSensitive(root, <span class="string">&quot;user&quot;</span>);</span><br><span class="line">    cJSON* pass = cJSON_GetObjectItemCaseSensitive(root, <span class="string">&quot;pass&quot;</span>);</span><br><span class="line">    cJSON* auth = cJSON_GetObjectItemCaseSensitive(root, <span class="string">&quot;auth&quot;</span>);</span><br><span class="line">    cJSON* ip_type = cJSON_GetObjectItemCaseSensitive(root, <span class="string">&quot;ip_type&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (apn &amp;&amp; cJSON_IsString(apn)) &#123;</span><br><span class="line">        <span class="comment">// 设置APN</span></span><br><span class="line">        result = luat_network_set_manual_apn(...);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 保存到KV</span></span><br><span class="line">        save_apn_config_to_kv(...);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 构造响应</span></span><br><span class="line">    <span class="built_in">snprintf</span>(response, <span class="keyword">sizeof</span>(response),</span><br><span class="line">        <span class="string">&quot;&#123;\&quot;type\&quot;:\&quot;cfg.apn.set.rsp\&quot;,\&quot;cmd_id\&quot;:%d,\&quot;result\&quot;:\&quot;%s\&quot;&#125;&quot;</span>,</span><br><span class="line">        cmd_id, result == <span class="number">0</span>  <span class="string">&quot;success&quot;</span> : <span class="string">&quot;failed&quot;</span>);</span><br><span class="line"></span><br><span class="line">    mqtt_publish_to_source((<span class="type">uint8_t</span>*)response, len, srcmqtt);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="save-apn-config-to-kv-保存配置"><a href="#save-apn-config-to-kv-保存配置" class="headerlink" title="save_apn_config_to_kv() - 保存配置"></a>save_apn_config_to_kv() - 保存配置</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">save_apn_config_to_kv</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *apn_name,</span></span><br><span class="line"><span class="params">                          <span class="type">const</span> <span class="type">char</span> *username,</span></span><br><span class="line"><span class="params">                          <span class="type">const</span> <span class="type">char</span> *password,</span></span><br><span class="line"><span class="params">                          <span class="type">uint8_t</span> auth_type,</span></span><br><span class="line"><span class="params">                          <span class="type">uint8_t</span> ip_type,</span></span><br><span class="line"><span class="params">                          <span class="type">uint8_t</span> enabled)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">uint32_t</span> _critical = luat_rtos_entry_critical();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 保存各项配置到KV</span></span><br><span class="line">    luat_fskv_set(<span class="string">&quot;apn_en&quot;</span>, enabled_str, <span class="built_in">strlen</span>(enabled_str));</span><br><span class="line">    luat_fskv_set(<span class="string">&quot;apn_name&quot;</span>, apn_name, <span class="built_in">strlen</span>(apn_name));</span><br><span class="line">    <span class="comment">// ... 其他字段</span></span><br><span class="line"></span><br><span class="line">    luat_rtos_exit_critical(_critical);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="load-apn-config-from-kv-加载配置"><a href="#load-apn-config-from-kv-加载配置" class="headerlink" title="load_apn_config_from_kv() - 加载配置"></a>load_apn_config_from_kv() - 加载配置</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">load_apn_config_from_kv</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">char</span> buffer[<span class="number">128</span>];</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 读取启用状态</span></span><br><span class="line">    len = luat_fskv_get(<span class="string">&quot;apn_en&quot;</span>, buffer, <span class="keyword">sizeof</span>(buffer));</span><br><span class="line">    <span class="keyword">if</span> (len &lt;= <span class="number">0</span>) <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 读取APN名称</span></span><br><span class="line">    luat_fskv_get(<span class="string">&quot;apn_name&quot;</span>, apn_name, <span class="keyword">sizeof</span>(apn_name));</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 读取其他配置</span></span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 应用配置</span></span><br><span class="line">    luat_network_set_manual_apn(...);</span><br><span class="line">    luat_network_enable_manual_apn(<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="4-初始化代码-apn-config-init-c"><a href="#4-初始化代码-apn-config-init-c" class="headerlink" title="4. 初始化代码 (apn_config_init.c)"></a>4. 初始化代码 (apn_config_init.c)</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">apn_config_init</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    LUAT_DEBUG_PRINT(<span class="string">&quot;=== APN配置初始化 ===&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> ret = load_apn_config_from_kv();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (ret == <span class="number">0</span>) &#123;</span><br><span class="line">        LUAT_DEBUG_PRINT(<span class="string">&quot;APN配置加载成功&quot;</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        LUAT_DEBUG_PRINT(<span class="string">&quot;使用默认APN&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>集成方法：</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">moblie_init</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    apn_config_init();  <span class="comment">// ← 添加这一行</span></span><br><span class="line"></span><br><span class="line">    luat_mobile_set_sim_id(<span class="number">2</span>);</span><br><span class="line">    luat_mobile_set_period_work(<span class="number">0</span>, <span class="number">16</span>*<span class="number">1000</span>, <span class="number">0</span>);</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="5-MYDBUS注册"><a href="#5-MYDBUS注册" class="headerlink" title="5. MYDBUS注册"></a>5. MYDBUS注册</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">MYDBUS_MODULE_EXPORT(MYDBUS_DOMAIN_MQTT_DOWNLINK,</span><br><span class="line">                     <span class="string">&quot;cfg.apn.set&quot;</span>,</span><br><span class="line">                     dev_apn_set_config,</span><br><span class="line">                     <span class="string">&quot;设置APN配置&quot;</span>)</span><br><span class="line"></span><br><span class="line">MYDBUS_MODULE_EXPORT(MYDBUS_DOMAIN_MQTT_DOWNLINK,</span><br><span class="line">                     <span class="string">&quot;cfg.apn.get&quot;</span>,</span><br><span class="line">                     dev_apn_get_config,</span><br><span class="line">                     <span class="string">&quot;查询APN配置&quot;</span>)</span><br><span class="line"></span><br><span class="line">MYDBUS_MODULE_EXPORT(MYDBUS_DOMAIN_MQTT_DOWNLINK,</span><br><span class="line">                     <span class="string">&quot;cfg.apn.enable&quot;</span>,</span><br><span class="line">                     dev_apn_enable_config,</span><br><span class="line">                     <span class="string">&quot;启用/禁用手动APN&quot;</span>)</span><br><span class="line"></span><br><span class="line">MYDBUS_MODULE_EXPORT(MYDBUS_DOMAIN_MQTT_DOWNLINK,</span><br><span class="line">                     <span class="string">&quot;cfg.apn.apply&quot;</span>,</span><br><span class="line">                     dev_apn_apply_config,</span><br><span class="line">                     <span class="string">&quot;应用APN配置&quot;</span>)</span><br><span class="line"></span><br><span class="line">MYDBUS_MODULE_EXPORT(MYDBUS_DOMAIN_MQTT_DOWNLINK,</span><br><span class="line">                     <span class="string">&quot;cfg.apn.clear&quot;</span>,</span><br><span class="line">                     dev_apn_clear_config,</span><br><span class="line">                     <span class="string">&quot;清除APN配置&quot;</span>)</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="MQTT命令接口"><a href="#MQTT命令接口" class="headerlink" title="MQTT命令接口"></a>MQTT命令接口</h2><h3 id="Topic规范"><a href="#Topic规范" class="headerlink" title="Topic规范"></a>Topic规范</h3><ul>
+<li><strong>下行Topic</strong>: <code>/ac/${imei}/downlink</code></li>
+<li><strong>上行Topic</strong>: <code>/ac/${imei}/uplink</code> (自动)</li>
+</ul>
+<h3 id="1-设置APN-cfg-apn-set"><a href="#1-设置APN-cfg-apn-set" class="headerlink" title="1. 设置APN (cfg.apn.set)"></a>1. 设置APN (cfg.apn.set)</h3><h4 id="请求格式"><a href="#请求格式" class="headerlink" title="请求格式"></a>请求格式</h4><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;cfg.apn.set&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;cmd_id&quot;</span><span class="punctuation">:</span> <span class="number">123</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;apn&quot;</span><span class="punctuation">:</span> <span class="string">&quot;cmnet&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;user&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;pass&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;auth&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;ip_type&quot;</span><span class="punctuation">:</span> <span class="number">1</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<h4 id="响应格式"><a href="#响应格式" class="headerlink" title="响应格式"></a>响应格式</h4><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;cfg.apn.set.rsp&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;cmd_id&quot;</span><span class="punctuation">:</span> <span class="number">123</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;result&quot;</span><span class="punctuation">:</span> <span class="string">&quot;success&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;msg&quot;</span><span class="punctuation">:</span> <span class="string">&quot;APN set to cmnet&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<h4 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h4><p><strong>公网卡（中国移动）：</strong></p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;cfg.apn.set&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;cmd_id&quot;</span><span class="punctuation">:</span> <span class="number">1</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;apn&quot;</span><span class="punctuation">:</span> <span class="string">&quot;cmnet&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;auth&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;ip_type&quot;</span><span class="punctuation">:</span> <span class="number">1</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<p><strong>专网卡（带认证）：</strong></p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;cfg.apn.set&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;cmd_id&quot;</span><span class="punctuation">:</span> <span class="number">2</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;apn&quot;</span><span class="punctuation">:</span> <span class="string">&quot;private.apn.com&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;user&quot;</span><span class="punctuation">:</span> <span class="string">&quot;username&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;pass&quot;</span><span class="punctuation">:</span> <span class="string">&quot;password&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;auth&quot;</span><span class="punctuation">:</span> <span class="number">3</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;ip_type&quot;</span><span class="punctuation">:</span> <span class="number">1</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<h3 id="2-查询APN-cfg-apn-get"><a href="#2-查询APN-cfg-apn-get" class="headerlink" title="2. 查询APN (cfg.apn.get)"></a>2. 查询APN (cfg.apn.get)</h3><h4 id="请求格式-1"><a href="#请求格式-1" class="headerlink" title="请求格式"></a>请求格式</h4><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;cfg.apn.get&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;cmd_id&quot;</span><span class="punctuation">:</span> <span class="number">124</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<h4 id="响应格式（已配置）"><a href="#响应格式（已配置）" class="headerlink" title="响应格式（已配置）"></a>响应格式（已配置）</h4><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;cfg.apn.get.rsp&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;cmd_id&quot;</span><span class="punctuation">:</span> <span class="number">124</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;enabled&quot;</span><span class="punctuation">:</span> <span class="number">1</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;apn&quot;</span><span class="punctuation">:</span> <span class="string">&quot;cmnet&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;user&quot;</span><span class="punctuation">:</span> <span class="string">&quot;&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;auth&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;ip_type&quot;</span><span class="punctuation">:</span> <span class="number">1</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;cid&quot;</span><span class="punctuation">:</span> <span class="number">1</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<h4 id="响应格式（未配置）"><a href="#响应格式（未配置）" class="headerlink" title="响应格式（未配置）"></a>响应格式（未配置）</h4><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;cfg.apn.get.rsp&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;cmd_id&quot;</span><span class="punctuation">:</span> <span class="number">124</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;enabled&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;apn&quot;</span><span class="punctuation">:</span> <span class="string">&quot;auto&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;msg&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Using default APN&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<h3 id="3-启用-禁用-cfg-apn-enable"><a href="#3-启用-禁用-cfg-apn-enable" class="headerlink" title="3. 启用&#x2F;禁用 (cfg.apn.enable)"></a>3. 启用&#x2F;禁用 (cfg.apn.enable)</h3><h4 id="请求格式-2"><a href="#请求格式-2" class="headerlink" title="请求格式"></a>请求格式</h4><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;cfg.apn.enable&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;cmd_id&quot;</span><span class="punctuation">:</span> <span class="number">125</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;enable&quot;</span><span class="punctuation">:</span> <span class="number">1</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>参数：</p>
+<ul>
+<li><code>enable</code>: 1&#x3D;启用手动APN, 0&#x3D;使用默认APN</li>
+</ul>
+<h4 id="响应格式-1"><a href="#响应格式-1" class="headerlink" title="响应格式"></a>响应格式</h4><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;cfg.apn.enable.rsp&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;cmd_id&quot;</span><span class="punctuation">:</span> <span class="number">125</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;result&quot;</span><span class="punctuation">:</span> <span class="string">&quot;success&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;msg&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Manual APN enabled&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<h3 id="4-应用配置-cfg-apn-apply"><a href="#4-应用配置-cfg-apn-apply" class="headerlink" title="4. 应用配置 (cfg.apn.apply)"></a>4. 应用配置 (cfg.apn.apply)</h3><h4 id="请求格式-3"><a href="#请求格式-3" class="headerlink" title="请求格式"></a>请求格式</h4><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;cfg.apn.apply&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;cmd_id&quot;</span><span class="punctuation">:</span> <span class="number">126</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<h4 id="响应格式-2"><a href="#响应格式-2" class="headerlink" title="响应格式"></a>响应格式</h4><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;cfg.apn.apply.rsp&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;cmd_id&quot;</span><span class="punctuation">:</span> <span class="number">126</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;result&quot;</span><span class="punctuation">:</span> <span class="string">&quot;success&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;msg&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Network restarting, may disconnect briefly&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<p> <strong>注意</strong>：执行此命令会导致设备短暂断网（5-30秒）</p>
+<h3 id="5-清除配置-cfg-apn-clear"><a href="#5-清除配置-cfg-apn-clear" class="headerlink" title="5. 清除配置 (cfg.apn.clear)"></a>5. 清除配置 (cfg.apn.clear)</h3><h4 id="请求格式-4"><a href="#请求格式-4" class="headerlink" title="请求格式"></a>请求格式</h4><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;cfg.apn.clear&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;cmd_id&quot;</span><span class="punctuation">:</span> <span class="number">127</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<h4 id="响应格式-3"><a href="#响应格式-3" class="headerlink" title="响应格式"></a>响应格式</h4><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;cfg.apn.clear.rsp&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;cmd_id&quot;</span><span class="punctuation">:</span> <span class="number">127</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;result&quot;</span><span class="punctuation">:</span> <span class="string">&quot;success&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;msg&quot;</span><span class="punctuation">:</span> <span class="string">&quot;APN config cleared, using default&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="使用示例"><a href="#使用示例" class="headerlink" title="使用示例"></a>使用示例</h2><h3 id="场景1：配置公网卡APN"><a href="#场景1：配置公网卡APN" class="headerlink" title="场景1：配置公网卡APN"></a>场景1：配置公网卡APN</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 步骤1：查询当前配置</span></span><br><span class="line">Topic: /ac/860123456789012/downlink</span><br><span class="line">Payload: &#123;<span class="string">&quot;type&quot;</span>:<span class="string">&quot;cfg.apn.get&quot;</span>, <span class="string">&quot;cmd_id&quot;</span>:1&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 步骤2：设置中国移动CMNET</span></span><br><span class="line">Payload: &#123;<span class="string">&quot;type&quot;</span>:<span class="string">&quot;cfg.apn.set&quot;</span>, <span class="string">&quot;cmd_id&quot;</span>:2, <span class="string">&quot;apn&quot;</span>:<span class="string">&quot;cmnet&quot;</span>, <span class="string">&quot;auth&quot;</span>:0, <span class="string">&quot;ip_type&quot;</span>:1&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 步骤3：应用配置</span></span><br><span class="line">Payload: &#123;<span class="string">&quot;type&quot;</span>:<span class="string">&quot;cfg.apn.apply&quot;</span>, <span class="string">&quot;cmd_id&quot;</span>:3&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 步骤4：等待网络重连（约10-20秒）</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 步骤5：验证配置</span></span><br><span class="line">Payload: &#123;<span class="string">&quot;type&quot;</span>:<span class="string">&quot;cfg.apn.get&quot;</span>, <span class="string">&quot;cmd_id&quot;</span>:4&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="场景2：配置专网卡APN"><a href="#场景2：配置专网卡APN" class="headerlink" title="场景2：配置专网卡APN"></a>场景2：配置专网卡APN</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 步骤1：设置专网APN（带认证）</span></span><br><span class="line">Topic: /ac/860123456789012/downlink</span><br><span class="line">Payload: &#123;</span><br><span class="line">  <span class="string">&quot;type&quot;</span>: <span class="string">&quot;cfg.apn.set&quot;</span>,</span><br><span class="line">  <span class="string">&quot;cmd_id&quot;</span>: 1,</span><br><span class="line">  <span class="string">&quot;apn&quot;</span>: <span class="string">&quot;private.apn.com&quot;</span>,</span><br><span class="line">  <span class="string">&quot;user&quot;</span>: <span class="string">&quot;myuser&quot;</span>,</span><br><span class="line">  <span class="string">&quot;pass&quot;</span>: <span class="string">&quot;mypass&quot;</span>,</span><br><span class="line">  <span class="string">&quot;auth&quot;</span>: 3,</span><br><span class="line">  <span class="string">&quot;ip_type&quot;</span>: 1</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 步骤2：应用配置</span></span><br><span class="line">Payload: &#123;<span class="string">&quot;type&quot;</span>:<span class="string">&quot;cfg.apn.apply&quot;</span>, <span class="string">&quot;cmd_id&quot;</span>:2&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 步骤3：查询确认</span></span><br><span class="line">Payload: &#123;<span class="string">&quot;type&quot;</span>:<span class="string">&quot;cfg.apn.get&quot;</span>, <span class="string">&quot;cmd_id&quot;</span>:3&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="场景3：切换回默认APN"><a href="#场景3：切换回默认APN" class="headerlink" title="场景3：切换回默认APN"></a>场景3：切换回默认APN</h3><p><strong>方式1：禁用手动APN</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 禁用（配置保留）</span></span><br><span class="line">&#123;<span class="string">&quot;type&quot;</span>:<span class="string">&quot;cfg.apn.enable&quot;</span>, <span class="string">&quot;cmd_id&quot;</span>:1, <span class="string">&quot;enable&quot;</span>:0&#125;</span><br><span class="line">&#123;<span class="string">&quot;type&quot;</span>:<span class="string">&quot;cfg.apn.apply&quot;</span>, <span class="string">&quot;cmd_id&quot;</span>:2&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>方式2：清除配置</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 清除所有配置</span></span><br><span class="line">&#123;<span class="string">&quot;type&quot;</span>:<span class="string">&quot;cfg.apn.clear&quot;</span>, <span class="string">&quot;cmd_id&quot;</span>:1&#125;</span><br><span class="line">&#123;<span class="string">&quot;type&quot;</span>:<span class="string">&quot;cfg.apn.apply&quot;</span>, <span class="string">&quot;cmd_id&quot;</span>:2&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="场景4：临时切换"><a href="#场景4：临时切换" class="headerlink" title="场景4：临时切换"></a>场景4：临时切换</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. 禁用手动APN（配置保留）</span></span><br><span class="line">&#123;<span class="string">&quot;type&quot;</span>:<span class="string">&quot;cfg.apn.enable&quot;</span>, <span class="string">&quot;cmd_id&quot;</span>:1, <span class="string">&quot;enable&quot;</span>:0&#125;</span><br><span class="line">&#123;<span class="string">&quot;type&quot;</span>:<span class="string">&quot;cfg.apn.apply&quot;</span>, <span class="string">&quot;cmd_id&quot;</span>:2&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># ... 使用默认APN一段时间 ...</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 2. 重新启用（配置仍在）</span></span><br><span class="line">&#123;<span class="string">&quot;type&quot;</span>:<span class="string">&quot;cfg.apn.enable&quot;</span>, <span class="string">&quot;cmd_id&quot;</span>:3, <span class="string">&quot;enable&quot;</span>:1&#125;</span><br><span class="line">&#123;<span class="string">&quot;type&quot;</span>:<span class="string">&quot;cfg.apn.apply&quot;</span>, <span class="string">&quot;cmd_id&quot;</span>:4&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="故障排查"><a href="#故障排查" class="headerlink" title="故障排查"></a>故障排查</h2><h3 id="问题1：配置后无法联网"><a href="#问题1：配置后无法联网" class="headerlink" title="问题1：配置后无法联网"></a>问题1：配置后无法联网</h3><p><strong>症状：</strong></p>
+<ul>
+<li>设置APN后网络无法连接</li>
+<li>NETIF事件不出现</li>
+</ul>
+<p><strong>排查步骤：</strong></p>
+<ol>
+<li><strong>检查APN名称</strong></li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查询当前配置</span></span><br><span class="line">&#123;<span class="string">&quot;type&quot;</span>:<span class="string">&quot;cfg.apn.get&quot;</span>, <span class="string">&quot;cmd_id&quot;</span>:1&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 确认APN名称正确（区分大小写）</span></span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li><strong>检查认证信息</strong></li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 专网卡需要正确的用户名密码</span></span><br><span class="line"><span class="comment"># 公网卡通常auth设为0</span></span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li><strong>查看日志</strong></li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">LUAT_DEBUG_PRINT输出:</span><br><span class="line">- &quot;APN配置已设置并保存&quot;</span><br><span class="line">- &quot;应用手动APN配置&quot;</span><br><span class="line">- &quot;当前使用APN: xxx (手动配置)&quot;</span><br></pre></td></tr></table></figure>
+<ol start="4">
+<li><strong>恢复默认APN测试</strong></li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#123;<span class="string">&quot;type&quot;</span>:<span class="string">&quot;cfg.apn.clear&quot;</span>, <span class="string">&quot;cmd_id&quot;</span>:1&#125;</span><br><span class="line">&#123;<span class="string">&quot;type&quot;</span>:<span class="string">&quot;cfg.apn.apply&quot;</span>, <span class="string">&quot;cmd_id&quot;</span>:2&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="问题2：设备无响应"><a href="#问题2：设备无响应" class="headerlink" title="问题2：设备无响应"></a>问题2：设备无响应</h3><p><strong>症状：</strong></p>
+<ul>
+<li>MQTT命令发送后无响应</li>
+<li>上行消息未收到</li>
+</ul>
+<p><strong>排查步骤：</strong></p>
+<ol>
+<li><strong>检查MQTT连接</strong></li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 确认设备在线</span></span><br><span class="line"><span class="comment"># 检查Topic是否正确</span></span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li><strong>检查JSON格式</strong></li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使用JSON验证器检查格式</span></span><br><span class="line"><span class="comment"># 确保没有多余逗号、引号等</span></span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li><strong>检查cmd_id</strong></li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 响应中的cmd_id应与请求一致</span></span><br></pre></td></tr></table></figure>
+<ol start="4">
+<li><strong>查看设备日志</strong></li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 是否有异常打印</span><br><span class="line"># 是否进入命令处理函数</span><br></pre></td></tr></table></figure>
+<h3 id="问题3：配置不持久化"><a href="#问题3：配置不持久化" class="headerlink" title="问题3：配置不持久化"></a>问题3：配置不持久化</h3><p><strong>症状：</strong></p>
+<ul>
+<li>配置后有效</li>
+<li>重启后失效</li>
+</ul>
+<p><strong>排查步骤：</strong></p>
+<ol>
+<li><strong>检查KV存储</strong></li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 确认save_apn_config_to_kv返回0</span></span><br><span class="line"><span class="comment">// 检查FSKV是否正常工作</span></span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li><strong>检查初始化</strong></li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 确认apn_config_init()被调用</span></span><br><span class="line"><span class="comment">// 确认在网络初始化之前调用</span></span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li><strong>检查文件系统</strong></li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># FSKV分区是否正常</span></span><br><span class="line"><span class="comment"># 存储空间是否充足</span></span><br></pre></td></tr></table></figure>
+<h3 id="问题4：专网卡无法连接"><a href="#问题4：专网卡无法连接" class="headerlink" title="问题4：专网卡无法连接"></a>问题4：专网卡无法连接</h3><p><strong>症状：</strong></p>
+<ul>
+<li>使用默认APN无法激活</li>
+<li>配置专网APN后也无法连接</li>
+</ul>
+<p><strong>解决方法：</strong></p>
+<ol>
+<li><strong>确认APN信息</strong></li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 联系SIM卡提供商确认：</span></span><br><span class="line"><span class="comment"># - 正确的APN名称</span></span><br><span class="line"><span class="comment"># - 用户名</span></span><br><span class="line"><span class="comment"># - 密码</span></span><br><span class="line"><span class="comment"># - 认证方式</span></span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li><strong>使用AUTO认证</strong></li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="string">&quot;type&quot;</span>: <span class="string">&quot;cfg.apn.set&quot;</span>,</span><br><span class="line">  <span class="string">&quot;cmd_id&quot;</span>: 1,</span><br><span class="line">  <span class="string">&quot;apn&quot;</span>: <span class="string">&quot;correct.apn.name&quot;</span>,</span><br><span class="line">  <span class="string">&quot;user&quot;</span>: <span class="string">&quot;username&quot;</span>,</span><br><span class="line">  <span class="string">&quot;pass&quot;</span>: <span class="string">&quot;password&quot;</span>,</span><br><span class="line">  <span class="string">&quot;auth&quot;</span>: 3,  <span class="comment"># ← 使用AUTO</span></span><br><span class="line">  <span class="string">&quot;ip_type&quot;</span>: 1</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li><strong>检查信号强度</strong></li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// RSRP &gt; -105 才能正常连接</span></span><br></pre></td></tr></table></figure>
+<h3 id="问题5：重启网络失败"><a href="#问题5：重启网络失败" class="headerlink" title="问题5：重启网络失败"></a>问题5：重启网络失败</h3><p><strong>症状：</strong></p>
+<ul>
+<li>apply命令后网络未重启</li>
+<li>或重启后无法恢复</li>
+</ul>
+<p><strong>解决方法：</strong></p>
+<ol>
+<li><strong>延长等待时间</strong></li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 发送apply命令后等待30-60秒</span></span><br><span class="line"><span class="comment"># 不要立即发送其他命令</span></span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li><strong>检查网络状态</strong></li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 监听LUAT_MOBILE_EVENT_NETIF事件</span></span><br><span class="line"><span class="comment">// 等待LUAT_MOBILE_NETIF_LINK_ON</span></span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li><strong>手动重启</strong></li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 如果自动重启失败，可以重启设备</span></span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h2><h3 id="Q1-公网卡需要配置APN吗？"><a href="#Q1-公网卡需要配置APN吗？" class="headerlink" title="Q1: 公网卡需要配置APN吗？"></a>Q1: 公网卡需要配置APN吗？</h3><p><strong>A:</strong> 通常不需要。公网卡（移动、联通、电信）会自动获取默认APN。只有在以下情况需要手动配置：</p>
+<ul>
+<li>需要使用特定APN（如cmnet vs cmwap）</li>
+<li>运营商要求手动配置</li>
+<li>调试和测试需求</li>
+</ul>
+<h3 id="Q2-auth参数应该设置什么值？"><a href="#Q2-auth参数应该设置什么值？" class="headerlink" title="Q2: auth参数应该设置什么值？"></a>Q2: auth参数应该设置什么值？</h3><p><strong>A:</strong></p>
+<ul>
+<li><strong>公网卡</strong>：设为 <code>0</code>（无认证）</li>
+<li><strong>专网卡</strong>：设为 <code>3</code>（AUTO，自动选择PAP或CHAP）</li>
+<li><strong>不确定时</strong>：使用 <code>3</code></li>
+</ul>
+<h3 id="Q3-如何判断APN配置是否生效？"><a href="#Q3-如何判断APN配置是否生效？" class="headerlink" title="Q3: 如何判断APN配置是否生效？"></a>Q3: 如何判断APN配置是否生效？</h3><p><strong>A:</strong></p>
+<ol>
+<li>发送查询命令：<code>{&quot;type&quot;:&quot;cfg.apn.get&quot;, ...}</code></li>
+<li>查看日志：<code>当前使用APN: xxx (手动配置)</code></li>
+<li>检查网络连接状态</li>
+</ol>
+<h3 id="Q4-可以同时配置多个APN吗？"><a href="#Q4-可以同时配置多个APN吗？" class="headerlink" title="Q4: 可以同时配置多个APN吗？"></a>Q4: 可以同时配置多个APN吗？</h3><p><strong>A:</strong> 当前实现只支持一个手动APN（默认CID&#x3D;1）。如需使用多个APN，需要：</p>
+<ul>
+<li>扩展代码支持不同CID</li>
+<li>使用网卡绑定到不同CID</li>
+</ul>
+<h3 id="Q5-IPV6如何配置？"><a href="#Q5-IPV6如何配置？" class="headerlink" title="Q5: IPV6如何配置？"></a>Q5: IPV6如何配置？</h3><p><strong>A:</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># IPV6单栈</span></span><br><span class="line">&#123;<span class="string">&quot;type&quot;</span>:<span class="string">&quot;cfg.apn.set&quot;</span>, <span class="string">&quot;apn&quot;</span>:<span class="string">&quot;cmnet&quot;</span>, <span class="string">&quot;ip_type&quot;</span>:2&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># IPV4V6双栈（推荐）</span></span><br><span class="line">&#123;<span class="string">&quot;type&quot;</span>:<span class="string">&quot;cfg.apn.set&quot;</span>, <span class="string">&quot;apn&quot;</span>:<span class="string">&quot;cmnet&quot;</span>, <span class="string">&quot;ip_type&quot;</span>:3&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Q6-配置错误的APN会怎样？"><a href="#Q6-配置错误的APN会怎样？" class="headerlink" title="Q6: 配置错误的APN会怎样？"></a>Q6: 配置错误的APN会怎样？</h3><p><strong>A:</strong></p>
+<ul>
+<li>网络无法连接</li>
+<li>NETIF不会变为LINK_ON状态</li>
+<li>需要重新配置或清除配置恢复默认</li>
+</ul>
+<h3 id="Q7-如何批量配置多台设备？"><a href="#Q7-如何批量配置多台设备？" class="headerlink" title="Q7: 如何批量配置多台设备？"></a>Q7: 如何批量配置多台设备？</h3><p><strong>A:</strong> 使用MQTT批量下发：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> imei <span class="keyword">in</span> device_list:</span><br><span class="line">    topic = <span class="string">f&quot;/ac/<span class="subst">&#123;imei&#125;</span>/downlink&quot;</span></span><br><span class="line">    client.publish(topic, apn_config_json)</span><br></pre></td></tr></table></figure>
+<h3 id="Q8-设备重启后配置会保留吗？"><a href="#Q8-设备重启后配置会保留吗？" class="headerlink" title="Q8: 设备重启后配置会保留吗？"></a>Q8: 设备重启后配置会保留吗？</h3><p><strong>A:</strong> 会保留。配置保存在KV存储中，重启后自动加载。</p>
+<h3 id="Q9-如何快速恢复默认APN？"><a href="#Q9-如何快速恢复默认APN？" class="headerlink" title="Q9: 如何快速恢复默认APN？"></a>Q9: 如何快速恢复默认APN？</h3><p><strong>A:</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 方法1：清除配置</span></span><br><span class="line">&#123;<span class="string">&quot;type&quot;</span>:<span class="string">&quot;cfg.apn.clear&quot;</span>, <span class="string">&quot;cmd_id&quot;</span>:1&#125;</span><br><span class="line">&#123;<span class="string">&quot;type&quot;</span>:<span class="string">&quot;cfg.apn.apply&quot;</span>, <span class="string">&quot;cmd_id&quot;</span>:2&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 方法2：禁用手动APN</span></span><br><span class="line">&#123;<span class="string">&quot;type&quot;</span>:<span class="string">&quot;cfg.apn.enable&quot;</span>, <span class="string">&quot;enable&quot;</span>:0, <span class="string">&quot;cmd_id&quot;</span>:1&#125;</span><br><span class="line">&#123;<span class="string">&quot;type&quot;</span>:<span class="string">&quot;cfg.apn.apply&quot;</span>, <span class="string">&quot;cmd_id&quot;</span>:2&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Q10-为什么apply后要等待？"><a href="#Q10-为什么apply后要等待？" class="headerlink" title="Q10: 为什么apply后要等待？"></a>Q10: 为什么apply后要等待？</h3><p><strong>A:</strong> apply命令会重启网络协议栈，过程包括：</p>
+<ol>
+<li>断开当前网络（1-5秒）</li>
+<li>重新注册网络（5-15秒）</li>
+<li>PDP激活（2-5秒）</li>
+<li>重新连接MQTT（2-5秒）</li>
+</ol>
+<p>总计约10-30秒，需要耐心等待。</p>
+<hr>
+<h2 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h2><h3 id="A-常用运营商APN"><a href="#A-常用运营商APN" class="headerlink" title="A. 常用运营商APN"></a>A. 常用运营商APN</h3><h4 id="中国移动"><a href="#中国移动" class="headerlink" title="中国移动"></a>中国移动</h4><table>
+<thead>
+<tr>
+<th>APN</th>
+<th>类型</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>cmnet</td>
+<td>公网</td>
+<td>推荐使用，无限制</td>
+</tr>
+<tr>
+<td>cmwap</td>
+<td>WAP</td>
+<td>WAP代理，有限制</td>
+</tr>
+</tbody></table>
+<h4 id="中国联通"><a href="#中国联通" class="headerlink" title="中国联通"></a>中国联通</h4><table>
+<thead>
+<tr>
+<th>APN</th>
+<th>类型</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>3gnet</td>
+<td>公网</td>
+<td>推荐使用，无限制</td>
+</tr>
+<tr>
+<td>3gwap</td>
+<td>WAP</td>
+<td>WAP代理，有限制</td>
+</tr>
+<tr>
+<td>wonet</td>
+<td>公网</td>
+<td>3G&#x2F;4G网络</td>
+</tr>
+</tbody></table>
+<h4 id="中国电信"><a href="#中国电信" class="headerlink" title="中国电信"></a>中国电信</h4><table>
+<thead>
+<tr>
+<th>APN</th>
+<th>类型</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ctnet</td>
+<td>公网</td>
+<td>推荐使用</td>
+</tr>
+<tr>
+<td>ctwap</td>
+<td>WAP</td>
+<td>WAP代理</td>
+</tr>
+<tr>
+<td>ctlte</td>
+<td>4G</td>
+<td>LTE专用</td>
+</tr>
+</tbody></table>
+<h3 id="B-KV存储键名"><a href="#B-KV存储键名" class="headerlink" title="B. KV存储键名"></a>B. KV存储键名</h3><table>
+<thead>
+<tr>
+<th>键名</th>
+<th>说明</th>
+<th>示例值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>apn_en</td>
+<td>启用状态</td>
+<td>“1” &#x2F; “0”</td>
+</tr>
+<tr>
+<td>apn_name</td>
+<td>APN名称</td>
+<td>“cmnet”</td>
+</tr>
+<tr>
+<td>apn_user</td>
+<td>用户名</td>
+<td>“username”</td>
+</tr>
+<tr>
+<td>apn_pass</td>
+<td>密码</td>
+<td>“password”</td>
+</tr>
+<tr>
+<td>apn_auth</td>
+<td>认证类型</td>
+<td>“0” ~ “3”</td>
+</tr>
+<tr>
+<td>apn_iptype</td>
+<td>IP类型</td>
+<td>“1” ~ “3”</td>
+</tr>
+</tbody></table>
+<h3 id="C-参数取值范围"><a href="#C-参数取值范围" class="headerlink" title="C. 参数取值范围"></a>C. 参数取值范围</h3><h4 id="auth-type-认证类型"><a href="#auth-type-认证类型" class="headerlink" title="auth_type (认证类型)"></a>auth_type (认证类型)</h4><table>
+<thead>
+<tr>
+<th>值</th>
+<th>说明</th>
+<th>适用场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>无认证</td>
+<td>公网SIM卡</td>
+</tr>
+<tr>
+<td>1</td>
+<td>PAP</td>
+<td>明文密码传输</td>
+</tr>
+<tr>
+<td>2</td>
+<td>CHAP</td>
+<td>加密密码传输</td>
+</tr>
+<tr>
+<td>3</td>
+<td>AUTO</td>
+<td>自动选择PAP或CHAP（推荐）</td>
+</tr>
+</tbody></table>
+<h4 id="ip-type-IP类型"><a href="#ip-type-IP类型" class="headerlink" title="ip_type (IP类型)"></a>ip_type (IP类型)</h4><table>
+<thead>
+<tr>
+<th>值</th>
+<th>说明</th>
+<th>适用场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>IPV4</td>
+<td>大部分应用（推荐）</td>
+</tr>
+<tr>
+<td>2</td>
+<td>IPV6</td>
+<td>纯IPV6网络</td>
+</tr>
+<tr>
+<td>3</td>
+<td>IPV4V6</td>
+<td>双栈网络，兼容性最好</td>
+</tr>
+</tbody></table>
+<h3 id="D-错误代码"><a href="#D-错误代码" class="headerlink" title="D. 错误代码"></a>D. 错误代码</h3><table>
+<thead>
+<tr>
+<th>错误</th>
+<th>原因</th>
+<th>解决方法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>result: failed</td>
+<td>APN名称为空</td>
+<td>检查apn字段</td>
+</tr>
+<tr>
+<td>save failed</td>
+<td>KV存储失败</td>
+<td>检查存储空间</td>
+</tr>
+<tr>
+<td>Network restarting failed</td>
+<td>协议栈重启失败</td>
+<td>等待后重试</td>
+</tr>
+</tbody></table>
+<h3 id="E-调试日志关键字"><a href="#E-调试日志关键字" class="headerlink" title="E. 调试日志关键字"></a>E. 调试日志关键字</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"># 成功日志</span><br><span class="line">&quot;APN配置已设置并保存&quot;</span><br><span class="line">&quot;手动APN配置已应用&quot;</span><br><span class="line">&quot;当前使用APN: cmnet (手动配置)&quot;</span><br><span class="line">&quot;网络协议栈重启成功&quot;</span><br><span class="line"></span><br><span class="line"># 错误日志</span><br><span class="line">&quot;APN名称为空，无法配置&quot;</span><br><span class="line">&quot;APN配置加载失败&quot;</span><br><span class="line">&quot;网络协议栈重启失败&quot;</span><br><span class="line"></span><br><span class="line"># 状态日志</span><br><span class="line">&quot;从KV加载APN配置&quot;</span><br><span class="line">&quot;手动APN已启用&quot;</span><br><span class="line">&quot;手动APN已禁用&quot;</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="版本历史"><a href="#版本历史" class="headerlink" title="版本历史"></a>版本历史</h2><h3 id="v1-0-0-2024-02"><a href="#v1-0-0-2024-02" class="headerlink" title="v1.0.0 (2024-02)"></a>v1.0.0 (2024-02)</h3><ul>
+<li>实现MQTT远程配置APN</li>
+<li>支持5个命令（set&#x2F;get&#x2F;enable&#x2F;apply&#x2F;clear）</li>
+<li>KV持久化存储</li>
+<li>自动加载配置</li>
+<li>专网卡认证支持</li>
+</ul>
+<hr>
+<h2 id="技术支持"><a href="#技术支持" class="headerlink" title="技术支持"></a>技术支持</h2><h3 id="联系方式"><a href="#联系方式" class="headerlink" title="联系方式"></a>联系方式</h3><ul>
+<li><strong>文档版本</strong>: v1.0.0</li>
+<li><strong>更新日期</strong>: 2024-02</li>
+</ul>
+<h3 id="相关资源"><a href="#相关资源" class="headerlink" title="相关资源"></a>相关资源</h3><ul>
+<li>设备日志：查看LUAT_DEBUG_PRINT输出</li>
+<li>MQTT调试：使用MQTT客户端工具</li>
+<li>网络状态：监听移动网络事件</li>
+</ul>
+<hr>
+<p><strong>文档结束</strong></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/temp/apn%E9%85%8D%E7%BD%AE%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E.html" data-id="cuidelKOURfQYW5mRjKABO1Pv" data-title="" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E5%85%A8%E5%BF%97T113S3/">全志T113S3</a></li></ul></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96/" rel="tag">内存优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="tag">博客环境搭建</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" rel="tag">学习记录</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" rel="tag">嵌入式学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" rel="tag">工具使用</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" rel="tag">数据传输</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" rel="tag">数据存储</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/" rel="tag">结构体</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%A9%B1%E5%8A%A8%E5%B1%8F/" rel="tag">驱动屏</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/Linux/" style="font-size: 17.5px;">Linux</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96/" style="font-size: 10px;">内存优化</a> <a href="/tags/%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" style="font-size: 10px;">博客环境搭建</a> <a href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" style="font-size: 10px;">学习记录</a> <a href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" style="font-size: 20px;">嵌入式学习</a> <a href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" style="font-size: 15px;">工具使用</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" style="font-size: 10px;">数据传输</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" style="font-size: 10px;">数据存储</a> <a href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/" style="font-size: 10px;">结构体</a> <a href="/tags/%E9%A9%B1%E5%8A%A8%E5%B1%8F/" style="font-size: 12.5px;">驱动屏</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/02/">February 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/01/">January 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/02/">February 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">January 2023</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2026/02/08/git%20%E4%BD%BF%E7%94%A8/%E7%AE%80%E7%95%A5%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/">git 简略使用指南</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/08/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/03_Linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/">Linux常用命令</a>
+          </li>
+        
+          <li>
+            <a href="/2026/01/30/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/">博客hexo环境搭建</a>
+          </li>
+        
+          <li>
+            <a href="/2026/01/29/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E7%BB%93%E6%9E%84%E4%BD%93%E8%AE%BE%E8%AE%A1%E7%9A%84%E5%AF%B9%E9%BD%90%E4%B8%8E%E4%BC%98%E5%8C%96/">嵌入式结构体设计的对齐与优化</a>
+          </li>
+        
+          <li>
+            <a href="/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%98%E5%82%A8%E5%BC%80%E5%8F%91%E9%AB%98%E6%95%88%E5%BA%94%E7%94%A8/">嵌入式存储开发高效应用</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
