@@ -71,6 +71,115 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-Linux 学习记录/驱动屏/00_交叉编译" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2026/02/24/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/%E9%A9%B1%E5%8A%A8%E5%B1%8F/00_%E4%BA%A4%E5%8F%89%E7%BC%96%E8%AF%91/" class="article-date">
+  <time class="dt-published" datetime="2026-02-23T16:00:00.000Z" itemprop="datePublished">2026-02-24</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>►<a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E5%85%A8%E5%BF%97T113S3/">全志T113S3</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2026/02/24/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/%E9%A9%B1%E5%8A%A8%E5%B1%8F/00_%E4%BA%A4%E5%8F%89%E7%BC%96%E8%AF%91/">交叉编译</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="交叉编译"><a href="#交叉编译" class="headerlink" title="交叉编译"></a>交叉编译</h1><p>那如何编译一个ARM架构的程序呢？这就需要用到交叉编译工具链了，什么是交叉编译？就是在X86平台的PC机上编译ARM平台的程序，什么是工具链？这里我们可以理解为是GCC，那什么是交叉编译工具链？就是芯片厂家针对自己芯片平台开发的编译器，我们板卡的芯片是全志的T113S3，厂家提供的工具链是toolchain-sunxi-glibc-gcc-830，我们下载后，放入ubuntu中解压。<br><code>https://x509p6c8to.feishu.cn/docx/GanSd5WxyoqU7gxhSM3cOb7hngc#share-E8oOdgPhloQmI5xdznuc6yXjnZe</code><br>接下来，我们需要做两样东西<br>设置 <code>STAGING_DIR</code> 环境变量，以便在构建过程中能够找到工具链对应的库和头文件。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">当前shell下执行下方指令，/xxxxx/替换为自己本机的路径</span><br><span class="line"><span class="keyword">export</span> STAGING_DIR=/xxxxx/toolchain-sunxi-glibc-gcc<span class="number">-830</span>/toolchain/bin:$STAGING_DIR</span><br></pre></td></tr></table></figure>
+
+<p>设置编译器为对应的交叉编译器。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">CMakeList.txt修改为下方内容，/xxxxx/替换为自己本机的路径<span class="built_in">cmake_minimum_required</span>(VERSION <span class="number">3.1</span><span class="number">.5</span>)</span><br><span class="line"><span class="built_in">project</span>(monitor C)</span><br><span class="line"><span class="built_in">set</span>(CMAKE_C_COMPILER /xxxxx/toolchain-sunxi-glibc-gcc<span class="number">-830</span>/toolchain/bin/arm-openwrt-linux-gcc)</span><br><span class="line"><span class="built_in">add_executable</span>(monitor main.c)</span><br></pre></td></tr></table></figure>
+
+<p>重新删掉build文件，编译即可。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">rm build -rf</span><br><span class="line">mkdir build</span><br><span class="line">cd build</span><br><span class="line">cmake ..</span><br><span class="line">make查看生成的文件</span><br><span class="line">file hello</span><br><span class="line">monitor: ELF <span class="number">32</span>-bit LSB executable, ARM, EABI5 version <span class="number">1</span> (SYSV), dynamically linked, interpreter /lib/ld-linux-armhf.so<span class="number">.3</span>, <span class="keyword">for</span> GNU/Linux <span class="number">3.2</span><span class="number">.0</span>, with debug_info, <span class="keyword">not</span> stripped</span><br></pre></td></tr></table></figure>
+
+<p>到这里，我们就可以重新push应用到板卡中，在板卡中运行了。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2026/02/24/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/%E9%A9%B1%E5%8A%A8%E5%B1%8F/00_%E4%BA%A4%E5%8F%89%E7%BC%96%E8%AF%91/" data-id="cuidFW_m42UcjAYjECXFUgMiy" data-title="交叉编译" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" rel="tag">嵌入式学习</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E9%A9%B1%E5%8A%A8%E5%B1%8F/" rel="tag">驱动屏</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-Linux 学习记录/驱动屏/01_显示内容" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2026/02/24/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/%E9%A9%B1%E5%8A%A8%E5%B1%8F/01_%E6%98%BE%E7%A4%BA%E5%86%85%E5%AE%B9/" class="article-date">
+  <time class="dt-published" datetime="2026-02-23T16:00:00.000Z" itemprop="datePublished">2026-02-24</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>►<a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E5%85%A8%E5%BF%97T113S3/">全志T113S3</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2026/02/24/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/%E9%A9%B1%E5%8A%A8%E5%B1%8F/01_%E6%98%BE%E7%A4%BA%E5%86%85%E5%AE%B9/">显示内容</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="如何在设备屏幕上显示内容"><a href="#如何在设备屏幕上显示内容" class="headerlink" title="如何在设备屏幕上显示内容"></a>如何在设备屏幕上显示内容</h1><p>以往我们学习单片机的时候，我们会初始化一个和屏幕大小的数组，然后对数组内容进行修改，修改后的数据发送到屏幕上，就可以在屏幕上显示我们设置的数组内容。<br>而Linux也是通过类似的方式，只不过Linux把显示设备抽象为一个文件，在我们板卡中是&#x2F;dev&#x2F;fb0，fb是FrameBuffer的缩写，中文译名为帧缓冲驱动，<br>Linux抽象出FrameBuffer这个设备来供用户态进程实现直接写屏。 FrameBuffer机制模仿显卡的功能，将显卡硬件结构抽象掉， 可以通过FrameBuffer的读写直接对显存进行操作。 用户可以将FrameBuffer看成是显示内存的一个映像， 将其映射到进程地址空间之后，就可以直接进行读写操作， 而写操作可以立即反应在屏幕上。<br><img src="/image.png" alt="alt text"><br>如上图所示，屏幕中每个像素的显示颜色由4个byte组成，其实就是ARGB格式</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">ARGB 是一种表示颜色的方式，其中每个字母代表一个颜色通道或透明度通道。具体来说：</span><br><span class="line">A：Alpha 通道，表示透明度。</span><br><span class="line">R：Red 通道，表示红色。</span><br><span class="line">G：Green 通道，表示绿色。</span><br><span class="line">B：Blue 通道，表示蓝色。详细解释</span><br><span class="line"><span class="built_in">Alpha</span> (A)：</span><br><span class="line">表示透明度，通常用一个 <span class="number">8</span> 位（<span class="number">0</span><span class="number">-255</span>）的值来表示。</span><br><span class="line"><span class="number">0</span> 表示完全透明，<span class="number">255</span> 表示完全不透明。</span><br><span class="line"><span class="built_in">Red</span> (R)：</span><br><span class="line">表示红色，通常用一个 <span class="number">8</span> 位（<span class="number">0</span><span class="number">-255</span>）的值来表示。</span><br><span class="line"><span class="number">0</span> 表示没有红色，<span class="number">255</span> 表示最大红色。</span><br><span class="line"><span class="built_in">Green</span> (G)：</span><br><span class="line">表示绿色，通常用一个 <span class="number">8</span> 位（<span class="number">0</span><span class="number">-255</span>）的值来表示。</span><br><span class="line"><span class="number">0</span> 表示没有绿色，<span class="number">255</span> 表示最大绿色。</span><br><span class="line"><span class="built_in">Blue</span> (B)：</span><br><span class="line">表示蓝色，通常用一个 <span class="number">8</span> 位（<span class="number">0</span><span class="number">-255</span>）的值来表示。</span><br><span class="line"><span class="number">0</span> 表示没有蓝色，<span class="number">255</span> 表示最大蓝色。ARGB 值的表示方式</span><br><span class="line">ARGB 值通常用一个 <span class="number">32</span> 位整数来表示，每个通道占 <span class="number">8</span> 位。例如：</span><br><span class="line"><span class="number">0xFF00FF00</span>：</span><br><span class="line">FF：Alpha 通道，<span class="number">255</span>，表示完全不透明。</span><br><span class="line"><span class="number">00</span>：Red 通道，<span class="number">0</span>，表示没有红色。</span><br><span class="line">FF：Green 通道，<span class="number">255</span>，表示最大绿色。</span><br><span class="line"><span class="number">00</span>：Blue 通道，<span class="number">0</span>，表示没有蓝色。</span><br><span class="line">这个值表示一个完全不透明的纯绿色。</span><br></pre></td></tr></table></figure>
+
+<p>所以，我们对&#x2F;dev&#x2F;fb0的数据写入，就是显示数据的写入。所以，我们就可以下发代码实现屏幕的刷新，当然了这些代码不用去背，大致了解原理即可。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span>   </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/mman.h&gt;</span>   </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span>   </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;linux/fb.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/ioctl.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">//32位的ARGB颜色</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> White   0xffFFFFFF</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> Red     0xffFF0000</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> Green   0xff00ff00</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> Blue    0xff99ffff</span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">//打开帧缓冲设备</span></span><br><span class="line">    <span class="type">int</span> framebuffer_fd = open(<span class="string">&quot;/dev/fb0&quot;</span>,O_RDWR);           <span class="comment">//打开framebuffer设备</span></span><br><span class="line">    <span class="keyword">if</span>(framebuffer_fd == <span class="number">-1</span>)&#123;</span><br><span class="line">        perror(<span class="string">&quot;open fb error&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="comment">//获取屏幕的显示参数</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">fb_var_screeninfo</span> <span class="title">vinfo</span>;</span></span><br><span class="line">    ioctl(framebuffer_fd, FBIOGET_VSCREENINFO, &amp;vinfo);</span><br><span class="line">    <span class="comment">//打印分辨率</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;xres= %d,yres= %d %dbpp\n&quot;</span>,vinfo.xres,vinfo.yres,vinfo.bits_per_pixel);</span><br><span class="line"> </span><br><span class="line">    <span class="comment">//将文件或设备映射到进程的地址空间，后续对此内存的操作，就可以反映到设备上</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">int</span> *framebuffer_mem = (<span class="type">unsigned</span> <span class="type">int</span> *)mmap(<span class="literal">NULL</span>, vinfo.xres*vinfo.yres*<span class="number">4</span>, </span><br><span class="line">            PROT_READ |  PROT_WRITE, MAP_SHARED, framebuffer_fd, <span class="number">0</span>);  </span><br><span class="line">    <span class="keyword">if</span>(framebuffer_mem == MAP_FAILED)&#123;</span><br><span class="line">        perror(<span class="string">&quot;mmap error&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;  </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//清屏，显示白色</span></span><br><span class="line">    <span class="built_in">memset</span>(framebuffer_mem,<span class="number">0xff</span>,vinfo.xres*vinfo.yres*<span class="number">4</span>);   </span><br><span class="line">    sleep(<span class="number">1</span>);</span><br><span class="line">    <span class="comment">//将屏幕全部设置成蓝色</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt; vinfo.xres*vinfo.yres ;i++)</span><br><span class="line">        framebuffer_mem[i] = Blue;</span><br><span class="line">    sleep(<span class="number">2</span>);</span><br><span class="line">    <span class="comment">//清屏，显示黑色</span></span><br><span class="line">    <span class="built_in">memset</span>(framebuffer_mem,<span class="number">0x00</span>,vinfo.xres*vinfo.yres*<span class="number">4</span>);</span><br><span class="line">    <span class="comment">//解除映射</span></span><br><span class="line">    munmap(framebuffer_mem,vinfo.xres*vinfo.yres*<span class="number">4</span>);</span><br><span class="line">    <span class="comment">//关闭fb0设备文件</span></span><br><span class="line">    close(framebuffer_fd);  </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>ioctl</code>（Input&#x2F;Output Control）用于对设备进行控制操作，例如配置硬件参数、获取设备信息（如终端、帧缓冲设备 <code>/dev/fb0</code>、串口等）交互。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/ioctl.h&gt;</span>  <span class="comment">// 头文件</span></span></span><br><span class="line"><span class="type">int</span> <span class="title function_">ioctl</span><span class="params">(<span class="type">int</span> fd, <span class="type">unsigned</span> <span class="type">long</span> request, ... <span class="comment">/* arg */</span>)</span>;</span><br><span class="line">参数说明</span><br><span class="line">fd已打开的设备文件描述符（如 /dev/fb0 的 framebuffer_fd）</span><br><span class="line">request控制命令（由设备驱动定义，如 FBIOGET_VSCREENINFO）</span><br><span class="line">arg可选参数，通常是指向某个数据结构的指针</span><br><span class="line">返回值</span><br><span class="line">成功：返回 <span class="number">0</span> 或设备驱动定义的非负值。</span><br><span class="line">失败：返回 <span class="number">-1</span>，并设置 errno（可通过 perror 查看错误原因）。</span><br><span class="line"></span><br><span class="line">ioctl 的用途非常广泛，主要用于：</span><br><span class="line">获取/设置设备信息（如屏幕分辨率、串口波特率）。</span><br><span class="line">控制设备行为（如摄像头调整曝光、调整屏幕亮度）。</span><br><span class="line">特殊硬件操作（如磁盘格式化、网络接口配置）。</span><br><span class="line"></span><br><span class="line">例如：读取&amp;设置波特率</span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;termios.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/ioctl.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">termios</span> <span class="title">tty</span>;</span></span><br><span class="line">    <span class="type">int</span> fd = open(<span class="string">&quot;/dev/ttyS0&quot;</span>, O_RDWR);</span><br><span class="line">    ioctl(fd, TCGETS, &amp;tty);  <span class="comment">// 获取终端属性</span></span><br><span class="line">    tty.c_cflag |= B9600;     <span class="comment">// 设置波特率 9600</span></span><br><span class="line">    ioctl(fd, TCSETS, &amp;tty);  <span class="comment">// 应用新属性</span></span><br><span class="line">    close(fd);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>编译程序后，就可以adb push到开发板中，当然了，此时运行你是看不到内容的，因为板卡默认启动的就是我们配置好的程序，如果我们希望开机后，不运行任何程序，我们可以这样修改</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">PC运行</span><br><span class="line">现代 Ubuntu 默认使用X11作为显示服务器，它们会接管 /dev/fb0，直接写入帧缓冲可能不会立即生效，因为图形服务器会覆盖你的修改。</span><br><span class="line">解决方法：</span><br><span class="line">尝试切换到 tty（按 Ctrl+Alt+F3 进入终端模式）</span><br><span class="line">然后运行程序sudo ./xxxx</span><br><span class="line">运行后如何退出呢？（按 Ctrl+Alt+F1 返回图形界面）板卡运行</span><br><span class="line">adb shell 进入板卡终端</span><br><span class="line">vi /etc/init.d/rc.<span class="keyword">final</span> 这是系统的自启动脚本</span><br><span class="line">把脚本内的</span><br><span class="line"># /data/demo</span><br><span class="line">改为# /data/demo然后执行reboot或者断电重启，再运行上述的程序即可。</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2026/02/24/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/%E9%A9%B1%E5%8A%A8%E5%B1%8F/01_%E6%98%BE%E7%A4%BA%E5%86%85%E5%AE%B9/" data-id="cuidGHGEeit6Dquso99Ht0HYz" data-title="显示内容" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" rel="tag">嵌入式学习</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E9%A9%B1%E5%8A%A8%E5%B1%8F/" rel="tag">驱动屏</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-git 使用/简略使用指南" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2026/02/08/git%20%E4%BD%BF%E7%94%A8/%E7%AE%80%E7%95%A5%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/" class="article-date">
@@ -243,7 +352,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2026/02/08/git%20%E4%BD%BF%E7%94%A8/%E7%AE%80%E7%95%A5%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/" data-id="cuidU_ge0w2ooQgR2yV4eaak4" data-title="git 简略使用指南" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2026/02/08/git%20%E4%BD%BF%E7%94%A8/%E7%AE%80%E7%95%A5%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/" data-id="cuidAb-jlA8GHw913yuE_kG2V" data-title="git 简略使用指南" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -391,7 +500,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2026/02/08/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/03_Linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" data-id="cuid6LTsJsOcR3-DDHJnfJTtO" data-title="Linux常用命令" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2026/02/08/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/03_Linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" data-id="cuidrTrAW80gmz5BcPCRlYMOZ" data-title="Linux常用命令" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -498,7 +607,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2026/01/30/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" data-id="cuidS_MGBiPYHlGin6itbYQ5v" data-title="博客hexo环境搭建" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2026/01/30/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" data-id="cuidtTCwYBZ_aEGknd3e3x-t3" data-title="博客hexo环境搭建" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -659,7 +768,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2026/01/29/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E7%BB%93%E6%9E%84%E4%BD%93%E8%AE%BE%E8%AE%A1%E7%9A%84%E5%AF%B9%E9%BD%90%E4%B8%8E%E4%BC%98%E5%8C%96/" data-id="cuidhB997UhH4S0Q_6Zq5UEpX" data-title="嵌入式结构体设计的对齐与优化" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2026/01/29/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E7%BB%93%E6%9E%84%E4%BD%93%E8%AE%BE%E8%AE%A1%E7%9A%84%E5%AF%B9%E9%BD%90%E4%B8%8E%E4%BC%98%E5%8C%96/" data-id="cuidEJU1kQ0IgvqjHnXvqDZuA" data-title="嵌入式结构体设计的对齐与优化" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -1435,7 +1544,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%98%E5%82%A8%E5%BC%80%E5%8F%91%E9%AB%98%E6%95%88%E5%BA%94%E7%94%A8/" data-id="cuidJeov2U_odGfLdjsdWXQ_E" data-title="嵌入式存储开发高效应用" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%98%E5%82%A8%E5%BC%80%E5%8F%91%E9%AB%98%E6%95%88%E5%BA%94%E7%94%A8/" data-id="cuidGt86ymWbApvUYZQSiBMS7" data-title="嵌入式存储开发高效应用" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -1569,7 +1678,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E9%AB%98%E6%95%88%E6%95%B0%E6%8D%AE%E4%BA%A4%E6%8D%A2/" data-id="cuidHQ_AFf-Zu_rBsOOPvjTSj" data-title="嵌入式设备如何实现高效数据交换" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E9%AB%98%E6%95%88%E6%95%B0%E6%8D%AE%E4%BA%A4%E6%8D%A2/" data-id="cuidM-1k_NSLUojxosRiTNMmc" data-title="嵌入式设备如何实现高效数据交换" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -1752,7 +1861,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2026/01/18/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/" data-id="cuid07rjXKQ4y_bIRsTdvov3y" data-title="博客撰写方法" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2026/01/18/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/" data-id="cuid4NvaTcJeU0Xi5Ks8oU82H" data-title="博客撰写方法" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -1854,120 +1963,11 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2026/01/18/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95%EF%BC%88%E6%95%B4%E7%90%86%E5%90%8E%EF%BC%89/" data-id="cuid4HkoHr5QOqhwdJNZcupkE" data-title="博客撰写方法(整理后)" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2026/01/18/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95%EF%BC%88%E6%95%B4%E7%90%86%E5%90%8E%EF%BC%89/" data-id="cuid7DSe0UP72t3lQNVGBmgU9" data-title="博客撰写方法(整理后)" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" rel="tag">学习记录</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" rel="tag">工具使用</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-Linux 学习记录/驱动屏/00_交叉编译" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2023/02/24/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/%E9%A9%B1%E5%8A%A8%E5%B1%8F/00_%E4%BA%A4%E5%8F%89%E7%BC%96%E8%AF%91/" class="article-date">
-  <time class="dt-published" datetime="2023-02-23T16:00:00.000Z" itemprop="datePublished">2023-02-24</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>►<a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E5%85%A8%E5%BF%97T113S3/">全志T113S3</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2023/02/24/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/%E9%A9%B1%E5%8A%A8%E5%B1%8F/00_%E4%BA%A4%E5%8F%89%E7%BC%96%E8%AF%91/">交叉编译</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <h1 id="交叉编译"><a href="#交叉编译" class="headerlink" title="交叉编译"></a>交叉编译</h1><p>那如何编译一个ARM架构的程序呢？这就需要用到交叉编译工具链了，什么是交叉编译？就是在X86平台的PC机上编译ARM平台的程序，什么是工具链？这里我们可以理解为是GCC，那什么是交叉编译工具链？就是芯片厂家针对自己芯片平台开发的编译器，我们板卡的芯片是全志的T113S3，厂家提供的工具链是toolchain-sunxi-glibc-gcc-830，我们下载后，放入ubuntu中解压。<br><code>https://x509p6c8to.feishu.cn/docx/GanSd5WxyoqU7gxhSM3cOb7hngc#share-E8oOdgPhloQmI5xdznuc6yXjnZe</code><br>接下来，我们需要做两样东西<br>设置 <code>STAGING_DIR</code> 环境变量，以便在构建过程中能够找到工具链对应的库和头文件。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">当前shell下执行下方指令，/xxxxx/替换为自己本机的路径</span><br><span class="line"><span class="keyword">export</span> STAGING_DIR=/xxxxx/toolchain-sunxi-glibc-gcc<span class="number">-830</span>/toolchain/bin:$STAGING_DIR</span><br></pre></td></tr></table></figure>
-
-<p>设置编译器为对应的交叉编译器。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">CMakeList.txt修改为下方内容，/xxxxx/替换为自己本机的路径<span class="built_in">cmake_minimum_required</span>(VERSION <span class="number">3.1</span><span class="number">.5</span>)</span><br><span class="line"><span class="built_in">project</span>(monitor C)</span><br><span class="line"><span class="built_in">set</span>(CMAKE_C_COMPILER /xxxxx/toolchain-sunxi-glibc-gcc<span class="number">-830</span>/toolchain/bin/arm-openwrt-linux-gcc)</span><br><span class="line"><span class="built_in">add_executable</span>(monitor main.c)</span><br></pre></td></tr></table></figure>
-
-<p>重新删掉build文件，编译即可。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">rm build -rf</span><br><span class="line">mkdir build</span><br><span class="line">cd build</span><br><span class="line">cmake ..</span><br><span class="line">make查看生成的文件</span><br><span class="line">file hello</span><br><span class="line">monitor: ELF <span class="number">32</span>-bit LSB executable, ARM, EABI5 version <span class="number">1</span> (SYSV), dynamically linked, interpreter /lib/ld-linux-armhf.so<span class="number">.3</span>, <span class="keyword">for</span> GNU/Linux <span class="number">3.2</span><span class="number">.0</span>, with debug_info, <span class="keyword">not</span> stripped</span><br></pre></td></tr></table></figure>
-
-<p>到这里，我们就可以重新push应用到板卡中，在板卡中运行了。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2023/02/24/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/%E9%A9%B1%E5%8A%A8%E5%B1%8F/00_%E4%BA%A4%E5%8F%89%E7%BC%96%E8%AF%91/" data-id="cuidfsVQjFluHxoL2gKxU49WQ" data-title="交叉编译" class="article-share-link"><span class="fa fa-share">Share</span></a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" rel="tag">嵌入式学习</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E9%A9%B1%E5%8A%A8%E5%B1%8F/" rel="tag">驱动屏</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-Linux 学习记录/驱动屏/01_显示内容" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2023/02/24/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/%E9%A9%B1%E5%8A%A8%E5%B1%8F/01_%E6%98%BE%E7%A4%BA%E5%86%85%E5%AE%B9/" class="article-date">
-  <time class="dt-published" datetime="2023-02-23T16:00:00.000Z" itemprop="datePublished">2023-02-24</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>►<a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E5%85%A8%E5%BF%97T113S3/">全志T113S3</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2023/02/24/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/%E9%A9%B1%E5%8A%A8%E5%B1%8F/01_%E6%98%BE%E7%A4%BA%E5%86%85%E5%AE%B9/">显示内容</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <h1 id="如何在设备屏幕上显示内容"><a href="#如何在设备屏幕上显示内容" class="headerlink" title="如何在设备屏幕上显示内容"></a>如何在设备屏幕上显示内容</h1><p>以往我们学习单片机的时候，我们会初始化一个和屏幕大小的数组，然后对数组内容进行修改，修改后的数据发送到屏幕上，就可以在屏幕上显示我们设置的数组内容。<br>而Linux也是通过类似的方式，只不过Linux把显示设备抽象为一个文件，在我们板卡中是&#x2F;dev&#x2F;fb0，fb是FrameBuffer的缩写，中文译名为帧缓冲驱动，<br>Linux抽象出FrameBuffer这个设备来供用户态进程实现直接写屏。 FrameBuffer机制模仿显卡的功能，将显卡硬件结构抽象掉， 可以通过FrameBuffer的读写直接对显存进行操作。 用户可以将FrameBuffer看成是显示内存的一个映像， 将其映射到进程地址空间之后，就可以直接进行读写操作， 而写操作可以立即反应在屏幕上。<br><img src="/image.png" alt="alt text"><br>如上图所示，屏幕中每个像素的显示颜色由4个byte组成，其实就是ARGB格式</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">ARGB 是一种表示颜色的方式，其中每个字母代表一个颜色通道或透明度通道。具体来说：</span><br><span class="line">A：Alpha 通道，表示透明度。</span><br><span class="line">R：Red 通道，表示红色。</span><br><span class="line">G：Green 通道，表示绿色。</span><br><span class="line">B：Blue 通道，表示蓝色。详细解释</span><br><span class="line"><span class="built_in">Alpha</span> (A)：</span><br><span class="line">表示透明度，通常用一个 <span class="number">8</span> 位（<span class="number">0</span><span class="number">-255</span>）的值来表示。</span><br><span class="line"><span class="number">0</span> 表示完全透明，<span class="number">255</span> 表示完全不透明。</span><br><span class="line"><span class="built_in">Red</span> (R)：</span><br><span class="line">表示红色，通常用一个 <span class="number">8</span> 位（<span class="number">0</span><span class="number">-255</span>）的值来表示。</span><br><span class="line"><span class="number">0</span> 表示没有红色，<span class="number">255</span> 表示最大红色。</span><br><span class="line"><span class="built_in">Green</span> (G)：</span><br><span class="line">表示绿色，通常用一个 <span class="number">8</span> 位（<span class="number">0</span><span class="number">-255</span>）的值来表示。</span><br><span class="line"><span class="number">0</span> 表示没有绿色，<span class="number">255</span> 表示最大绿色。</span><br><span class="line"><span class="built_in">Blue</span> (B)：</span><br><span class="line">表示蓝色，通常用一个 <span class="number">8</span> 位（<span class="number">0</span><span class="number">-255</span>）的值来表示。</span><br><span class="line"><span class="number">0</span> 表示没有蓝色，<span class="number">255</span> 表示最大蓝色。ARGB 值的表示方式</span><br><span class="line">ARGB 值通常用一个 <span class="number">32</span> 位整数来表示，每个通道占 <span class="number">8</span> 位。例如：</span><br><span class="line"><span class="number">0xFF00FF00</span>：</span><br><span class="line">FF：Alpha 通道，<span class="number">255</span>，表示完全不透明。</span><br><span class="line"><span class="number">00</span>：Red 通道，<span class="number">0</span>，表示没有红色。</span><br><span class="line">FF：Green 通道，<span class="number">255</span>，表示最大绿色。</span><br><span class="line"><span class="number">00</span>：Blue 通道，<span class="number">0</span>，表示没有蓝色。</span><br><span class="line">这个值表示一个完全不透明的纯绿色。</span><br></pre></td></tr></table></figure>
-
-<p>所以，我们对&#x2F;dev&#x2F;fb0的数据写入，就是显示数据的写入。所以，我们就可以下发代码实现屏幕的刷新，当然了这些代码不用去背，大致了解原理即可。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span>   </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/mman.h&gt;</span>   </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span>   </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;linux/fb.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/ioctl.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">//32位的ARGB颜色</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> White   0xffFFFFFF</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> Red     0xffFF0000</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> Green   0xff00ff00</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> Blue    0xff99ffff</span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">//打开帧缓冲设备</span></span><br><span class="line">    <span class="type">int</span> framebuffer_fd = open(<span class="string">&quot;/dev/fb0&quot;</span>,O_RDWR);           <span class="comment">//打开framebuffer设备</span></span><br><span class="line">    <span class="keyword">if</span>(framebuffer_fd == <span class="number">-1</span>)&#123;</span><br><span class="line">        perror(<span class="string">&quot;open fb error&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="comment">//获取屏幕的显示参数</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">fb_var_screeninfo</span> <span class="title">vinfo</span>;</span></span><br><span class="line">    ioctl(framebuffer_fd, FBIOGET_VSCREENINFO, &amp;vinfo);</span><br><span class="line">    <span class="comment">//打印分辨率</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;xres= %d,yres= %d %dbpp\n&quot;</span>,vinfo.xres,vinfo.yres,vinfo.bits_per_pixel);</span><br><span class="line"> </span><br><span class="line">    <span class="comment">//将文件或设备映射到进程的地址空间，后续对此内存的操作，就可以反映到设备上</span></span><br><span class="line">    <span class="type">unsigned</span> <span class="type">int</span> *framebuffer_mem = (<span class="type">unsigned</span> <span class="type">int</span> *)mmap(<span class="literal">NULL</span>, vinfo.xres*vinfo.yres*<span class="number">4</span>, </span><br><span class="line">            PROT_READ |  PROT_WRITE, MAP_SHARED, framebuffer_fd, <span class="number">0</span>);  </span><br><span class="line">    <span class="keyword">if</span>(framebuffer_mem == MAP_FAILED)&#123;</span><br><span class="line">        perror(<span class="string">&quot;mmap error&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;  </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//清屏，显示白色</span></span><br><span class="line">    <span class="built_in">memset</span>(framebuffer_mem,<span class="number">0xff</span>,vinfo.xres*vinfo.yres*<span class="number">4</span>);   </span><br><span class="line">    sleep(<span class="number">1</span>);</span><br><span class="line">    <span class="comment">//将屏幕全部设置成蓝色</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt; vinfo.xres*vinfo.yres ;i++)</span><br><span class="line">        framebuffer_mem[i] = Blue;</span><br><span class="line">    sleep(<span class="number">2</span>);</span><br><span class="line">    <span class="comment">//清屏，显示黑色</span></span><br><span class="line">    <span class="built_in">memset</span>(framebuffer_mem,<span class="number">0x00</span>,vinfo.xres*vinfo.yres*<span class="number">4</span>);</span><br><span class="line">    <span class="comment">//解除映射</span></span><br><span class="line">    munmap(framebuffer_mem,vinfo.xres*vinfo.yres*<span class="number">4</span>);</span><br><span class="line">    <span class="comment">//关闭fb0设备文件</span></span><br><span class="line">    close(framebuffer_fd);  </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><code>ioctl</code>（Input&#x2F;Output Control）用于对设备进行控制操作，例如配置硬件参数、获取设备信息（如终端、帧缓冲设备 <code>/dev/fb0</code>、串口等）交互。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/ioctl.h&gt;</span>  <span class="comment">// 头文件</span></span></span><br><span class="line"><span class="type">int</span> <span class="title function_">ioctl</span><span class="params">(<span class="type">int</span> fd, <span class="type">unsigned</span> <span class="type">long</span> request, ... <span class="comment">/* arg */</span>)</span>;</span><br><span class="line">参数说明</span><br><span class="line">fd已打开的设备文件描述符（如 /dev/fb0 的 framebuffer_fd）</span><br><span class="line">request控制命令（由设备驱动定义，如 FBIOGET_VSCREENINFO）</span><br><span class="line">arg可选参数，通常是指向某个数据结构的指针</span><br><span class="line">返回值</span><br><span class="line">成功：返回 <span class="number">0</span> 或设备驱动定义的非负值。</span><br><span class="line">失败：返回 <span class="number">-1</span>，并设置 errno（可通过 perror 查看错误原因）。</span><br><span class="line"></span><br><span class="line">ioctl 的用途非常广泛，主要用于：</span><br><span class="line">获取/设置设备信息（如屏幕分辨率、串口波特率）。</span><br><span class="line">控制设备行为（如摄像头调整曝光、调整屏幕亮度）。</span><br><span class="line">特殊硬件操作（如磁盘格式化、网络接口配置）。</span><br><span class="line"></span><br><span class="line">例如：读取&amp;设置波特率</span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;termios.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/ioctl.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">termios</span> <span class="title">tty</span>;</span></span><br><span class="line">    <span class="type">int</span> fd = open(<span class="string">&quot;/dev/ttyS0&quot;</span>, O_RDWR);</span><br><span class="line">    ioctl(fd, TCGETS, &amp;tty);  <span class="comment">// 获取终端属性</span></span><br><span class="line">    tty.c_cflag |= B9600;     <span class="comment">// 设置波特率 9600</span></span><br><span class="line">    ioctl(fd, TCSETS, &amp;tty);  <span class="comment">// 应用新属性</span></span><br><span class="line">    close(fd);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>编译程序后，就可以adb push到开发板中，当然了，此时运行你是看不到内容的，因为板卡默认启动的就是我们配置好的程序，如果我们希望开机后，不运行任何程序，我们可以这样修改</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">PC运行</span><br><span class="line">现代 Ubuntu 默认使用X11作为显示服务器，它们会接管 /dev/fb0，直接写入帧缓冲可能不会立即生效，因为图形服务器会覆盖你的修改。</span><br><span class="line">解决方法：</span><br><span class="line">尝试切换到 tty（按 Ctrl+Alt+F3 进入终端模式）</span><br><span class="line">然后运行程序sudo ./xxxx</span><br><span class="line">运行后如何退出呢？（按 Ctrl+Alt+F1 返回图形界面）板卡运行</span><br><span class="line">adb shell 进入板卡终端</span><br><span class="line">vi /etc/init.d/rc.<span class="keyword">final</span> 这是系统的自启动脚本</span><br><span class="line">把脚本内的</span><br><span class="line"># /data/demo</span><br><span class="line">改为# /data/demo然后执行reboot或者断电重启，再运行上述的程序即可。</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2023/02/24/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/%E9%A9%B1%E5%8A%A8%E5%B1%8F/01_%E6%98%BE%E7%A4%BA%E5%86%85%E5%AE%B9/" data-id="cuidJZML6KDzrx4F-JzY_WEnP" data-title="显示内容" class="article-share-link"><span class="fa fa-share">Share</span></a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" rel="tag">嵌入式学习</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E9%A9%B1%E5%8A%A8%E5%B1%8F/" rel="tag">驱动屏</a></li></ul>
 
     </footer>
   </div>
@@ -2021,7 +2021,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/02/">February 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/01/">January 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/02/">February 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">January 2023</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/02/">February 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/01/">January 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">January 2023</a></li></ul>
     </div>
   </div>
 
@@ -2034,6 +2034,14 @@
       <ul>
         
           <li>
+            <a href="/2026/02/24/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/%E9%A9%B1%E5%8A%A8%E5%B1%8F/00_%E4%BA%A4%E5%8F%89%E7%BC%96%E8%AF%91/">交叉编译</a>
+          </li>
+        
+          <li>
+            <a href="/2026/02/24/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/%E9%A9%B1%E5%8A%A8%E5%B1%8F/01_%E6%98%BE%E7%A4%BA%E5%86%85%E5%AE%B9/">显示内容</a>
+          </li>
+        
+          <li>
             <a href="/2026/02/08/git%20%E4%BD%BF%E7%94%A8/%E7%AE%80%E7%95%A5%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/">git 简略使用指南</a>
           </li>
         
@@ -2043,14 +2051,6 @@
         
           <li>
             <a href="/2026/01/30/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/">博客hexo环境搭建</a>
-          </li>
-        
-          <li>
-            <a href="/2026/01/29/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E7%BB%93%E6%9E%84%E4%BD%93%E8%AE%BE%E8%AE%A1%E7%9A%84%E5%AF%B9%E9%BD%90%E4%B8%8E%E4%BC%98%E5%8C%96/">嵌入式结构体设计的对齐与优化</a>
-          </li>
-        
-          <li>
-            <a href="/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%98%E5%82%A8%E5%BC%80%E5%8F%91%E9%AB%98%E6%95%88%E5%BA%94%E7%94%A8/">嵌入式存储开发高效应用</a>
           </li>
         
       </ul>
