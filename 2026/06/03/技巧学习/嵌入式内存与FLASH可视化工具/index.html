@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>嵌入式内存与FLASH可视化工具 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="做嵌入式 MCU 开发，迟早会被内存问题拽住衣角。 新加一个协议栈，Flash 突然紧张；开了日志、文件系统、UI 库，RAM 余量开始发红；编译器提示 region overflow，大家第一反应都是打开 .map 文件。  .map文件是MCU开发中链接器生成的一份极其重要的诊断报告。它以文本形式详细记录了最终可执行文件中，所有代码和数据在芯片内存（Flash和RAM）中的最终布局-，堪称整个">
+<meta property="og:type" content="article">
+<meta property="og:title" content="嵌入式内存与FLASH可视化工具">
+<meta property="og:url" content="http://example.com/2026/06/03/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%86%85%E5%AD%98%E4%B8%8EFLASH%E5%8F%AF%E8%A7%86%E5%8C%96%E5%B7%A5%E5%85%B7/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="做嵌入式 MCU 开发，迟早会被内存问题拽住衣角。 新加一个协议栈，Flash 突然紧张；开了日志、文件系统、UI 库，RAM 余量开始发红；编译器提示 region overflow，大家第一反应都是打开 .map 文件。  .map文件是MCU开发中链接器生成的一份极其重要的诊断报告。它以文本形式详细记录了最终可执行文件中，所有代码和数据在芯片内存（Flash和RAM）中的最终布局-，堪称整个">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/K62vJYPSiagjJc2xkkYcKee7LribQsLib73UOKRekicfJmyTcAf28n3gAxmAySu3yzACHQDu7dXRCvAPbFOfDTXLicNXiaqzflZVp0OwmRcJkCIXE/640?wx_fmt=png&from=appmsg&watermark=1&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=0">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/K62vJYPSiaghQoTmhbdh6lcaKPmrSO6mdK4aPj1498pREBz3QM1Z1mbmV69kdBdoa9D0uJAmy5pD2JcjSwmEuOWd5CK4433T0lk96j4DBdLs/640?wx_fmt=png&from=appmsg&watermark=1&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=1">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/K62vJYPSiagiaLfrz03nia6ntExZoibozX7eqWnwzUKsTergpPnrtjle9TBXibY1ck9ibIWCAcRY3OdEuZBbaY95vSm4Do1OdazkJMriawqvlKzCC4/640?wx_fmt=png&from=appmsg&watermark=1&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=2">
+<meta property="og:image" content="https://mmbiz.qpic.cn/sz_mmbiz_png/K62vJYPSiagiaftiaSDJKsbYlNxByDFu9VfyUsicN0BZfZQ4XYibicjOQR3ISEZr7DagFribVBVn5tdeDnqBXiaSwWnJ6pqFL15JcLXPSb8cWTYAsFk/640?wx_fmt=png&from=appmsg&watermark=1&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=3">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/K62vJYPSiagiaqAKAQMHwsX9oIMft1pMrcliaxQSIvwZthiaM3NiaRQK95yyiaNnHxLF6q0PgQjasm5E3TGC0RdkBzKbCCrySMPdqkHzRajGnhZ1E/640?wx_fmt=png&from=appmsg&watermark=1&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=4">
+<meta property="og:image" content="https://mmbiz.qpic.cn/sz_mmbiz_png/K62vJYPSiaghjwrDa3X1Cx1hqPQLjziawKyb4IAjiaUW6iaDDndhRoibV7uL3Sf2CpibfUkia58c3t1iaFLS3KA3GWJaQswySDuKbUjUyDc8U0XibUl4/640?wx_fmt=png&from=appmsg&watermark=1&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=5">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/K62vJYPSiaggdkN2rnq3Y0XyQiaA7EAhcNfOYG2gicSdF6FFeGjM9rYKTWZErylSicC5V8TdvXecY6kjpz6E87XAcgzdPFF8I7AwhkXErk8aKow/640?wx_fmt=png&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=6">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/K62vJYPSiagj7bjra5KgkpsZuojoIxHLNicj5lmLIf8dNGL4bDU6u5MOb7LDJAibHGB5aBr1P8GhLLJFFoic37OicgUMuy0YgFbbJNezC1xWw0YE/640?wx_fmt=png&from=appmsg&watermark=1&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=7">
+<meta property="og:image" content="https://mmbiz.qpic.cn/sz_mmbiz_png/K62vJYPSiagh7ZlgNHtL66cyoH4DqdhPVnYexpsfdRTc4VCjO1pF6hz9VIsZCdQQeyjIEXXlicAibuf9c6TCAoXicAAQt6MqJxKkTXibLkEH4YRY/640?wx_fmt=png&from=appmsg&watermark=1&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=8">
+<meta property="article:published_time" content="2026-06-03T01:00:00.000Z">
+<meta property="article:modified_time" content="2026-06-03T01:00:00.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="FLASH存储">
+<meta property="article:tag" content="内存资源可视化">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://mmbiz.qpic.cn/mmbiz_png/K62vJYPSiagjJc2xkkYcKee7LribQsLib73UOKRekicfJmyTcAf28n3gAxmAySu3yzACHQDu7dXRCvAPbFOfDTXLicNXiaqzflZVp0OwmRcJkCIXE/640?wx_fmt=png&from=appmsg&watermark=1&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=0">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-技巧学习/嵌入式内存与FLASH可视化工具" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2026/06/03/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%86%85%E5%AD%98%E4%B8%8EFLASH%E5%8F%AF%E8%A7%86%E5%8C%96%E5%B7%A5%E5%85%B7/" class="article-date">
+  <time class="dt-published" datetime="2026-06-03T01:00:00.000Z" itemprop="datePublished">2026-06-03</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      嵌入式内存与FLASH可视化工具
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>做嵌入式 MCU 开发，迟早会被内存问题拽住衣角。</p>
+<p>新加一个协议栈，Flash 突然紧张；开了日志、文件系统、UI 库，RAM 余量开始发红；编译器提示 region overflow，大家第一反应都是打开 <code>.map</code> 文件。</p>
+<blockquote>
+<p><code>.map</code>文件是MCU开发中链接器生成的一份极其重要的诊断报告。它以文本形式详细记录了最终可执行文件中，所有代码和数据在芯片内存（Flash和RAM）中的最终布局-，堪称整个工程的“内存地图”和“资源账本”。</p>
+</blockquote>
+<p>问题是，<code>.map</code> 文件很诚实，也很难读。它像一张总账：函数、对象文件、库、链接区域、只读数据、全局变量，全都写了，但你想马上判断“谁最大、该改哪里”，并不轻松。</p>
+<h2 id="1-Map-View-Embedded简介"><a href="#1-Map-View-Embedded简介" class="headerlink" title="1. Map View Embedded简介"></a>1. Map View Embedded简介</h2><p>Map View Embedded是一个嵌入式 .map 文件的 Treemap 可视化 VS Code 插件。</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/K62vJYPSiagjJc2xkkYcKee7LribQsLib73UOKRekicfJmyTcAf28n3gAxmAySu3yzACHQDu7dXRCvAPbFOfDTXLicNXiaqzflZVp0OwmRcJkCIXE/640?wx_fmt=png&from=appmsg&watermark=1&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=0" alt="Image"></p>
+<p>可以一眼看清固件内存和flash分布。</p>
+<h3 id="1-1-功能特性"><a href="#1-1-功能特性" class="headerlink" title="1.1 功能特性"></a>1.1 功能特性</h3><ul>
+<li><strong>Treemap 热力图</strong> — 用色块大小直观展示 ROM&#x2F;RAM 占用</li>
+<li><strong>下钻导航</strong> — 点击模块查看内部函数和段的详细分布</li>
+<li><strong>多工具链支持</strong> — Keil、GCC&#x2F;ld、ESP-IDF、匠芯创 D13x 的 .map 文件通吃</li>
+<li><strong>颜色分类</strong> — 蓝色 Code、绿色 RO-Data、橙色 RW-Data、红色 ZI-Data，一目了然</li>
+<li><strong>搜索功能</strong> — 快速定位任意符号、模块或库</li>
+<li><strong>可配置内存大小</strong> — 设置实际 ROM&#x2F;RAM 总量，显示准确的使用百分比</li>
+<li><strong>零依赖</strong> — 纯 TypeScript 实现，无外部运行时依赖</li>
+<li><strong>超级轻量</strong> — 总共仅 ~100 KB，秒装秒开</li>
+</ul>
+<h2 id="2-几个概念"><a href="#2-几个概念" class="headerlink" title="2. 几个概念"></a>2. 几个概念</h2><p>不同工具链的命名会有差异，但嵌入式里常见的几类数据基本绕不开。</p>
+<p><code>Code</code> 是函数指令，通常放在 Flash&#x2F;ROM。<code>RO-Data</code> 是只读数据，比如常量表、字符串、证书、字体表，也通常占 Flash。</p>
+<p><code>RW-Data</code> 是有初值的全局或静态变量，运行时在 RAM 里，初始值还要放在 Flash 镜像里。</p>
+<p><code>ZI-Data 常对应 </code>.bss&#96;，也就是零初始化全局变量，运行时占 RAM，但不会把一堆 0 存进 Flash。</p>
+<p>粗略看可以先记住：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Flash / ROM：重点看 Code + RO-Data + RW-Data 初始镜像</span><br><span class="line">RAM：重点看 RW-Data + ZI-Data</span><br></pre></td></tr></table></figure>
+
+<p>如果工程里有外部 Flash、PSRAM、RAM 执行函数、特殊链接脚本，就不能只看总数，还要看 section 到底落在哪个区域。</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/K62vJYPSiaghQoTmhbdh6lcaKPmrSO6mdK4aPj1498pREBz3QM1Z1mbmV69kdBdoa9D0uJAmy5pD2JcjSwmEuOWd5CK4433T0lk96j4DBdLs/640?wx_fmt=png&from=appmsg&watermark=1&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=1" alt="Image"></p>
+<h2 id="3-非可视化-VS-可视化"><a href="#3-非可视化-VS-可视化" class="headerlink" title="3. 非可视化 VS 可视化"></a>3. 非可视化 VS 可视化</h2><h3 id="3-1-非可视化方式"><a href="#3-1-非可视化方式" class="headerlink" title="3.1 非可视化方式"></a>3.1 非可视化方式</h3><p>传统办法当然能用。打开 <code>.map</code>，搜索 <code>Total ROM Size</code>、<code>Total RW Size</code>、<code>Grand Totals</code>，再翻 <code>Image component sizes</code> 或 GNU ld 的 <code>Memory Configuration</code>。</p>
+<p>但它的问题也很明显：总表只能告诉你“大了”，很难告诉你“谁最大”；人工归类很累；函数级 section 藏得深，靠肉眼翻容易漏。</p>
+<h3 id="3-2-可视化方式"><a href="#3-2-可视化方式" class="headerlink" title="3.2 可视化方式"></a>3.2 可视化方式</h3><p>Map View Embedded 使用 Treemap。它把固件占用切成一块块矩形，矩形越大，占用越大；颜色表示类型，例如 Code、RO-Data、RW-Data、ZI-Data。</p>
+<p>这个形式很适合嵌入式，因为我们真正关心的往往不是一长串数字，而是“最大的那几块是谁”。</p>
+<p>插件里有两个视角。</p>
+<p><strong>Region View</strong> 按链接区域看，适合回答“这段 Flash&#x2F;RAM 里放了什么”。</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/K62vJYPSiagiaLfrz03nia6ntExZoibozX7eqWnwzUKsTergpPnrtjle9TBXibY1ck9ibIWCAcRY3OdEuZBbaY95vSm4Do1OdazkJMriawqvlKzCC4/640?wx_fmt=png&from=appmsg&watermark=1&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=2" alt="Image"></p>
+<p><strong>Module View</strong> 按模块归因，适合回答“是谁吃掉了空间”。</p>
+<p><img src="https://mmbiz.qpic.cn/sz_mmbiz_png/K62vJYPSiagiaftiaSDJKsbYlNxByDFu9VfyUsicN0BZfZQ4XYibicjOQR3ISEZr7DagFribVBVn5tdeDnqBXiaSwWnJ6pqFL15JcLXPSb8cWTYAsFk/640?wx_fmt=png&from=appmsg&watermark=1&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=3" alt="Image"></p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/K62vJYPSiagiaqAKAQMHwsX9oIMft1pMrcliaxQSIvwZthiaM3NiaRQK95yyiaNnHxLF6q0PgQjasm5E3TGC0RdkBzKbCCrySMPdqkHzRajGnhZ1E/640?wx_fmt=png&from=appmsg&watermark=1&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=4" alt="Image"></p>
+<h2 id="4-实操流程"><a href="#4-实操流程" class="headerlink" title="4. 实操流程"></a>4. 实操流程</h2><p>第一步，确保工程生成 <code>.map</code>。Keil 在链接选项里打开 map 输出；GCC&#x2F;CMake 一般加 <code>-Wl,-Map=output.map</code>；ESP-IDF 通常能在 build 目录找到 map 文件。</p>
+<p>第二步，在 VS Code 安装 <code>Map View Embedded</code>。找到 <code>.map</code> 文件，右键选择 <code>Open Map View</code>。</p>
+<p><img src="https://mmbiz.qpic.cn/sz_mmbiz_png/K62vJYPSiaghjwrDa3X1Cx1hqPQLjziawKyb4IAjiaUW6iaDDndhRoibV7uL3Sf2CpibfUkia58c3t1iaFLS3KA3GWJaQswySDuKbUjUyDc8U0XibUl4/640?wx_fmt=png&from=appmsg&watermark=1&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=5" alt="Image"></p>
+<p>第三步，先看顶部 ROM&#x2F;RAM 进度条，并确认总容量是否正确。插件会尽量从 map 里读取区域大小；如果你的链接区域不是完整芯片容量，或者用了外部存储，可以点齿轮手动配置 ROM&#x2F;RAM 大小。</p>
+<p>第四步，看 Region View。Flash 区域里是 <code>Code</code> 大，还是 <code>RO-Data</code> 大？RAM 区域里是 <code>RW-Data</code> 大，还是 <code>ZI-Data</code> 大？</p>
+<p>第五步，切到 Module View，点最大的色块下钻。</p>
+<p>第六步，用搜索框定位关键词。</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/K62vJYPSiaggdkN2rnq3Y0XyQiaA7EAhcNfOYG2gicSdF6FFeGjM9rYKTWZErylSicC5V8TdvXecY6kjpz6E87XAcgzdPFF8I7AwhkXErk8aKow/640?wx_fmt=png&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=6" alt="Image"></p>
+<h2 id="5-按颜色下刀"><a href="#5-按颜色下刀" class="headerlink" title="5. 按颜色下刀"></a>5. 按颜色下刀</h2><p><img src="https://mmbiz.qpic.cn/mmbiz_png/K62vJYPSiagj7bjra5KgkpsZuojoIxHLNicj5lmLIf8dNGL4bDU6u5MOb7LDJAibHGB5aBr1P8GhLLJFFoic37OicgUMuy0YgFbbJNezC1xWw0YE/640?wx_fmt=png&from=appmsg&watermark=1&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=7" alt="Image"></p>
+<p>蓝色 Code 大，先看是不是引入了重型库：浮点 printf、文件系统、图形库、网络协议栈，确认是否启用了过量功能。</p>
+<p>绿色 RO-Data 大，优先查字符串、图片、字体、证书、查表数组。很多 Flash 超限不是代码多，而是资源多。能压缩的压缩，能外置的外置。</p>
+<p>橙色 RW-Data 大，重点看有初值的全局变量。比如一个大 buffer 写了非零初值。能零初始化就零初始化。</p>
+<p>红色 ZI-Data 大，重点查未初始化全局数组、任务栈、静态 buffer、内存池。RTOS 项目尤其要看任务栈配置，十几个任务每个多给一点，RAM 很快就没了。</p>
+<p><img src="https://mmbiz.qpic.cn/sz_mmbiz_png/K62vJYPSiagh7ZlgNHtL66cyoH4DqdhPVnYexpsfdRTc4VCjO1pF6hz9VIsZCdQQeyjIEXXlicAibuf9c6TCAoXicAAQt6MqJxKkTXibLkEH4YRY/640?wx_fmt=png&from=appmsg&watermark=1&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=8" alt="Image"></p>
+<h2 id="6-总结"><a href="#6-总结" class="headerlink" title="6. 总结"></a>6. 总结</h2><p>对嵌入式 MCU 相关项目来说，Flash 和 RAM 永远不嫌多。把 map 可视化加入日常流程，每次大功能合入前看一眼，版本发布前看一眼，内存告警时再下钻。时间久了，你会对哪些模块重、哪些资源贵、哪些配置危险形成直觉。这个直觉，比量产前临时救火便宜得多。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2026/06/03/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%86%85%E5%AD%98%E4%B8%8EFLASH%E5%8F%AF%E8%A7%86%E5%8C%96%E5%B7%A5%E5%85%B7/" data-id="cuidCitedyMmbrmgtdG5duViT" data-title="嵌入式内存与FLASH可视化工具" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/FLASH%E5%AD%98%E5%82%A8/" rel="tag">FLASH存储</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%86%85%E5%AD%98%E8%B5%84%E6%BA%90%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="tag">内存资源可视化</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2026/05/28/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/Modbus%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Modbus协议学习笔记</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E5%85%A8%E5%BF%97T113S3/">全志T113S3</a></li></ul></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C%E8%AF%AD%E8%A8%80%E5%AE%8F/" rel="tag">C语言宏</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Debug%E6%97%A5%E5%BF%97/" rel="tag">Debug日志</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FLASH%E5%AD%98%E5%82%A8/" rel="tag">FLASH存储</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Makefile/" rel="tag">Makefile</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96/" rel="tag">内存优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%85%E5%AD%98%E8%B5%84%E6%BA%90%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="tag">内存资源可视化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="tag">博客环境搭建</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" rel="tag">学习记录</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" rel="tag">嵌入式学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" rel="tag">工具使用</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B8%B8%E8%A7%81%E5%8D%8F%E8%AE%AE%E7%AE%80%E4%BB%8B/" rel="tag">常见协议简介</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" rel="tag">数据传输</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" rel="tag">数据存储</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/" rel="tag">结构体</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%A9%B1%E5%8A%A8%E5%B1%8F/" rel="tag">驱动屏</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/C%E8%AF%AD%E8%A8%80%E5%AE%8F/" style="font-size: 10px;">C语言宏</a> <a href="/tags/Debug%E6%97%A5%E5%BF%97/" style="font-size: 10px;">Debug日志</a> <a href="/tags/FLASH%E5%AD%98%E5%82%A8/" style="font-size: 10px;">FLASH存储</a> <a href="/tags/Linux/" style="font-size: 18px;">Linux</a> <a href="/tags/Makefile/" style="font-size: 10px;">Makefile</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96/" style="font-size: 10px;">内存优化</a> <a href="/tags/%E5%86%85%E5%AD%98%E8%B5%84%E6%BA%90%E5%8F%AF%E8%A7%86%E5%8C%96/" style="font-size: 10px;">内存资源可视化</a> <a href="/tags/%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" style="font-size: 10px;">博客环境搭建</a> <a href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" style="font-size: 10px;">学习记录</a> <a href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" style="font-size: 20px;">嵌入式学习</a> <a href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" style="font-size: 14px;">工具使用</a> <a href="/tags/%E5%B8%B8%E8%A7%81%E5%8D%8F%E8%AE%AE%E7%AE%80%E4%BB%8B/" style="font-size: 10px;">常见协议简介</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" style="font-size: 12px;">数据传输</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" style="font-size: 16px;">数据存储</a> <a href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/" style="font-size: 10px;">结构体</a> <a href="/tags/%E9%A9%B1%E5%8A%A8%E5%B1%8F/" style="font-size: 14px;">驱动屏</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/06/">June 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/05/">May 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/04/">April 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/03/">March 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/02/">February 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/01/">January 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/02/">February 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">January 2023</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2026/06/03/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%86%85%E5%AD%98%E4%B8%8EFLASH%E5%8F%AF%E8%A7%86%E5%8C%96%E5%B7%A5%E5%85%B7/">嵌入式内存与FLASH可视化工具</a>
+          </li>
+        
+          <li>
+            <a href="/2026/05/28/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/Modbus%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">Modbus协议学习笔记</a>
+          </li>
+        
+          <li>
+            <a href="/2026/04/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/FreeRTOS%E5%B7%A5%E7%A8%8B%E5%8C%96%E8%A6%81%E7%82%B9/">FreeRTOS工程化要点：任务划分、优先级设计与CPU占用率监控</a>
+          </li>
+        
+          <li>
+            <a href="/2026/04/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E8%87%AA%E5%8A%A8%E5%88%9D%E5%A7%8B%E5%8C%96%E6%A1%86%E6%9E%B6/">自动初始化框架</a>
+          </li>
+        
+          <li>
+            <a href="/2026/04/16/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%87%BD%E6%95%B0%E5%90%8D+%E8%A1%8C%E5%8F%B7+%E6%97%A5%E5%BF%97%E5%86%85%E5%AE%B9%20%E6%A0%BC%E5%BC%8F%E6%97%A5%E5%BF%97%E8%BE%93%E5%87%BA/">函数名+行号+日志内容 格式日志输出</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

@@ -71,6 +71,209 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-技巧学习/嵌入式内存与FLASH可视化工具" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2026/06/03/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%86%85%E5%AD%98%E4%B8%8EFLASH%E5%8F%AF%E8%A7%86%E5%8C%96%E5%B7%A5%E5%85%B7/" class="article-date">
+  <time class="dt-published" datetime="2026-06-03T01:00:00.000Z" itemprop="datePublished">2026-06-03</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2026/06/03/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%86%85%E5%AD%98%E4%B8%8EFLASH%E5%8F%AF%E8%A7%86%E5%8C%96%E5%B7%A5%E5%85%B7/">嵌入式内存与FLASH可视化工具</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>做嵌入式 MCU 开发，迟早会被内存问题拽住衣角。</p>
+<p>新加一个协议栈，Flash 突然紧张；开了日志、文件系统、UI 库，RAM 余量开始发红；编译器提示 region overflow，大家第一反应都是打开 <code>.map</code> 文件。</p>
+<blockquote>
+<p><code>.map</code>文件是MCU开发中链接器生成的一份极其重要的诊断报告。它以文本形式详细记录了最终可执行文件中，所有代码和数据在芯片内存（Flash和RAM）中的最终布局-，堪称整个工程的“内存地图”和“资源账本”。</p>
+</blockquote>
+<p>问题是，<code>.map</code> 文件很诚实，也很难读。它像一张总账：函数、对象文件、库、链接区域、只读数据、全局变量，全都写了，但你想马上判断“谁最大、该改哪里”，并不轻松。</p>
+<h2 id="1-Map-View-Embedded简介"><a href="#1-Map-View-Embedded简介" class="headerlink" title="1. Map View Embedded简介"></a>1. Map View Embedded简介</h2><p>Map View Embedded是一个嵌入式 .map 文件的 Treemap 可视化 VS Code 插件。</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/K62vJYPSiagjJc2xkkYcKee7LribQsLib73UOKRekicfJmyTcAf28n3gAxmAySu3yzACHQDu7dXRCvAPbFOfDTXLicNXiaqzflZVp0OwmRcJkCIXE/640?wx_fmt=png&from=appmsg&watermark=1&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=0" alt="Image"></p>
+<p>可以一眼看清固件内存和flash分布。</p>
+<h3 id="1-1-功能特性"><a href="#1-1-功能特性" class="headerlink" title="1.1 功能特性"></a>1.1 功能特性</h3><ul>
+<li><strong>Treemap 热力图</strong> — 用色块大小直观展示 ROM&#x2F;RAM 占用</li>
+<li><strong>下钻导航</strong> — 点击模块查看内部函数和段的详细分布</li>
+<li><strong>多工具链支持</strong> — Keil、GCC&#x2F;ld、ESP-IDF、匠芯创 D13x 的 .map 文件通吃</li>
+<li><strong>颜色分类</strong> — 蓝色 Code、绿色 RO-Data、橙色 RW-Data、红色 ZI-Data，一目了然</li>
+<li><strong>搜索功能</strong> — 快速定位任意符号、模块或库</li>
+<li><strong>可配置内存大小</strong> — 设置实际 ROM&#x2F;RAM 总量，显示准确的使用百分比</li>
+<li><strong>零依赖</strong> — 纯 TypeScript 实现，无外部运行时依赖</li>
+<li><strong>超级轻量</strong> — 总共仅 ~100 KB，秒装秒开</li>
+</ul>
+<h2 id="2-几个概念"><a href="#2-几个概念" class="headerlink" title="2. 几个概念"></a>2. 几个概念</h2><p>不同工具链的命名会有差异，但嵌入式里常见的几类数据基本绕不开。</p>
+<p><code>Code</code> 是函数指令，通常放在 Flash&#x2F;ROM。<code>RO-Data</code> 是只读数据，比如常量表、字符串、证书、字体表，也通常占 Flash。</p>
+<p><code>RW-Data</code> 是有初值的全局或静态变量，运行时在 RAM 里，初始值还要放在 Flash 镜像里。</p>
+<p><code>ZI-Data 常对应 </code>.bss&#96;，也就是零初始化全局变量，运行时占 RAM，但不会把一堆 0 存进 Flash。</p>
+<p>粗略看可以先记住：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Flash / ROM：重点看 Code + RO-Data + RW-Data 初始镜像</span><br><span class="line">RAM：重点看 RW-Data + ZI-Data</span><br></pre></td></tr></table></figure>
+
+<p>如果工程里有外部 Flash、PSRAM、RAM 执行函数、特殊链接脚本，就不能只看总数，还要看 section 到底落在哪个区域。</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/K62vJYPSiaghQoTmhbdh6lcaKPmrSO6mdK4aPj1498pREBz3QM1Z1mbmV69kdBdoa9D0uJAmy5pD2JcjSwmEuOWd5CK4433T0lk96j4DBdLs/640?wx_fmt=png&from=appmsg&watermark=1&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=1" alt="Image"></p>
+<h2 id="3-非可视化-VS-可视化"><a href="#3-非可视化-VS-可视化" class="headerlink" title="3. 非可视化 VS 可视化"></a>3. 非可视化 VS 可视化</h2><h3 id="3-1-非可视化方式"><a href="#3-1-非可视化方式" class="headerlink" title="3.1 非可视化方式"></a>3.1 非可视化方式</h3><p>传统办法当然能用。打开 <code>.map</code>，搜索 <code>Total ROM Size</code>、<code>Total RW Size</code>、<code>Grand Totals</code>，再翻 <code>Image component sizes</code> 或 GNU ld 的 <code>Memory Configuration</code>。</p>
+<p>但它的问题也很明显：总表只能告诉你“大了”，很难告诉你“谁最大”；人工归类很累；函数级 section 藏得深，靠肉眼翻容易漏。</p>
+<h3 id="3-2-可视化方式"><a href="#3-2-可视化方式" class="headerlink" title="3.2 可视化方式"></a>3.2 可视化方式</h3><p>Map View Embedded 使用 Treemap。它把固件占用切成一块块矩形，矩形越大，占用越大；颜色表示类型，例如 Code、RO-Data、RW-Data、ZI-Data。</p>
+<p>这个形式很适合嵌入式，因为我们真正关心的往往不是一长串数字，而是“最大的那几块是谁”。</p>
+<p>插件里有两个视角。</p>
+<p><strong>Region View</strong> 按链接区域看，适合回答“这段 Flash&#x2F;RAM 里放了什么”。</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/K62vJYPSiagiaLfrz03nia6ntExZoibozX7eqWnwzUKsTergpPnrtjle9TBXibY1ck9ibIWCAcRY3OdEuZBbaY95vSm4Do1OdazkJMriawqvlKzCC4/640?wx_fmt=png&from=appmsg&watermark=1&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=2" alt="Image"></p>
+<p><strong>Module View</strong> 按模块归因，适合回答“是谁吃掉了空间”。</p>
+<p><img src="https://mmbiz.qpic.cn/sz_mmbiz_png/K62vJYPSiagiaftiaSDJKsbYlNxByDFu9VfyUsicN0BZfZQ4XYibicjOQR3ISEZr7DagFribVBVn5tdeDnqBXiaSwWnJ6pqFL15JcLXPSb8cWTYAsFk/640?wx_fmt=png&from=appmsg&watermark=1&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=3" alt="Image"></p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/K62vJYPSiagiaqAKAQMHwsX9oIMft1pMrcliaxQSIvwZthiaM3NiaRQK95yyiaNnHxLF6q0PgQjasm5E3TGC0RdkBzKbCCrySMPdqkHzRajGnhZ1E/640?wx_fmt=png&from=appmsg&watermark=1&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=4" alt="Image"></p>
+<h2 id="4-实操流程"><a href="#4-实操流程" class="headerlink" title="4. 实操流程"></a>4. 实操流程</h2><p>第一步，确保工程生成 <code>.map</code>。Keil 在链接选项里打开 map 输出；GCC&#x2F;CMake 一般加 <code>-Wl,-Map=output.map</code>；ESP-IDF 通常能在 build 目录找到 map 文件。</p>
+<p>第二步，在 VS Code 安装 <code>Map View Embedded</code>。找到 <code>.map</code> 文件，右键选择 <code>Open Map View</code>。</p>
+<p><img src="https://mmbiz.qpic.cn/sz_mmbiz_png/K62vJYPSiaghjwrDa3X1Cx1hqPQLjziawKyb4IAjiaUW6iaDDndhRoibV7uL3Sf2CpibfUkia58c3t1iaFLS3KA3GWJaQswySDuKbUjUyDc8U0XibUl4/640?wx_fmt=png&from=appmsg&watermark=1&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=5" alt="Image"></p>
+<p>第三步，先看顶部 ROM&#x2F;RAM 进度条，并确认总容量是否正确。插件会尽量从 map 里读取区域大小；如果你的链接区域不是完整芯片容量，或者用了外部存储，可以点齿轮手动配置 ROM&#x2F;RAM 大小。</p>
+<p>第四步，看 Region View。Flash 区域里是 <code>Code</code> 大，还是 <code>RO-Data</code> 大？RAM 区域里是 <code>RW-Data</code> 大，还是 <code>ZI-Data</code> 大？</p>
+<p>第五步，切到 Module View，点最大的色块下钻。</p>
+<p>第六步，用搜索框定位关键词。</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/K62vJYPSiaggdkN2rnq3Y0XyQiaA7EAhcNfOYG2gicSdF6FFeGjM9rYKTWZErylSicC5V8TdvXecY6kjpz6E87XAcgzdPFF8I7AwhkXErk8aKow/640?wx_fmt=png&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=6" alt="Image"></p>
+<h2 id="5-按颜色下刀"><a href="#5-按颜色下刀" class="headerlink" title="5. 按颜色下刀"></a>5. 按颜色下刀</h2><p><img src="https://mmbiz.qpic.cn/mmbiz_png/K62vJYPSiagj7bjra5KgkpsZuojoIxHLNicj5lmLIf8dNGL4bDU6u5MOb7LDJAibHGB5aBr1P8GhLLJFFoic37OicgUMuy0YgFbbJNezC1xWw0YE/640?wx_fmt=png&from=appmsg&watermark=1&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=7" alt="Image"></p>
+<p>蓝色 Code 大，先看是不是引入了重型库：浮点 printf、文件系统、图形库、网络协议栈，确认是否启用了过量功能。</p>
+<p>绿色 RO-Data 大，优先查字符串、图片、字体、证书、查表数组。很多 Flash 超限不是代码多，而是资源多。能压缩的压缩，能外置的外置。</p>
+<p>橙色 RW-Data 大，重点看有初值的全局变量。比如一个大 buffer 写了非零初值。能零初始化就零初始化。</p>
+<p>红色 ZI-Data 大，重点查未初始化全局数组、任务栈、静态 buffer、内存池。RTOS 项目尤其要看任务栈配置，十几个任务每个多给一点，RAM 很快就没了。</p>
+<p><img src="https://mmbiz.qpic.cn/sz_mmbiz_png/K62vJYPSiagh7ZlgNHtL66cyoH4DqdhPVnYexpsfdRTc4VCjO1pF6hz9VIsZCdQQeyjIEXXlicAibuf9c6TCAoXicAAQt6MqJxKkTXibLkEH4YRY/640?wx_fmt=png&from=appmsg&watermark=1&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=8" alt="Image"></p>
+<h2 id="6-总结"><a href="#6-总结" class="headerlink" title="6. 总结"></a>6. 总结</h2><p>对嵌入式 MCU 相关项目来说，Flash 和 RAM 永远不嫌多。把 map 可视化加入日常流程，每次大功能合入前看一眼，版本发布前看一眼，内存告警时再下钻。时间久了，你会对哪些模块重、哪些资源贵、哪些配置危险形成直觉。这个直觉，比量产前临时救火便宜得多。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2026/06/03/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%86%85%E5%AD%98%E4%B8%8EFLASH%E5%8F%AF%E8%A7%86%E5%8C%96%E5%B7%A5%E5%85%B7/" data-id="cuidCitedyMmbrmgtdG5duViT" data-title="嵌入式内存与FLASH可视化工具" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/FLASH%E5%AD%98%E5%82%A8/" rel="tag">FLASH存储</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%86%85%E5%AD%98%E8%B5%84%E6%BA%90%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="tag">内存资源可视化</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-技巧学习/Modbus协议学习笔记" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2026/05/28/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/Modbus%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="article-date">
+  <time class="dt-published" datetime="2026-05-28T02:00:00.000Z" itemprop="datePublished">2026-05-28</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2026/05/28/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/Modbus%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">Modbus协议学习笔记</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>实际上Modbus并不复杂，可以拆分为硬件层面和软件层面。</p>
+<p><strong>在硬件层面，Modbus的底层就是串口。</strong></p>
+<p><strong>在软件层面，Modbus就是一套软件协议。</strong></p>
+<p><strong>Modbus硬件组成</strong></p>
+<p>既然在硬件层面，Modbus是串口的话，那么这就涉及到很多种电平，TTL电平、232电平，485电平。</p>
+<p>对于传统的串口，通常使用TTL电平，也就是说主控芯片发出来的信号，不需要电平转换，但传输的距离就比较短，一般小于1米。大多数情况下，传统串口是用在芯片间的通信，如果在板间通信使用传统串口的话，距离最好不要超过1米。</p>
+<p>对于距离稍远的板间通信，比如30到50米之间，就需要经过电平转换，也就是把板子出来的TTL电平，通过芯片转换成RS232电平，到达接收端之后，再把RS232电平转换成TTL电平，通信的两端都需要电平转换芯片，这样就可以延长通信距离。</p>
+<p>对于传输的距离长达1千米的通信，就需要使用另外一个电平了——RS485电平，最长距离可达1200米。电平转换逻辑，与RS232一样，通信的两端都需要使用RS485与TTL转换芯片。</p>
+<p>在上面三种电平中，RS485的抗干扰能力最强，尤其在工业控制场景中，需要高抗干扰能力。那么用于工业控制的Modbus，底层硬件一般来就使用RS485。</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_jpg/5Wk2VJxZibPo0UhuE1s8fM5a3oiaECjM3z65kUqKVibnU2uC89xjN9yNLENZJRBArrVhq4radTAYOCD06SCJibhZtvTousaAJdYGfCnYsNZAJN0/640?wx_fmt=jpeg&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=4" alt="Image"></p>
+<p><strong>Modbus软件协议</strong></p>
+<p>Modbus在软件上规定了一套协议，可以用来访问多个设备，一个Master可以访问多个Slave，也就是一主多从的协议。</p>
+<p>为了适配不同的硬件、传输距离等，Modbus的主流传输版本有以下三种：</p>
+<p><strong>1）</strong> <strong>ASCII：</strong> 这是最早的版本，全部用可见的ASCII字符传输，可读性强，调试方便，但效率低，同样的数据要发两倍的长度。</p>
+<p><strong>2）</strong> <strong>RTU：</strong> 目前工业最主流，用得最多的版本，采用二进制编码，不浪费字节，效率高实时性好，工业现场首选。</p>
+<p><strong>3）</strong> <strong>TCP：</strong> 为了突破距离限制，把RTU的二进制包放到以太网包里传输，距离无限、速度快，在远程监控、物联网网关中，使用频繁。</p>
+<p>无论哪种版本，只是包装格式不同，以RTU为例，主控发出的Modbus数据里，必定含有如下信息：</p>
+<p>设备地址：你要访问从设备1，还是访问从设备2；</p>
+<p>访问哪类寄存器，读还是写，只访问1个寄存器，还是多个寄存器：这被称为功能码；</p>
+<p>起始寄存器地址、寄存器数量：这在数据里定义；</p>
+<p>为了保证数据传输的可靠，还附带有CRC检验码。</p>
+<p>由此，得到了主控发出的数据包格式，如下：</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_jpg/5Wk2VJxZibPrCefNQukahR9b1A8ZL2IOwRibTvIN79CbjOxp1rib8qPhwlJMp2RF4LLymibdc6caNdC6EzYaHgCsBCNFITruIdIt59T2Aa7e48k/640?wx_fmt=jpeg&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=5" alt="Image"></p>
+<p>其中从数据的角度上看，Modbus是主控对寄存器的读写操作，比如想得到按键输入状态时，读取一位数据；想控制LED时，需要输出一位数据，想读取LED当前状态时，读取到一位数据；想获得参数时，读取“输入寄存器”的数据；想设置参数时，“保存寄存器”进行写数据，可以是多位数据，也可以读“保存寄存器”。</p>
+<p>因此这些寄存器可以归纳为以下四类：</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_jpg/5Wk2VJxZibPoyiaybMRQErXRCKxRNssiakapUQCSvhS4kUIfKFbsSzGzlQpwuuxlBjUrkN2BVWQHLVpl10aqyibphjCj4GCibncicVw8yngBsM94Y/640?wx_fmt=jpeg&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=6" alt="Image"></p>
+<p>为了更加清晰明了的理解Modbus的数据帧，大家可以分析下面这组数据包是什么。</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_jpg/5Wk2VJxZibPpAmUP8dicS8iaW6M9ZESBI5dibszA14Gk3HfE17BRmf9UEmgaOPuicvtYyQYAK4icMGWBIuTCOyDqKJLSLU84wRRz8jH36mPYZzJkw/640?wx_fmt=jpeg&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=7" alt="Image"></p>
+<p><strong>Modbus操作传感器实战</strong></p>
+<p>了解了Modbus RTU的数据包的格式之后，就以读取传感器数据为例，进行Modbus实战。</p>
+<p>硬件接线如下：</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/5Wk2VJxZibPrGbWfb6SD0kdXUibISsTpdsKc4kPicrCXu6M1xY9v2cNAN7Tl67ibjs1wC1J8Fq4iaVXOawdQU1gLrB5gV06KzdhuKM3fZaoV9u8s/640?wx_fmt=png&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=8" alt="Image"></p>
+<p>每个传感器都有一个点表，也就是寄存器说明：</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_jpg/5Wk2VJxZibPr4BGxs4TZ4n20xX4WZAJNVicNp7LGF1QjEZwXxRc8cYonDsBxqDGrEoIHPxOoOnGEuufvibapZzvfLwpUmmwcqsTBhKb4W1gmTo/640?wx_fmt=jpeg&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=9" alt="Image"></p>
+<p>03H就是传感器的地址，它有5个DO数字量输出寄存器，分别控制蜂鸣器和LED的状态，还有2个AI模拟量输入寄存器，获取温湿度数据。</p>
+<p><strong>第一种寄存器操作是可以使用工具——Modbus Poll</strong> ，需要在PC端进行安装。</p>
+<p>打开Modbus Poll，就可以连接设备，选择波特率115200，然后就可以通过地址，读写定义寄存器了。</p>
+<p>对于不同的寄存器，只需要右键“读写定义”，选择功能。</p>
+<p><img src="https://mmbiz.qpic.cn/sz_mmbiz_jpg/5Wk2VJxZibPq8ia2t9qmibLFh05qYkTPRG7mKa5yBj2yWqxk2NVxoCT6lv8p2ricmnbibUudkFZQeQJdbDrRUDFqdW6oeB3wKhCxhUe1jaDSujGQ/640?wx_fmt=jpeg&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=10" alt="Image"></p>
+<p>功能确定之后，就可以操作不同的寄存器，在Value中，选择on或off，蜂鸣器或者LED就会相应的动作。</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_jpg/5Wk2VJxZibPpVhZzCGfHJEMWK9yzCZM7UBnbtNjrWoymibUEdh0Tv8ZwVnuGD3EBBpO6x8z7dylveXjLuNbc5GMAI0tfeSKNZIAwLMflOzHqc/640?wx_fmt=jpeg&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=11" alt="Image"></p>
+<p>对于温湿度读取，同样的操作，先读写定义，然后读input register。</p>
+<p><strong>第二种，操作方式就是通过串口收发数据来控制外设</strong> 。</p>
+<p>将对应的RTU数据通过串口发送，也可以对蜂鸣器、LED控制，读取温湿度数据。</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_jpg/5Wk2VJxZibPqMCwCiazd62ibHRagW7Z5e6aTgh7PzQtf56PeRw2ZHs4WRia1n448jhd0qaVhrWKuDHVu2C7wic2k5w6k4mOyMjnhtq9qlwWXjC8w/640?wx_fmt=jpeg&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=12" alt="Image"></p>
+<p>对于温湿度数据的解析，需要阅读Modbus协议的数据包格式解析（文末提供了131页Modbus协议中文文档下载）。</p>
+<p>以读到的数据为例，在文档的第六章，04功能码这里：</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_jpg/5Wk2VJxZibPptmS9z2FXwPI040TdnaiaJdyDAj6p0hT9o95wt3UNuOzrg0S3ZW2Hl33jG9sPIKo7EusEsqX4Uz0pyy3fTCGiaa9UDAPibCIeGJo/640?wx_fmt=jpeg&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=13" alt="Image"></p>
+<p>03是地址，功能码是04，02是两个字节，分别是013E，即31.8度。</p>
+<p>以上两种操作是通过纯粹的串口工具，发出数据包，然后得到回应。如果要把Modbus的功能集成进产品里面去的话，就需要写程序，可以使用各种Modbus的开源库，也可以自己去写代码。</p>
+<p><strong>第三种，通过程序实现Modbus的一些基本操作。</strong></p>
+<p>以STM32H5连接Modbus传感器为例：</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_jpg/5Wk2VJxZibPogrACAgjuJbKpYxYYwmA1kO7R9znbKKqWVUnNRYicRyvr9v2CpeBAaic7QQZp18f6rKRKhsu6Oj1gOz5qh4SruwnTqLPDSMONCc/640?wx_fmt=jpeg&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=14" alt="Image"></p>
+<p>在代码中，创建Modbus的结构体，主要确定使用哪个串口，以及串口参数：</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_jpg/5Wk2VJxZibPrkmtDv5tXf11SZV9iaIHrWGNtDO8ic68J1A8XSibu8ZgXKu3IgA9WhiatsuVWO9XBVUibTTiauTFLp8RcuaicLEUxHibtiaI0lE2I0ibges/640?wx_fmt=jpeg&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=15" alt="Image"></p>
+<p>Modbus的核心在下面这个函数：</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_jpg/5Wk2VJxZibPpvicq4KLUbNy2qW1jLEqZStu2q0pLkM3u7XkMUuk0w1Zv7aKIS9vKjibSpBOfZbhugjjBjHxg8NicvOepURlx9XgyoB4FyRWewcI/640?wx_fmt=jpeg&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=16" alt="Image"></p>
+<p>DO是要去操作寄存器，访问哪个设备，访问DO寄存器里面的哪一个寄存器，还有要写入的数值是怎样，构造好数据包之后，接着就是校验码，把校验码填进去，然后使用串口来发送数据包，接着就可以去读取数据包，解析里面的数据。</p>
+<p><img src="https://mmbiz.qpic.cn/sz_mmbiz_jpg/5Wk2VJxZibPqPDNG1g9Jjm5FKO0GUtvseoQWjNv37f1t5kJNvuO8n7xG5ZflZiacwC3rEahv6F7CbrTM74CmXVct3fq3qZBAeHibsXxByO75bc/640?wx_fmt=jpeg&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=17" alt="Image"></p>
+<p>代码的工程文件分享为大家，可以结合视频，进行代码的分析，从而更加了解如何通过代码编程对Modbus进行读写操作。</p>
+<p>好了，简单的总结下本节课的内容：首先，从硬件和软件层面，了解Modbus的本质是什么；然后，对Modbus的数据包进行解读，了解数据构成和意义；最后，通过工具和代码两种方式，操作Modbus传感器。</p>
+<p>相信看完本节课内容，基本可以入门Modbus的，如果想要深入学习，就需要自己进行实战了。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2026/05/28/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/Modbus%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" data-id="cuiddkYjdsAlmzRcde_QSCKSN" data-title="Modbus协议学习笔记" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" rel="tag">嵌入式学习</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" rel="tag">数据传输</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-技巧学习/FreeRTOS工程化要点" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2026/04/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/FreeRTOS%E5%B7%A5%E7%A8%8B%E5%8C%96%E8%A6%81%E7%82%B9/" class="article-date">
@@ -202,7 +405,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2026/04/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/FreeRTOS%E5%B7%A5%E7%A8%8B%E5%8C%96%E8%A6%81%E7%82%B9/" data-id="cuidxJxOCDFV_YgSI4OppVeCp" data-title="FreeRTOS工程化要点：任务划分、优先级设计与CPU占用率监控" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2026/04/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/FreeRTOS%E5%B7%A5%E7%A8%8B%E5%8C%96%E8%A6%81%E7%82%B9/" data-id="cuidxQvnfK95SsM8MGx7V7FZy" data-title="FreeRTOS工程化要点：任务划分、优先级设计与CPU占用率监控" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -222,10 +425,6 @@
   <time class="dt-published" datetime="2026-04-26T02:00:00.000Z" itemprop="datePublished">2026-04-26</time>
 </a>
     
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>
-  </div>
-
   </div>
   <div class="article-inner">
     
@@ -354,11 +553,11 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2026/04/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E8%87%AA%E5%8A%A8%E5%88%9D%E5%A7%8B%E5%8C%96%E6%A1%86%E6%9E%B6/" data-id="cuidKgW80MQwRY-MBY88wY3W9" data-title="自动初始化框架" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2026/04/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E8%87%AA%E5%8A%A8%E5%88%9D%E5%A7%8B%E5%8C%96%E6%A1%86%E6%9E%B6/" data-id="cuid5jJMdvCv3frOijKOeVi0w" data-title="自动初始化框架" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" rel="tag">嵌入式学习</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" rel="tag">数据存储</a></li></ul>
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" rel="tag">数据存储</a></li></ul>
 
     </footer>
   </div>
@@ -430,7 +629,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2026/04/16/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%87%BD%E6%95%B0%E5%90%8D+%E8%A1%8C%E5%8F%B7+%E6%97%A5%E5%BF%97%E5%86%85%E5%AE%B9%20%E6%A0%BC%E5%BC%8F%E6%97%A5%E5%BF%97%E8%BE%93%E5%87%BA/" data-id="cuid2KYsjpvzX__igaNNk_ema" data-title="函数名+行号+日志内容 格式日志输出" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2026/04/16/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%87%BD%E6%95%B0%E5%90%8D+%E8%A1%8C%E5%8F%B7+%E6%97%A5%E5%BF%97%E5%86%85%E5%AE%B9%20%E6%A0%BC%E5%BC%8F%E6%97%A5%E5%BF%97%E8%BE%93%E5%87%BA/" data-id="cuidCzIxb_E-LYwWppnAG2G9x" data-title="函数名+行号+日志内容 格式日志输出" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -673,7 +872,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2026/03/09/%E7%BC%96%E8%AF%91%E9%93%BE%E6%8E%A5/MakeFile/Makefile.inc/" data-id="cuid3glIvtzM0gxzyqZLIV4rh" data-title="Makefile" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2026/03/09/%E7%BC%96%E8%AF%91%E9%93%BE%E6%8E%A5/MakeFile/Makefile.inc/" data-id="cuidR0NKD5xHQxwHyXhevR8ch" data-title="Makefile" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -830,11 +1029,65 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2026/02/27/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE%E6%8E%A8%E8%8D%90/" data-id="cuidnidLDjxcq19c-ws2dk3uk" data-title="嵌入式开源项目" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2026/02/27/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE%E6%8E%A8%E8%8D%90/" data-id="cuiduhHHsHwBoht46WXNoJ3x6" data-title="嵌入式开源项目" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" rel="tag">嵌入式学习</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-Linux 学习记录/驱动屏/00_交叉编译" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2026/02/24/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/%E9%A9%B1%E5%8A%A8%E5%B1%8F/00_%E4%BA%A4%E5%8F%89%E7%BC%96%E8%AF%91/" class="article-date">
+  <time class="dt-published" datetime="2026-02-23T16:00:00.000Z" itemprop="datePublished">2026-02-24</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>►<a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E5%85%A8%E5%BF%97T113S3/">全志T113S3</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2026/02/24/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/%E9%A9%B1%E5%8A%A8%E5%B1%8F/00_%E4%BA%A4%E5%8F%89%E7%BC%96%E8%AF%91/">交叉编译</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="交叉编译"><a href="#交叉编译" class="headerlink" title="交叉编译"></a>交叉编译</h1><p>那如何编译一个ARM架构的程序呢？这就需要用到交叉编译工具链了，什么是交叉编译？就是在X86平台的PC机上编译ARM平台的程序，什么是工具链？这里我们可以理解为是GCC，那什么是交叉编译工具链？就是芯片厂家针对自己芯片平台开发的编译器，我们板卡的芯片是全志的T113S3，厂家提供的工具链是toolchain-sunxi-glibc-gcc-830，我们下载后，放入ubuntu中解压。<br><code>https://x509p6c8to.feishu.cn/docx/GanSd5WxyoqU7gxhSM3cOb7hngc#share-E8oOdgPhloQmI5xdznuc6yXjnZe</code><br>接下来，我们需要做两样东西<br>设置 <code>STAGING_DIR</code> 环境变量，以便在构建过程中能够找到工具链对应的库和头文件。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">当前shell下执行下方指令，/xxxxx/替换为自己本机的路径</span><br><span class="line"><span class="keyword">export</span> STAGING_DIR=/xxxxx/toolchain-sunxi-glibc-gcc<span class="number">-830</span>/toolchain/bin:$STAGING_DIR</span><br></pre></td></tr></table></figure>
+
+<p>设置编译器为对应的交叉编译器。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">CMakeList.txt修改为下方内容，/xxxxx/替换为自己本机的路径<span class="built_in">cmake_minimum_required</span>(VERSION <span class="number">3.1</span><span class="number">.5</span>)</span><br><span class="line"><span class="built_in">project</span>(monitor C)</span><br><span class="line"><span class="built_in">set</span>(CMAKE_C_COMPILER /xxxxx/toolchain-sunxi-glibc-gcc<span class="number">-830</span>/toolchain/bin/arm-openwrt-linux-gcc)</span><br><span class="line"><span class="built_in">add_executable</span>(monitor main.c)</span><br></pre></td></tr></table></figure>
+
+<p>重新删掉build文件，编译即可。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">rm build -rf</span><br><span class="line">mkdir build</span><br><span class="line">cd build</span><br><span class="line">cmake ..</span><br><span class="line">make查看生成的文件</span><br><span class="line">file hello</span><br><span class="line">monitor: ELF <span class="number">32</span>-bit LSB executable, ARM, EABI5 version <span class="number">1</span> (SYSV), dynamically linked, interpreter /lib/ld-linux-armhf.so<span class="number">.3</span>, <span class="keyword">for</span> GNU/Linux <span class="number">3.2</span><span class="number">.0</span>, with debug_info, <span class="keyword">not</span> stripped</span><br></pre></td></tr></table></figure>
+
+<p>到这里，我们就可以重新push应用到板卡中，在板卡中运行了。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2026/02/24/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/%E9%A9%B1%E5%8A%A8%E5%B1%8F/00_%E4%BA%A4%E5%8F%89%E7%BC%96%E8%AF%91/" data-id="cuidhpTSc1gjK5D0H95G34cTB" data-title="交叉编译" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" rel="tag">嵌入式学习</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E9%A9%B1%E5%8A%A8%E5%B1%8F/" rel="tag">驱动屏</a></li></ul>
 
     </footer>
   </div>
@@ -885,61 +1138,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2026/02/24/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/%E9%A9%B1%E5%8A%A8%E5%B1%8F/01_%E6%98%BE%E7%A4%BA%E5%86%85%E5%AE%B9/" data-id="cuid00OLW65921XMvU4nWI4CO" data-title="显示内容" class="article-share-link"><span class="fa fa-share">Share</span></a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" rel="tag">嵌入式学习</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E9%A9%B1%E5%8A%A8%E5%B1%8F/" rel="tag">驱动屏</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-Linux 学习记录/驱动屏/00_交叉编译" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2026/02/24/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/%E9%A9%B1%E5%8A%A8%E5%B1%8F/00_%E4%BA%A4%E5%8F%89%E7%BC%96%E8%AF%91/" class="article-date">
-  <time class="dt-published" datetime="2026-02-23T16:00:00.000Z" itemprop="datePublished">2026-02-24</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>►<a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E5%85%A8%E5%BF%97T113S3/">全志T113S3</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2026/02/24/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/%E9%A9%B1%E5%8A%A8%E5%B1%8F/00_%E4%BA%A4%E5%8F%89%E7%BC%96%E8%AF%91/">交叉编译</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <h1 id="交叉编译"><a href="#交叉编译" class="headerlink" title="交叉编译"></a>交叉编译</h1><p>那如何编译一个ARM架构的程序呢？这就需要用到交叉编译工具链了，什么是交叉编译？就是在X86平台的PC机上编译ARM平台的程序，什么是工具链？这里我们可以理解为是GCC，那什么是交叉编译工具链？就是芯片厂家针对自己芯片平台开发的编译器，我们板卡的芯片是全志的T113S3，厂家提供的工具链是toolchain-sunxi-glibc-gcc-830，我们下载后，放入ubuntu中解压。<br><code>https://x509p6c8to.feishu.cn/docx/GanSd5WxyoqU7gxhSM3cOb7hngc#share-E8oOdgPhloQmI5xdznuc6yXjnZe</code><br>接下来，我们需要做两样东西<br>设置 <code>STAGING_DIR</code> 环境变量，以便在构建过程中能够找到工具链对应的库和头文件。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">当前shell下执行下方指令，/xxxxx/替换为自己本机的路径</span><br><span class="line"><span class="keyword">export</span> STAGING_DIR=/xxxxx/toolchain-sunxi-glibc-gcc<span class="number">-830</span>/toolchain/bin:$STAGING_DIR</span><br></pre></td></tr></table></figure>
-
-<p>设置编译器为对应的交叉编译器。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">CMakeList.txt修改为下方内容，/xxxxx/替换为自己本机的路径<span class="built_in">cmake_minimum_required</span>(VERSION <span class="number">3.1</span><span class="number">.5</span>)</span><br><span class="line"><span class="built_in">project</span>(monitor C)</span><br><span class="line"><span class="built_in">set</span>(CMAKE_C_COMPILER /xxxxx/toolchain-sunxi-glibc-gcc<span class="number">-830</span>/toolchain/bin/arm-openwrt-linux-gcc)</span><br><span class="line"><span class="built_in">add_executable</span>(monitor main.c)</span><br></pre></td></tr></table></figure>
-
-<p>重新删掉build文件，编译即可。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">rm build -rf</span><br><span class="line">mkdir build</span><br><span class="line">cd build</span><br><span class="line">cmake ..</span><br><span class="line">make查看生成的文件</span><br><span class="line">file hello</span><br><span class="line">monitor: ELF <span class="number">32</span>-bit LSB executable, ARM, EABI5 version <span class="number">1</span> (SYSV), dynamically linked, interpreter /lib/ld-linux-armhf.so<span class="number">.3</span>, <span class="keyword">for</span> GNU/Linux <span class="number">3.2</span><span class="number">.0</span>, with debug_info, <span class="keyword">not</span> stripped</span><br></pre></td></tr></table></figure>
-
-<p>到这里，我们就可以重新push应用到板卡中，在板卡中运行了。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2026/02/24/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/%E9%A9%B1%E5%8A%A8%E5%B1%8F/00_%E4%BA%A4%E5%8F%89%E7%BC%96%E8%AF%91/" data-id="cuid1A7YOy5-j2AgBxRZa04Zj" data-title="交叉编译" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2026/02/24/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/%E9%A9%B1%E5%8A%A8%E5%B1%8F/01_%E6%98%BE%E7%A4%BA%E5%86%85%E5%AE%B9/" data-id="cuidYU2ynY0GDm55GmniczS6n" data-title="显示内容" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -995,333 +1194,11 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2026/02/24/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/%E9%A9%B1%E5%8A%A8%E5%B1%8F/02_%E8%AF%BB%E5%8F%96%E8%A7%A6%E6%91%B8%E5%B1%8F%E7%9A%84%E8%BE%93%E5%85%A5/" data-id="cuidzVx8v43d5n7zptjHu5Z82" data-title="读取触摸屏得到输入" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2026/02/24/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/%E9%A9%B1%E5%8A%A8%E5%B1%8F/02_%E8%AF%BB%E5%8F%96%E8%A7%A6%E6%91%B8%E5%B1%8F%E7%9A%84%E8%BE%93%E5%85%A5/" data-id="cuidxFgNCb41prXcZjFMdeK_a" data-title="读取触摸屏得到输入" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" rel="tag">嵌入式学习</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E9%A9%B1%E5%8A%A8%E5%B1%8F/" rel="tag">驱动屏</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-git 使用/简略使用指南" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2026/02/08/git%20%E4%BD%BF%E7%94%A8/%E7%AE%80%E7%95%A5%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/" class="article-date">
-  <time class="dt-published" datetime="2026-02-08T10:00:00.000Z" itemprop="datePublished">2026-02-08</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2026/02/08/git%20%E4%BD%BF%E7%94%A8/%E7%AE%80%E7%95%A5%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/">git 简略使用指南</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <h1 id="一、引言"><a href="#一、引言" class="headerlink" title="一、引言"></a>一、引言</h1><h2 id="1-1-为什么通过-Git-获取-SDK？"><a href="#1-1-为什么通过-Git-获取-SDK？" class="headerlink" title="1.1 为什么通过 Git 获取 SDK？"></a>1.1 为什么通过 Git 获取 SDK？</h2><p>在传统的嵌入式开发中，SDK 常通过网盘或邮件以压缩包（.zip&#x2F;.7z）形式分发。但在Cat.1 bis开发中，这种方式存在明显短板。通过 Git 接入 SDK，将获得以下核心优势：</p>
-<ul>
-<li>实时补丁同步（Real-time Updates）：蜂窝模组 SDK 迭代较快，当有关键 Bug 修复或新功能上线时，无需等待 FAE 手动发送新包，仅需一行命令即可同步远程仓库的最新代码。</li>
-<li>透明的版本追溯（Traceability）：每一行代码的变更都有记录（Commit Log）。工程在升级后出现异常，可以通过 Git 的对比功能迅速定位是 SDK 的哪一部分改动影响了逻辑，极大地缩短了排障周期。</li>
-<li>极速增量更新（Efficiency）：SDK 源码通常包含大量驱动和协议栈。通过 Git 仅拉取“变化的代码块”，避免了每次重复下载数百兆乃至数 GB 的完整安装包，节省了带宽与存储空间。</li>
-</ul>
-<h2 id="1-2-现有-Git-托管平台对比"><a href="#1-2-现有-Git-托管平台对比" class="headerlink" title="1.2 现有 Git 托管平台对比"></a>1.2 现有 Git 托管平台对比</h2><p>下表是对目前主流的 Git 托管平台进行了简单横向对比：</p>
-<table>
-<thead>
-<tr>
-<th>平台名称</th>
-<th>对比分析</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>GitHub</td>
-<td>资源极丰富，但国内访问受限。</td>
-</tr>
-<tr>
-<td>Gitee (码云)</td>
-<td>访问速度快，但在处理大型企业级 SDK 仓库的定制化分发上灵活性有限。</td>
-</tr>
-<tr>
-<td>GitLab</td>
-<td>功能强大但缺乏本土化支持，更新维护成本高。</td>
-</tr>
-</tbody></table>
-<h2 id="1-3-Git-客户端安装"><a href="#1-3-Git-客户端安装" class="headerlink" title="1.3 Git 客户端安装"></a>1.3 Git 客户端安装</h2><p>● Windows: 推荐安装 Git for Windows。<br>● Linux&#x2F;macOS: 使用系统自带包管理器安装（如 sudo apt install git）。</p>
-<p>注意：Git安装过程中默认使用Vim打开，对于初学者或非专业开发人员，强烈建议不要选择默认的 Vim。</p>
-<hr>
-<h3 id="1-核心概念-必读"><a href="#1-核心概念-必读" class="headerlink" title="1. 核心概念 (必读)"></a>1. 核心概念 (必读)</h3><p>在输入命令之前，理解 Git 的“三个区域”至关重要：</p>
-<ol>
-<li><strong>工作区 (Working Directory):</strong> 你电脑里能看到的文件夹，你在这里修改文件。</li>
-<li><strong>暂存区 (Staging Area&#x2F;Index):</strong> 一个临时区域，保存了你打算提交的修改（<code>git add</code> 后的状态）。</li>
-<li><strong>版本库 (Repository):</strong> 存储所有历史版本的地方（<code>git commit</code> 后的状态）。</li>
-</ol>
-<p><strong>基本流程：</strong> 修改文件  添加到暂存区  提交到版本库。</p>
-<hr>
-<h3 id="2-初次安装与配置"><a href="#2-初次安装与配置" class="headerlink" title="2. 初次安装与配置"></a>2. 初次安装与配置</h3><p>安装 Git 后，第一件事是设置你的身份（这就好比给你的代码盖章）：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 设置你的用户名</span></span><br><span class="line">git config --global user.name <span class="string">&quot;你的名字&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置你的邮箱</span></span><br><span class="line">git config --global user.email <span class="string">&quot;你的邮箱@example.com&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看配置信息</span></span><br><span class="line">git config --list</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<hr>
-<h3 id="3-基础操作流程-日常使用"><a href="#3-基础操作流程-日常使用" class="headerlink" title="3. 基础操作流程 (日常使用)"></a>3. 基础操作流程 (日常使用)</h3><p>这是你 90% 的时间都在用的命令：</p>
-<h4 id="A-开始项目"><a href="#A-开始项目" class="headerlink" title="A. 开始项目"></a>A. 开始项目</h4><ul>
-<li><strong>新项目初始化：</strong></li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git init</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><strong>克隆远程项目：</strong></li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> &lt;远程仓库地址&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h4 id="B-提交代码-三部曲"><a href="#B-提交代码-三部曲" class="headerlink" title="B. 提交代码 (三部曲)"></a>B. 提交代码 (三部曲)</h4><ol>
-<li><strong>查看状态 (最常用)：</strong><br>随时查看哪些文件被修改了、哪些在暂存区。</li>
-</ol>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git status</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<ol start="2">
-<li><strong>添加到暂存区：</strong></li>
-</ol>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git add 文件名    <span class="comment"># 添加指定文件</span></span><br><span class="line">git add .        <span class="comment"># 添加所有修改过的文件（推荐）</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<ol start="3">
-<li><strong>提交到版本库：</strong></li>
-</ol>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git commit -m <span class="string">&quot;这里写清晰的提交说明，例如：修复登录页面的Bug&quot;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h4 id="C-查看历史"><a href="#C-查看历史" class="headerlink" title="C. 查看历史"></a>C. 查看历史</h4><ul>
-<li><strong>查看提交日志：</strong></li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">log</span></span><br><span class="line">git <span class="built_in">log</span> --oneline  <span class="comment"># 简洁模式，一行显示一个提交</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<hr>
-<h3 id="4-分支管理-Git-的杀手锏"><a href="#4-分支管理-Git-的杀手锏" class="headerlink" title="4. 分支管理 (Git 的杀手锏)"></a>4. 分支管理 (Git 的杀手锏)</h3><p>分支让你可以在不影响主线（main&#x2F;master）的情况下开发新功能。</p>
-<ul>
-<li><strong>创建并切换分支 (推荐)：</strong></li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git checkout -b feature-login</span><br><span class="line"><span class="comment"># 或者新版命令：</span></span><br><span class="line">git switch -c feature-login</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><strong>查看所有分支：</strong></li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git branch</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><strong>切换回主分支：</strong></li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git checkout main</span><br><span class="line"><span class="comment"># 或者：</span></span><br><span class="line">git switch main</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><strong>合并分支：</strong><br>先切换回主分支，然后把功能分支合并进来。</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git merge feature-login</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><strong>删除分支：</strong></li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git branch -d feature-login</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<hr>
-<h3 id="5-远程协作-GitHub-GitLab"><a href="#5-远程协作-GitHub-GitLab" class="headerlink" title="5. 远程协作 (GitHub&#x2F;GitLab)"></a>5. 远程协作 (GitHub&#x2F;GitLab)</h3><ul>
-<li><strong>关联远程仓库：</strong></li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git remote add origin &lt;远程仓库地址&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><strong>推送到远程 (上传)：</strong></li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 第一次推送时需要关联分支</span></span><br><span class="line">git push -u origin main</span><br><span class="line"></span><br><span class="line"><span class="comment"># 之后的推送只需</span></span><br><span class="line">git push</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><strong>拉取远程代码 (下载并合并)：</strong><br>当别人更新了代码，你需要同步到本地。</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git pull</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<hr>
-<h3 id="6-“后悔药”操作-撤销与回滚"><a href="#6-“后悔药”操作-撤销与回滚" class="headerlink" title="6. “后悔药”操作 (撤销与回滚)"></a>6. “后悔药”操作 (撤销与回滚)</h3><ul>
-<li><strong>撤销工作区的修改 (文件还没 add)：</strong><br><em>如果你把文件改乱了，想恢复到上次 commit 的状态。</em></li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git checkout -- 文件名</span><br><span class="line"><span class="comment"># 或者新版命令：</span></span><br><span class="line">git restore 文件名</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><strong>撤销暂存区的修改 (文件已经 add，但还没 commit)：</strong><br><em>如果你手快 add 了不该提交的文件。</em></li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git reset HEAD 文件名</span><br><span class="line"><span class="comment"># 或者新版命令：</span></span><br><span class="line">git restore --staged 文件名</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><strong>修改上一次提交 (Commit)：</strong><br><em>如果你提交后发现漏了文件，或者提交信息写错了。</em></li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git commit --amend</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<hr>
-<h3 id="7-常见场景速查表"><a href="#7-常见场景速查表" class="headerlink" title="7. 常见场景速查表"></a>7. 常见场景速查表</h3><table>
-<thead>
-<tr>
-<th>场景</th>
-<th>关键命令</th>
-</tr>
-</thead>
-<tbody><tr>
-<td><strong>我想把所有修改暂存</strong></td>
-<td><code>git add .</code></td>
-</tr>
-<tr>
-<td><strong>我不知道现在是什么情况</strong></td>
-<td><code>git status</code></td>
-</tr>
-<tr>
-<td><strong>我想看看这行代码是谁写的</strong></td>
-<td><code>git blame 文件名</code></td>
-</tr>
-<tr>
-<td><strong>出现了冲突 (Conflict)</strong></td>
-<td>打开文件 -&gt; 手动修代码 -&gt;<code>git add</code> -&gt; <code>git commit</code></td>
-</tr>
-<tr>
-<td><strong>我想暂时保存工作去修 Bug</strong></td>
-<td><code>git stash</code> (保存), <code>git stash pop</code> (恢复)</td>
-</tr>
-<tr>
-<td><strong>我想丢弃本地所有修改，强制与远程一致</strong></td>
-<td><code>git reset --hard origin/main</code> (慎用!)</td>
-</tr>
-</tbody></table>
-<hr>
-<h3 id="建议的最佳实践"><a href="#建议的最佳实践" class="headerlink" title="建议的最佳实践"></a>建议的最佳实践</h3><ol>
-<li><strong>勤提交：</strong> 尽量保持原子性提交（一个 Commit 只做一件事），方便回滚。</li>
-<li><strong>写好 Commit Message：</strong> 清楚地描述“做了什么”，而不是“更新了代码”。</li>
-<li><strong>不要提交大文件&#x2F;敏感文件：</strong> 使用 <code>.gitignore</code> 文件来忽略不需要版本控制的文件（如密码文件、编译生成的 <code>node_modules</code> 或 <code>dist</code> 目录）。</li>
-</ol>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2026/02/08/git%20%E4%BD%BF%E7%94%A8/%E7%AE%80%E7%95%A5%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/" data-id="cuid86a5rkYFcuV0yMqbsB_BE" data-title="git 简略使用指南" class="article-share-link"><span class="fa fa-share">Share</span></a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/git/" rel="tag">git</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" rel="tag">嵌入式学习</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-博客撰写方法/环境搭建" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2026/01/30/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" class="article-date">
-  <time class="dt-published" datetime="2026-01-30T01:00:00.000Z" itemprop="datePublished">2026-01-30</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2026/01/30/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/">博客hexo环境搭建</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <h1 id="【Python环境管理】完整卸载所有Python环境（Python-Pycharm-Anaconda）"><a href="#【Python环境管理】完整卸载所有Python环境（Python-Pycharm-Anaconda）" class="headerlink" title="【Python环境管理】完整卸载所有Python环境（Python+Pycharm+Anaconda）"></a>【Python环境管理】完整卸载所有Python环境（Python+Pycharm+Anaconda）</h1><h4 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h4><ul>
-<li><a target="_blank" rel="noopener" href="https://zeeklog.com/pythonhuan-jing-guan-li-wan-zheng-xie-zai-suo-you-pythonhuan-jing-python-pycharm-anaconda/#__Python__5">🧹 一、卸载 Python 环境</a></li>
-<li><a target="_blank" rel="noopener" href="https://zeeklog.com/pythonhuan-jing-guan-li-wan-zheng-xie-zai-suo-you-pythonhuan-jing-python-pycharm-anaconda/#__PyCharm_18">🧹 二、卸载 PyCharm</a><ul>
-<li><a target="_blank" rel="noopener" href="https://zeeklog.com/pythonhuan-jing-guan-li-wan-zheng-xie-zai-suo-you-pythonhuan-jing-python-pycharm-anaconda/#_JetBrains_Toolbox_19">方法一：通过 JetBrains Toolbox</a></li>
-<li><a target="_blank" rel="noopener" href="https://zeeklog.com/pythonhuan-jing-guan-li-wan-zheng-xie-zai-suo-you-pythonhuan-jing-python-pycharm-anaconda/#_25">方法二：手动卸载</a></li>
-</ul>
-</li>
-<li><a target="_blank" rel="noopener" href="https://zeeklog.com/pythonhuan-jing-guan-li-wan-zheng-xie-zai-suo-you-pythonhuan-jing-python-pycharm-anaconda/#__Anaconda_42">🧹 三、卸载 Anaconda</a></li>
-<li><a target="_blank" rel="noopener" href="https://zeeklog.com/pythonhuan-jing-guan-li-wan-zheng-xie-zai-suo-you-pythonhuan-jing-python-pycharm-anaconda/#_55">安装&#x2F;卸载报错</a></li>
-</ul>
-<p>由于我的Python环境运行报错，怎么也解决不了。所以准备壮士断腕，直接卸载所有环境并进行重装！！！</p>
-<p>卸载：Python → PyCharm → Anaconda（可选）</p>
-<h2 id="🧹-一、卸载-Python-环境"><a href="#🧹-一、卸载-Python-环境" class="headerlink" title="🧹 一、卸载 Python 环境"></a>🧹 一、卸载 Python 环境</h2><ol>
-<li>卸载 Python 本体</li>
-</ol>
-<p>方法一：通过“应用和功能”卸载<br>打开 设置 → 应用 → 应用和功能。<br>找到所有名为 Python x.x.x（如 Python 3.11.5） 的条目。<br>点击 → 卸载。</p>
-<p><img src="https://qiniu.meowparty.cn/coder.2023/2026-01-27/e187b161e4fe41f5a4d3925215636bec.png_pic_center" alt="在这里插入图片描述">方法二：使用控制面板卸载<br>控制面板 → 卸载程序 → 找到 Python。<br>卸载所有安装的版本（可能有多个）。</p>
-<h2 id="🧹-二、卸载-PyCharm"><a href="#🧹-二、卸载-PyCharm" class="headerlink" title="🧹 二、卸载 PyCharm"></a>🧹 二、卸载 PyCharm</h2><h3 id="方法一：通过-JetBrains-Toolbox"><a href="#方法一：通过-JetBrains-Toolbox" class="headerlink" title="方法一：通过 JetBrains Toolbox"></a>方法一：通过 JetBrains Toolbox</h3><p>如果你是通过 JetBrains Toolbox 安装 PyCharm：</p>
-<p>打开 Toolbox，点击 PyCharm 后的齿轮图标。<br>选择 Uninstall。</p>
-<h3 id="方法二：手动卸载"><a href="#方法二：手动卸载" class="headerlink" title="方法二：手动卸载"></a>方法二：手动卸载</h3><p>设置 → 应用 → 应用和功能 → 找到 PyCharm Community 或 PyCharm Professional<br>点击 → 卸载。</p>
-<p><img src="https://qiniu.meowparty.cn/coder.2023/2026-01-27/3ca5a8268e5748859d6cc9e66b4e13bd.png_pic_center" alt="在这里插入图片描述">🔎 清理 PyCharm 残留配置文件（可选但推荐）<br>删除以下目录：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">C:\Users\&lt;你的用户名&gt;\.PyCharm&lt;版本号&gt; C:\Users\&lt;你的用户名&gt;\AppData\Roaming\JetBrains\PyCharm&lt;版本号&gt; C:\Users\&lt;你的用户名&gt;\AppData\Local\JetBrains\PyCharm&lt;版本号&gt; C:\Users\&lt;你的用户名&gt;\AppData\Local\JetBrains\Toolbox（如果使用 Toolbox 安装） </span><br></pre></td></tr></table></figure>
-
-<h2 id="🧹-三、卸载-Anaconda"><a href="#🧹-三、卸载-Anaconda" class="headerlink" title="🧹 三、卸载 Anaconda"></a>🧹 三、卸载 Anaconda</h2><p>卸载 Anaconda 步骤：<br>1、设置 → 应用和功能 → 找到 Anaconda3 → 卸载。</p>
-<p><img src="https://qiniu.meowparty.cn/coder.2023/2026-01-27/6317a2be5dac4a69acd99983814ed7c0.png" alt="在这里插入图片描述">2、删除残留文件夹：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">C:\Users\&lt;你的用户名&gt;\Anaconda3 C:\Users\&lt;你的用户名&gt;\.conda C:\Users\&lt;你的用户名&gt;\.anaconda_backup（如果有） C:\Users\&lt;你的用户名&gt;\AppData\Local\Continuum </span><br></pre></td></tr></table></figure>
-
-<h2 id="安装-卸载报错"><a href="#安装-卸载报错" class="headerlink" title="安装&#x2F;卸载报错"></a>安装&#x2F;卸载报错</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Downloading and Extracting Packages: Preparing transaction: failed CondaError: Unable to create prefix directory &#x27;D:\Anaconda3\envs\myenv3.10&#x27;. Check that you have sufficient permissions.</span><br></pre></td></tr></table></figure>
-
-<h1 id="Node-js环境安装"><a href="#Node-js环境安装" class="headerlink" title="Node.js环境安装"></a>Node.js环境安装</h1><h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>本文主要介绍 <code>Node.js</code> 安装及常用的一些工具。 本文以 <code>Windows</code> 操作系统为示例，除了安装过程与非 <code>Windows</code> 操作系统有区别，其他内容基本通用。</p>
-<h3 id="安装-Node-js"><a href="#安装-Node-js" class="headerlink" title="安装 Node.js"></a>安装 Node.js</h3><p><a href="https://link.zhihu.com/?target=https://nodejs.org/zh-cn">Node.js 官网</a> 下载 <code>LTS</code> 版本的安装包：</p>
-<p><img src="https://picx.zhimg.com/v2-83d1b018276cce88133cebc1f0ff3e6f_1440w.jpg"></p>
-<p>下载完成之后，双击安装，一直下一步即可，中间勾选上 <code>automatically install the necessary tools</code>，自动安装必要的工具：</p>
-<p><img src="https://pic1.zhimg.com/v2-7be8ad99e5012fa995533cd9f6d241fe_1440w.jpg"></p>
-<blockquote>
-<p>这一步会安装 <code>&lt;span&gt;&lt;a class=&quot;RichContent-EntityWord css-b7erz1&quot; data-za-not-track-link=&quot;true&quot; data-paste-text=&quot;true&quot; href=&quot;https://zhida.zhihu.com/search?content_id=229424476&amp;content_type=Article&amp;match_order=1&amp;q=Chocolatey&amp;zd_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ6aGlkYV9zZXJ2ZXIiLCJleHAiOjE3Njk5MDczMzMsInEiOiJDaG9jb2xhdGV5IiwiemhpZGFfc291cmNlIjoiZW50aXR5IiwiY29udGVudF9pZCI6MjI5NDI0NDc2LCJjb250ZW50X3R5cGUiOiJBcnRpY2xlIiwibWF0Y2hfb3JkZXIiOjEsInpkX3Rva2VuIjpudWxsfQ.hfhHDmKERIer68cOYu0UoE-8TDW2tKmKdp2b-p9YeWk&amp;zhida_source=entity&quot; target=&quot;_blank&quot;&gt;Chocolatey&lt;svg width=&quot;10px&quot; height=&quot;10px&quot; viewBox=&quot;0 0 16 16&quot; class=&quot;ZDI ZDI--FourPointedStar16 css-1dvsrp&quot; fill=&quot;currentColor&quot;&gt;&lt;path d=&quot;m5.068 9.267-3.08-.77a.512.512 0 0 1 0-.994l3.08-.77a2.289 2.289 0 0 0 1.665-1.665l.77-3.08a.512.512 0 0 1 .994 0l.77 3.08c.205.82.845 1.46 1.665 1.665l3.08.77a.512.512 0 0 1 0 .994l-3.08.77a2.29 2.29 0 0 0-1.665 1.665l-.77 3.08a.512.512 0 0 1-.994 0l-.77-3.08a2.289 2.289 0 0 0-1.665-1.665Z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;&lt;/span&gt;</code>，并用 <code>Chocolatey</code> 去安装 <code>Node</code> 必要的工具，<code>Chocolatey</code> 是 <code>Windows</code> 下的包管理工具（第三方的），类似于 <code>apt</code>、<code>yum</code>、<code>homebrew</code>。有兴趣的可以了解一下。</p>
-</blockquote>
-<p>安装完成之后会弹出终端，按任意键确认安装必要的工具：</p>
-<p><img src="https://pica.zhimg.com/v2-09bcace7d7b5b733fe2bcdafabba338a_1440w.jpg"></p>
-<p>耐心等待必要的工具安装完成即可。在安装 <code>Node.js</code> 的时候，会自动帮我们安装 <code>Node.js</code> 的包管理工具 <code>npm</code>。 打开终端，查看 <code>node</code> 和 <code>npm</code> 版本号，出现版本号则完成安装：</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">node -v</span><br><span class="line">npm -v</span><br></pre></td></tr></table></figure>
-
-<h3 id="Npm-换源"><a href="#Npm-换源" class="headerlink" title="Npm 换源"></a>Npm 换源</h3><p><code>npm</code> 默认的 <code>registry</code> 是从国外的服务器下载，下载依赖包很慢，有时会下载超时、下载失败。需要将 <code>npm</code> 的 <code>registry</code> 设置成国内的镜像源。</p>
-<p>使用命令查看默认的 <code>npm</code> 源：</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm config get registry</span><br></pre></td></tr></table></figure>
-
-<p>设置 <code>npm</code> 源为淘宝源：</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm config set registry https://registry.npmmirror.com/</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>这个配置会保存到 <code>~/.npmrc</code> 文件中，可以通过手动修改该文件来修改配置。</p>
-</blockquote>
-<p>当然，您也可以使用 <code>&lt;span&gt;&lt;a class=&quot;RichContent-EntityWord css-b7erz1&quot; data-za-not-track-link=&quot;true&quot; data-paste-text=&quot;true&quot; href=&quot;https://zhida.zhihu.com/search?content_id=229424476&amp;content_type=Article&amp;match_order=1&amp;q=nrm&amp;zd_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ6aGlkYV9zZXJ2ZXIiLCJleHAiOjE3Njk5MDczMzMsInEiOiJucm0iLCJ6aGlkYV9zb3VyY2UiOiJlbnRpdHkiLCJjb250ZW50X2lkIjoyMjk0MjQ0NzYsImNvbnRlbnRfdHlwZSI6IkFydGljbGUiLCJtYXRjaF9vcmRlciI6MSwiemRfdG9rZW4iOm51bGx9.ovh3dbWC9RR_sOD-bdc8wBoTC-v8VzneEdwnxyrpWeo&amp;zhida_source=entity&quot; target=&quot;_blank&quot;&gt;nrm&lt;svg width=&quot;10px&quot; height=&quot;10px&quot; viewBox=&quot;0 0 16 16&quot; class=&quot;ZDI ZDI--FourPointedStar16 css-1dvsrp&quot; fill=&quot;currentColor&quot;&gt;&lt;path d=&quot;m5.068 9.267-3.08-.77a.512.512 0 0 1 0-.994l3.08-.77a2.289 2.289 0 0 0 1.665-1.665l.77-3.08a.512.512 0 0 1 .994 0l.77 3.08c.205.82.845 1.46 1.665 1.665l3.08.77a.512.512 0 0 1 0 .994l-3.08.77a2.29 2.29 0 0 0-1.665 1.665l-.77 3.08a.512.512 0 0 1-.994 0l-.77-3.08a2.289 2.289 0 0 0-1.665-1.665Z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;&lt;/span&gt;</code> 更方便的来管理 <code>npm</code> 源；您还可以使用 <code>&lt;span&gt;&lt;a class=&quot;RichContent-EntityWord css-b7erz1&quot; data-za-not-track-link=&quot;true&quot; data-paste-text=&quot;true&quot; href=&quot;https://zhida.zhihu.com/search?content_id=229424476&amp;content_type=Article&amp;match_order=1&amp;q=yarn&amp;zd_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ6aGlkYV9zZXJ2ZXIiLCJleHAiOjE3Njk5MDczMzMsInEiOiJ5YXJuIiwiemhpZGFfc291cmNlIjoiZW50aXR5IiwiY29udGVudF9pZCI6MjI5NDI0NDc2LCJjb250ZW50X3R5cGUiOiJBcnRpY2xlIiwibWF0Y2hfb3JkZXIiOjEsInpkX3Rva2VuIjpudWxsfQ.ih4x_vlxdtCNd7fP6rnJmUDZX73QR6TivQYcMnrcBlM&amp;zhida_source=entity&quot; target=&quot;_blank&quot;&gt;yarn&lt;svg width=&quot;10px&quot; height=&quot;10px&quot; viewBox=&quot;0 0 16 16&quot; class=&quot;ZDI ZDI--FourPointedStar16 css-1dvsrp&quot; fill=&quot;currentColor&quot;&gt;&lt;path d=&quot;m5.068 9.267-3.08-.77a.512.512 0 0 1 0-.994l3.08-.77a2.289 2.289 0 0 0 1.665-1.665l.77-3.08a.512.512 0 0 1 .994 0l.77 3.08c.205.82.845 1.46 1.665 1.665l3.08.77a.512.512 0 0 1 0 .994l-3.08.77a2.29 2.29 0 0 0-1.665 1.665l-.77 3.08a.512.512 0 0 1-.994 0l-.77-3.08a2.289 2.289 0 0 0-1.665-1.665Z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;&lt;/span&gt;</code>、<code>&lt;span&gt;&lt;a class=&quot;RichContent-EntityWord css-b7erz1&quot; data-za-not-track-link=&quot;true&quot; data-paste-text=&quot;true&quot; href=&quot;https://zhida.zhihu.com/search?content_id=229424476&amp;content_type=Article&amp;match_order=1&amp;q=cnpm&amp;zd_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ6aGlkYV9zZXJ2ZXIiLCJleHAiOjE3Njk5MDczMzMsInEiOiJjbnBtIiwiemhpZGFfc291cmNlIjoiZW50aXR5IiwiY29udGVudF9pZCI6MjI5NDI0NDc2LCJjb250ZW50X3R5cGUiOiJBcnRpY2xlIiwibWF0Y2hfb3JkZXIiOjEsInpkX3Rva2VuIjpudWxsfQ.A2_jGAvJyt-fWPQh0B32baxSWuQY-9-0qTc-IKcsOIo&amp;zhida_source=entity&quot; target=&quot;_blank&quot;&gt;cnpm&lt;svg width=&quot;10px&quot; height=&quot;10px&quot; viewBox=&quot;0 0 16 16&quot; class=&quot;ZDI ZDI--FourPointedStar16 css-1dvsrp&quot; fill=&quot;currentColor&quot;&gt;&lt;path d=&quot;m5.068 9.267-3.08-.77a.512.512 0 0 1 0-.994l3.08-.77a2.289 2.289 0 0 0 1.665-1.665l.77-3.08a.512.512 0 0 1 .994 0l.77 3.08c.205.82.845 1.46 1.665 1.665l3.08.77a.512.512 0 0 1 0 .994l-3.08.77a2.29 2.29 0 0 0-1.665 1.665l-.77 3.08a.512.512 0 0 1-.994 0l-.77-3.08a2.289 2.289 0 0 0-1.665-1.665Z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;&lt;/span&gt;</code>、<code>&lt;span&gt;&lt;a class=&quot;RichContent-EntityWord css-b7erz1&quot; data-za-not-track-link=&quot;true&quot; data-paste-text=&quot;true&quot; href=&quot;https://zhida.zhihu.com/search?content_id=229424476&amp;content_type=Article&amp;match_order=1&amp;q=pnpm&amp;zd_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ6aGlkYV9zZXJ2ZXIiLCJleHAiOjE3Njk5MDczMzMsInEiOiJwbnBtIiwiemhpZGFfc291cmNlIjoiZW50aXR5IiwiY29udGVudF9pZCI6MjI5NDI0NDc2LCJjb250ZW50X3R5cGUiOiJBcnRpY2xlIiwibWF0Y2hfb3JkZXIiOjEsInpkX3Rva2VuIjpudWxsfQ.Pg6r1D99dmDqojAXGQ4-X8eSgj0sJ6FPr5-ntzdFHDk&amp;zhida_source=entity&quot; target=&quot;_blank&quot;&gt;pnpm&lt;svg width=&quot;10px&quot; height=&quot;10px&quot; viewBox=&quot;0 0 16 16&quot; class=&quot;ZDI ZDI--FourPointedStar16 css-1dvsrp&quot; fill=&quot;currentColor&quot;&gt;&lt;path d=&quot;m5.068 9.267-3.08-.77a.512.512 0 0 1 0-.994l3.08-.77a2.289 2.289 0 0 0 1.665-1.665l.77-3.08a.512.512 0 0 1 .994 0l.77 3.08c.205.82.845 1.46 1.665 1.665l3.08.77a.512.512 0 0 1 0 .994l-3.08.77a2.29 2.29 0 0 0-1.665 1.665l-.77 3.08a.512.512 0 0 1-.994 0l-.77-3.08a2.289 2.289 0 0 0-1.665-1.665Z&quot;&gt;&lt;/path&gt;&lt;/svg&gt;&lt;/a&gt;&lt;/span&gt;</code> 等其他包管理工具，有兴趣的话可以查看相关文档，这里不做详细讨论。</p>
-<h3 id="全局包目录和缓存目录"><a href="#全局包目录和缓存目录" class="headerlink" title="全局包目录和缓存目录"></a>全局包目录和缓存目录</h3><p>一般来说使用默认目录即可，所以这一步并不是必须的，可跳过此步骤。</p>
-<p>默认的全局包目录和缓存目录是在用户的家目录下，如果你是<code>Windows</code> 且 <code>C盘</code> 的可用空间不足的话，可以重新设置 <code>npm</code> 全局包目录和缓存目录。</p>
-<p>查看当前全局目录：</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm root -g</span><br></pre></td></tr></table></figure>
-
-<p>在指定位置创建用于设置的文件夹，比如在 <code>D盘</code> 创建 <code>nodejs</code> 目录，并在 <code>D:\nodejs</code> 下创建 <code>node_global</code> 和 <code>node_cache</code> 目录，在终端执行命令，设置全局包目录和缓存目录：</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">npm config set prefix D:\nodejs\node_global</span><br><span class="line"></span><br><span class="line">npm config set cache D:\nodejs\node_cache</span><br></pre></td></tr></table></figure>
-
-<p>接下来配置一下环境变量即可，<code>我的电脑</code> 右键 <code>属性</code> -&gt; <code>高级系统设置</code> -&gt; <code>高级</code> -&gt; <code>环境变量</code>，给 <code>PATH</code> 增加一项 <code>D:\nodejs</code>：</p>
-<p><img src="https://pic2.zhimg.com/v2-930df9aad0a71f0183f5ae4e35b4c1b3_1440w.jpg"></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2026/01/30/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" data-id="cuid6sS2bT1xIS0MEKGsf-Dmi" data-title="博客hexo环境搭建" class="article-share-link"><span class="fa fa-share">Share</span></a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="tag">博客环境搭建</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" rel="tag">工具使用</a></li></ul>
 
     </footer>
   </div>
@@ -1356,7 +1233,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C%E8%AF%AD%E8%A8%80%E5%AE%8F/" rel="tag">C语言宏</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Debug%E6%97%A5%E5%BF%97/" rel="tag">Debug日志</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Makefile/" rel="tag">Makefile</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96/" rel="tag">内存优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="tag">博客环境搭建</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" rel="tag">学习记录</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" rel="tag">嵌入式学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" rel="tag">工具使用</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B8%B8%E8%A7%81%E5%8D%8F%E8%AE%AE%E7%AE%80%E4%BB%8B/" rel="tag">常见协议简介</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" rel="tag">数据传输</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" rel="tag">数据存储</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/" rel="tag">结构体</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%A9%B1%E5%8A%A8%E5%B1%8F/" rel="tag">驱动屏</a></li></ul>
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C%E8%AF%AD%E8%A8%80%E5%AE%8F/" rel="tag">C语言宏</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Debug%E6%97%A5%E5%BF%97/" rel="tag">Debug日志</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FLASH%E5%AD%98%E5%82%A8/" rel="tag">FLASH存储</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Makefile/" rel="tag">Makefile</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96/" rel="tag">内存优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%85%E5%AD%98%E8%B5%84%E6%BA%90%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="tag">内存资源可视化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="tag">博客环境搭建</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" rel="tag">学习记录</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" rel="tag">嵌入式学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" rel="tag">工具使用</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B8%B8%E8%A7%81%E5%8D%8F%E8%AE%AE%E7%AE%80%E4%BB%8B/" rel="tag">常见协议简介</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" rel="tag">数据传输</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" rel="tag">数据存储</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/" rel="tag">结构体</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%A9%B1%E5%8A%A8%E5%B1%8F/" rel="tag">驱动屏</a></li></ul>
     </div>
   </div>
 
@@ -1366,7 +1243,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/C%E8%AF%AD%E8%A8%80%E5%AE%8F/" style="font-size: 10px;">C语言宏</a> <a href="/tags/Debug%E6%97%A5%E5%BF%97/" style="font-size: 10px;">Debug日志</a> <a href="/tags/Linux/" style="font-size: 17.5px;">Linux</a> <a href="/tags/Makefile/" style="font-size: 10px;">Makefile</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96/" style="font-size: 10px;">内存优化</a> <a href="/tags/%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" style="font-size: 10px;">博客环境搭建</a> <a href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" style="font-size: 10px;">学习记录</a> <a href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" style="font-size: 20px;">嵌入式学习</a> <a href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" style="font-size: 12.5px;">工具使用</a> <a href="/tags/%E5%B8%B8%E8%A7%81%E5%8D%8F%E8%AE%AE%E7%AE%80%E4%BB%8B/" style="font-size: 10px;">常见协议简介</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" style="font-size: 10px;">数据传输</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" style="font-size: 15px;">数据存储</a> <a href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/" style="font-size: 10px;">结构体</a> <a href="/tags/%E9%A9%B1%E5%8A%A8%E5%B1%8F/" style="font-size: 12.5px;">驱动屏</a>
+      <a href="/tags/C%E8%AF%AD%E8%A8%80%E5%AE%8F/" style="font-size: 10px;">C语言宏</a> <a href="/tags/Debug%E6%97%A5%E5%BF%97/" style="font-size: 10px;">Debug日志</a> <a href="/tags/FLASH%E5%AD%98%E5%82%A8/" style="font-size: 10px;">FLASH存储</a> <a href="/tags/Linux/" style="font-size: 18px;">Linux</a> <a href="/tags/Makefile/" style="font-size: 10px;">Makefile</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96/" style="font-size: 10px;">内存优化</a> <a href="/tags/%E5%86%85%E5%AD%98%E8%B5%84%E6%BA%90%E5%8F%AF%E8%A7%86%E5%8C%96/" style="font-size: 10px;">内存资源可视化</a> <a href="/tags/%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" style="font-size: 10px;">博客环境搭建</a> <a href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" style="font-size: 10px;">学习记录</a> <a href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" style="font-size: 20px;">嵌入式学习</a> <a href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" style="font-size: 14px;">工具使用</a> <a href="/tags/%E5%B8%B8%E8%A7%81%E5%8D%8F%E8%AE%AE%E7%AE%80%E4%BB%8B/" style="font-size: 10px;">常见协议简介</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" style="font-size: 12px;">数据传输</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" style="font-size: 16px;">数据存储</a> <a href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/" style="font-size: 10px;">结构体</a> <a href="/tags/%E9%A9%B1%E5%8A%A8%E5%B1%8F/" style="font-size: 14px;">驱动屏</a>
     </div>
   </div>
 
@@ -1375,7 +1252,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/04/">April 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/03/">March 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/02/">February 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/01/">January 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/02/">February 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">January 2023</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/06/">June 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/05/">May 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/04/">April 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/03/">March 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/02/">February 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/01/">January 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/02/">February 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">January 2023</a></li></ul>
     </div>
   </div>
 
@@ -1388,6 +1265,14 @@
       <ul>
         
           <li>
+            <a href="/2026/06/03/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%86%85%E5%AD%98%E4%B8%8EFLASH%E5%8F%AF%E8%A7%86%E5%8C%96%E5%B7%A5%E5%85%B7/">嵌入式内存与FLASH可视化工具</a>
+          </li>
+        
+          <li>
+            <a href="/2026/05/28/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/Modbus%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">Modbus协议学习笔记</a>
+          </li>
+        
+          <li>
             <a href="/2026/04/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/FreeRTOS%E5%B7%A5%E7%A8%8B%E5%8C%96%E8%A6%81%E7%82%B9/">FreeRTOS工程化要点：任务划分、优先级设计与CPU占用率监控</a>
           </li>
         
@@ -1397,14 +1282,6 @@
         
           <li>
             <a href="/2026/04/16/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%87%BD%E6%95%B0%E5%90%8D+%E8%A1%8C%E5%8F%B7+%E6%97%A5%E5%BF%97%E5%86%85%E5%AE%B9%20%E6%A0%BC%E5%BC%8F%E6%97%A5%E5%BF%97%E8%BE%93%E5%87%BA/">函数名+行号+日志内容 格式日志输出</a>
-          </li>
-        
-          <li>
-            <a href="/2026/03/09/%E7%BC%96%E8%AF%91%E9%93%BE%E6%8E%A5/MakeFile/Makefile.inc/">Makefile</a>
-          </li>
-        
-          <li>
-            <a href="/2026/02/27/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE%E6%8E%A8%E8%8D%90/">嵌入式开源项目</a>
           </li>
         
       </ul>
