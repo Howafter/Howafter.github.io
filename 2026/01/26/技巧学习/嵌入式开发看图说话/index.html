@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>嵌入式开发看(原理)图说话 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="嵌入式开发看图说话在嵌入式开发中，原理图是硬件设计的核心文档，也是软件工程师理解系统架构、进行驱动开发和故障排查的依据。 MCU原理图基本组成一张完整的MCU原理图通常包含以下几个核心模块： 12345678910┌─────────────────────────────────────────────────────────────┐│                     MCU原理图架构">
+<meta property="og:type" content="article">
+<meta property="og:title" content="嵌入式开发看(原理)图说话">
+<meta property="og:url" content="http://example.com/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%BC%80%E5%8F%91%E7%9C%8B%E5%9B%BE%E8%AF%B4%E8%AF%9D/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="嵌入式开发看图说话在嵌入式开发中，原理图是硬件设计的核心文档，也是软件工程师理解系统架构、进行驱动开发和故障排查的依据。 MCU原理图基本组成一张完整的MCU原理图通常包含以下几个核心模块： 12345678910┌─────────────────────────────────────────────────────────────┐│                     MCU原理图架构">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2026-01-26T02:00:00.000Z">
+<meta property="article:modified_time" content="2026-01-26T02:00:00.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="嵌入式学习">
+<meta property="article:tag" content="数据存储">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-技巧学习/嵌入式开发看图说话" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%BC%80%E5%8F%91%E7%9C%8B%E5%9B%BE%E8%AF%B4%E8%AF%9D/" class="article-date">
+  <time class="dt-published" datetime="2026-01-26T02:00:00.000Z" itemprop="datePublished">2026-01-26</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      嵌入式开发看(原理)图说话
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="嵌入式开发看图说话"><a href="#嵌入式开发看图说话" class="headerlink" title="嵌入式开发看图说话"></a><strong>嵌入式开发看图说话</strong></h1><p>在嵌入式开发中，原理图是硬件设计的核心文档，也是软件工程师理解系统架构、进行驱动开发和故障排查的依据。</p>
+<h2 id="MCU原理图"><a href="#MCU原理图" class="headerlink" title="MCU原理图"></a>MCU原理图</h2><h3 id="基本组成"><a href="#基本组成" class="headerlink" title="基本组成"></a>基本组成</h3><p>一张完整的MCU原理图通常包含以下几个核心模块：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">┌─────────────────────────────────────────────────────────────┐</span><br><span class="line">│                     MCU原理图架构                            │</span><br><span class="line">├─────────────────────────────────────────────────────────────┤</span><br><span class="line">│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐    │</span><br><span class="line">│  │ 电源系统  │  │ 时钟系统  │  │ 复位系统  │  │ 调试接口  │    │</span><br><span class="line">│  └──────────┘  └──────────┘  └──────────┘  └──────────┘    │</span><br><span class="line">│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐    │</span><br><span class="line">│  │ GPIO模块  │  │ 通信外设  │  │ 存储接口  │  │ 模拟外设  │    │</span><br><span class="line">│  └──────────┘  └──────────┘  └──────────┘  └──────────┘    │</span><br><span class="line">└─────────────────────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<h3 id="阅读原理图顺序"><a href="#阅读原理图顺序" class="headerlink" title="阅读原理图顺序"></a>阅读原理图顺序</h3><ol>
+<li><ol>
+<li><strong>电源系统</strong> - 确认供电电压、电源域划分</li>
+</ol>
+</li>
+<li><ol start="2">
+<li><strong>时钟系统</strong> - 理解时钟源、时钟分配</li>
+</ol>
+</li>
+<li><ol start="3">
+<li><strong>复位系统</strong> - 了解复位源、复位电路</li>
+</ol>
+</li>
+<li><ol start="4">
+<li><strong>最小系统</strong> - 确认MCU能否正常启动</li>
+</ol>
+</li>
+<li><ol start="5">
+<li><strong>外设连接</strong> - 分析各外设的连接方式</li>
+</ol>
+</li>
+</ol>
+<h2 id="电源树"><a href="#电源树" class="headerlink" title="电源树"></a>电源树</h2><h3 id="什么是电源树"><a href="#什么是电源树" class="headerlink" title="什么是电源树"></a>什么是电源树</h3><p>电源树描述了从电源输入到各负载的电压转换和分配关系，是理解系统供电架构的关键。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">电源输入 (12V/5V)</span><br><span class="line">    │</span><br><span class="line">    ├── DC-DC降压 ──→ 3.3V (主电源域)</span><br><span class="line">    │                    ├── MCU VDD</span><br><span class="line">    │                    ├── 外设供电</span><br><span class="line">    │                    └── IO供电</span><br><span class="line">    │</span><br><span class="line">    └── LDO降压 ──→ 1.8V (低功耗域)</span><br><span class="line">                         ├── MCU VBAT</span><br><span class="line">                         └── RTC供电</span><br></pre></td></tr></table></figure>
+
+<h3 id="电源符号"><a href="#电源符号" class="headerlink" title="电源符号"></a>电源符号</h3><table>
+<thead>
+<tr>
+<th>符号</th>
+<th>含义</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>VDD</td>
+<td>数字电源正极</td>
+<td>主供电电压，通常为3.3V</td>
+</tr>
+<tr>
+<td>VSS</td>
+<td>数字电源地</td>
+<td>数字地参考点</td>
+</tr>
+<tr>
+<td>VDDA</td>
+<td>模拟电源正极</td>
+<td>ADC&#x2F;DAC等模拟模块供电</td>
+</tr>
+<tr>
+<td>VSSA</td>
+<td>模拟电源地</td>
+<td>模拟地，需与数字地单点连接</td>
+</tr>
+<tr>
+<td>VBAT</td>
+<td>电池供电</td>
+<td>RTC和备份域供电</td>
+</tr>
+<tr>
+<td>VCAP</td>
+<td>内部稳压电容</td>
+<td>内核电压稳压电容引脚</td>
+</tr>
+</tbody></table>
+<h3 id="电源域划分"><a href="#电源域划分" class="headerlink" title="电源域划分"></a>电源域划分</h3><p>现代MCU通常有多个独立的电源域：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">┌─────────────────────────────────────────┐</span><br><span class="line">│              MCU电源域划分               │</span><br><span class="line">├─────────────────────────────────────────┤</span><br><span class="line">│  VDD域 (3.3V)                           │</span><br><span class="line">│  ├── 数字外设 (GPIO, Timer, UART...)    │</span><br><span class="line">│  └── Flash存储器                        │</span><br><span class="line">├─────────────────────────────────────────┤</span><br><span class="line">│  VDDA域 (3.3V模拟)                      │</span><br><span class="line">│  ├── ADC                                │</span><br><span class="line">│  ├── DAC                                │</span><br><span class="line">│  └── 内部参考电压                       │</span><br><span class="line">├─────────────────────────────────────────┤</span><br><span class="line">│  VBAT域 (后备电池)                      │</span><br><span class="line">│  ├── RTC                                │</span><br><span class="line">│  └── 备份寄存器                         │</span><br><span class="line">├─────────────────────────────────────────┤</span><br><span class="line">│  内核域 (1.2V，内部LDO)                 │</span><br><span class="line">│  └── CPU核心                            │</span><br><span class="line">└─────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+
+<h3 id="电源检测"><a href="#电源检测" class="headerlink" title="电源检测"></a>电源检测</h3><ul>
+<li>• 所有VDD引脚是否都已连接</li>
+<li>• 去耦电容数量是否足够（每对电源引脚至少一个）</li>
+<li>• 模拟电源是否有独立滤波</li>
+<li>• VBAT是否有后备电池或连接到VDD</li>
+<li>• 电源指示LED是否配置</li>
+<li>• 是否有电源监测电路（<strong>欠压检测</strong>）</li>
+</ul>
+<h2 id="时钟树"><a href="#时钟树" class="headerlink" title="时钟树"></a>时钟树</h2><h3 id="什么是时钟树"><a href="#什么是时钟树" class="headerlink" title="什么是时钟树"></a>什么是时钟树</h3><p>时钟树定义了MCU内部各模块的时钟来源、分频关系和开关控制，直接影响系统性能和功耗。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">                    ┌─────────────┐</span><br><span class="line">                    │   HSE       │ 高速外部晶振 (8-25MHz)</span><br><span class="line">                    │  (晶振)     │</span><br><span class="line">                    └──────┬──────┘</span><br><span class="line">                           │</span><br><span class="line">    ┌─────────────┐        │        ┌─────────────┐</span><br><span class="line">    │   HSI       │        │        │   LSE       │</span><br><span class="line">    │ (内部RC)    │        │        │  (32.768kHz)│</span><br><span class="line">    │  16MHz      │        │        │   RTC时钟   │</span><br><span class="line">    └──────┬──────┘        │        └──────┬──────┘</span><br><span class="line">           │               │               │</span><br><span class="line">           └───────┬───────┘               │</span><br><span class="line">                   │                       │</span><br><span class="line">              ┌────┴────┐                  │</span><br><span class="line">              │   PLL   │                  │</span><br><span class="line">              │ (锁相环) │                  │</span><br><span class="line">              └────┬────┘                  │</span><br><span class="line">                   │                       │</span><br><span class="line">         ┌─────────┼─────────┐             │</span><br><span class="line">         │         │         │             │</span><br><span class="line">    ┌────┴───┐ ┌──┴───┐ ┌───┴───┐    ┌────┴────┐</span><br><span class="line">    │ SYSCLK │ │ USB  │ │  AHB  │    │   RTC   │</span><br><span class="line">    │ 系统时钟│ │时钟  │ │ 总线  │    │  时钟   │</span><br><span class="line">    └────────┘ └──────┘ └───┬───┘    └────────┘</span><br><span class="line">                           │</span><br><span class="line">                    ┌──────┼──────┐</span><br><span class="line">                    │      │      │</span><br><span class="line">               ┌────┴─┐ ┌──┴──┐ ┌─┴────┐</span><br><span class="line">               │ APB1 │ │APB2 │ │ AHB  │</span><br><span class="line">               │低速总线│ │高速 │ │外设  │</span><br><span class="line">               └──────┘ └─────┘ └──────┘</span><br></pre></td></tr></table></figure>
+
+<h3 id="时钟源类型"><a href="#时钟源类型" class="headerlink" title="时钟源类型"></a>时钟源类型</h3><table>
+<thead>
+<tr>
+<th>时钟源</th>
+<th>名称</th>
+<th>典型频率</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>HSE</td>
+<td>高速外部时钟</td>
+<td>4-26MHz</td>
+<td>主时钟源，精度高</td>
+</tr>
+<tr>
+<td>HSI</td>
+<td>高速内部时钟</td>
+<td>8-16MHz</td>
+<td>启动时钟，精度较低</td>
+</tr>
+<tr>
+<td>LSE</td>
+<td>低速外部时钟</td>
+<td>32.768kHz</td>
+<td>RTC实时时钟</td>
+</tr>
+<tr>
+<td>LSI</td>
+<td>低速内部时钟</td>
+<td>32kHz</td>
+<td>独立看门狗、RTC备份</td>
+</tr>
+</tbody></table>
+<h3 id="晶振电路设计"><a href="#晶振电路设计" class="headerlink" title="晶振电路设计"></a>晶振电路设计</h3><h4 id="HSE外部晶振电路"><a href="#HSE外部晶振电路" class="headerlink" title="HSE外部晶振电路"></a>HSE外部晶振电路</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">        ┌─────────────────┐</span><br><span class="line">        │     MCU         │</span><br><span class="line">        │                 │</span><br><span class="line">OSC_IN ─┤                 ├─ OSC_OUT</span><br><span class="line">        │                 │</span><br><span class="line">        └─────────────────┘</span><br><span class="line">              │     │</span><br><span class="line">         ┌────┘     └────┐</span><br><span class="line">         │               │</span><br><span class="line">        ─┴─  Y1         ─┴─  Y1</span><br><span class="line">        ─┬─  8MHz       ─┬─</span><br><span class="line">         │               │</span><br><span class="line">        ─┴─              ─┴─</span><br><span class="line">        ─┬─ C1           ─┬─ C2</span><br><span class="line">         │  20pF          │  20pF</span><br><span class="line">        GND             GND</span><br></pre></td></tr></table></figure>
+
+<h2 id="复位系统"><a href="#复位系统" class="headerlink" title="复位系统"></a>复位系统</h2><h3 id="复位电路设计"><a href="#复位电路设计" class="headerlink" title="复位电路设计"></a>复位电路设计</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">         VDD (3.3V)</span><br><span class="line">           │</span><br><span class="line">          ─┴─</span><br><span class="line">          ─┬─ R1 (10K)</span><br><span class="line">           │</span><br><span class="line">           ├────────→ MCU_NRST</span><br><span class="line">           │</span><br><span class="line">          ─┴─</span><br><span class="line">          ─┬─ C1 (100nF)</span><br><span class="line">           │</span><br><span class="line">          GND</span><br><span class="line"></span><br><span class="line">         (手动复位)</span><br><span class="line">           │</span><br><span class="line">          ─┴─  SW1</span><br><span class="line">           │</span><br><span class="line">          GND</span><br></pre></td></tr></table></figure>
+
+<h3 id="复位源类型"><a href="#复位源类型" class="headerlink" title="复位源类型"></a>复位源类型</h3><table>
+<thead>
+<tr>
+<th>复位源</th>
+<th>触发条件</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>POR</td>
+<td>上电复位</td>
+<td>电源上电时自动复位</td>
+</tr>
+<tr>
+<td>NRST</td>
+<td>外部复位</td>
+<td>NRST引脚低电平触发</td>
+</tr>
+<tr>
+<td>WDT</td>
+<td>看门狗复位</td>
+<td>程序跑飞时自动复位</td>
+</tr>
+<tr>
+<td>SW</td>
+<td>软件复位</td>
+<td>软件主动触发复位</td>
+</tr>
+<tr>
+<td>BOR</td>
+<td>欠压复位</td>
+<td>电源电压低于阈值</td>
+</tr>
+<tr>
+<td>PIN</td>
+<td>引脚复位</td>
+<td>特定引脚配置为复位功能</td>
+</tr>
+</tbody></table>
+<h2 id="GPIO配置与连接"><a href="#GPIO配置与连接" class="headerlink" title="GPIO配置与连接"></a>GPIO配置与连接</h2><h3 id="GPIO的基本结构"><a href="#GPIO的基本结构" class="headerlink" title="GPIO的基本结构"></a>GPIO的基本结构</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">        VDD</span><br><span class="line">         │</span><br><span class="line">        ─┴─ 上拉电阻 (可选)</span><br><span class="line">        ─┬─</span><br><span class="line">         │</span><br><span class="line">    ┌────┴────┐</span><br><span class="line">    │ 输出驱动 │</span><br><span class="line">    │  (推挽)  │</span><br><span class="line">    └────┬────┘</span><br><span class="line">         │</span><br><span class="line">    ─────┼─────→ GPIO引脚</span><br><span class="line">         │</span><br><span class="line">    ┌────┴────┐</span><br><span class="line">    │ 输入缓冲 │</span><br><span class="line">    └────┬────┘</span><br><span class="line">         │</span><br><span class="line">        ─┴─ 下拉电阻 (可选)</span><br><span class="line">        ─┬─</span><br><span class="line">         │</span><br><span class="line">        GND</span><br></pre></td></tr></table></figure>
+
+<h3 id="GPIO模式配置"><a href="#GPIO模式配置" class="headerlink" title="GPIO模式配置"></a>GPIO模式配置</h3><table>
+<thead>
+<tr>
+<th>模式</th>
+<th>说明</th>
+<th>典型应用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>输入浮空</td>
+<td>无上下拉，高阻态</td>
+<td>外部信号输入</td>
+</tr>
+<tr>
+<td>输入上拉</td>
+<td>内部上拉电阻</td>
+<td>按键输入（低有效）</td>
+</tr>
+<tr>
+<td>输入下拉</td>
+<td>内部下拉电阻</td>
+<td>按键输入（高有效）</td>
+</tr>
+<tr>
+<td>模拟输入</td>
+<td>关闭数字功能</td>
+<td>ADC采集</td>
+</tr>
+<tr>
+<td>推挽输出</td>
+<td>驱动能力强</td>
+<td>LED、继电器控制</td>
+</tr>
+<tr>
+<td>开漏输出</td>
+<td>需外部上拉</td>
+<td>I2C、电平转换</td>
+</tr>
+<tr>
+<td>复用推挽</td>
+<td>外设功能输出</td>
+<td>UART TX、SPI MOSI</td>
+</tr>
+<tr>
+<td>复用开漏</td>
+<td>外设功能开漏</td>
+<td>I2C SDA&#x2F;SCL</td>
+</tr>
+</tbody></table>
+<h2 id="UART串口通信"><a href="#UART串口通信" class="headerlink" title="UART串口通信"></a>UART串口通信</h2><h3 id="UART基本连接"><a href="#UART基本连接" class="headerlink" title="UART基本连接"></a>UART基本连接</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">MCU_A                    MCU_B</span><br><span class="line">┌────────┐              ┌────────┐</span><br><span class="line">│   TX   ├──────────────┤   RX   │</span><br><span class="line">│        │              │        │</span><br><span class="line">│   RX   ├──────────────┤   TX   │</span><br><span class="line">│        │              │        │</span><br><span class="line">│   GND  ├──────────────┤   GND  │</span><br><span class="line">└────────┘              └────────┘</span><br></pre></td></tr></table></figure>
+
+<h3 id="UART参数配置"><a href="#UART参数配置" class="headerlink" title="UART参数配置"></a>UART参数配置</h3><table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+<th>典型值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>波特率</td>
+<td>数据传输速率</td>
+<td>9600, 115200</td>
+</tr>
+<tr>
+<td>数据位</td>
+<td>每帧数据位数</td>
+<td>8位</td>
+</tr>
+<tr>
+<td>校验位</td>
+<td>奇偶校验</td>
+<td>无校验</td>
+</tr>
+<tr>
+<td>停止位</td>
+<td>帧结束标志</td>
+<td>1位</td>
+</tr>
+<tr>
+<td>流控</td>
+<td>硬件流控</td>
+<td>无</td>
+</tr>
+</tbody></table>
+<h3 id="RS232-RS485电平转换"><a href="#RS232-RS485电平转换" class="headerlink" title="RS232&#x2F;RS485电平转换"></a>RS232&#x2F;RS485电平转换</h3><h4 id="RS232转换电路"><a href="#RS232转换电路" class="headerlink" title="RS232转换电路"></a>RS232转换电路</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">MCU (3.3V TTL)          RS232设备 (±12V)</span><br><span class="line">     │                       │</span><br><span class="line">     │    ┌─────────────┐    │</span><br><span class="line">  TX ├────┤             ├────┤ TXD</span><br><span class="line">     │    │  MAX3232    │    │</span><br><span class="line">  RX ├────┤  电平转换    ├────┤ RXD</span><br><span class="line">     │    │             │    │</span><br><span class="line"> GND ├────┤             ├────┤ GND</span><br><span class="line">     │    └─────────────┘    │</span><br></pre></td></tr></table></figure>
+
+<h4 id="RS485转换电路"><a href="#RS485转换电路" class="headerlink" title="RS485转换电路"></a>RS485转换电路</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">MCU                    RS485总线</span><br><span class="line"> │                        │</span><br><span class="line"> │   ┌─────────────┐      │</span><br><span class="line">TX ├──┤             ├─────┤ A (+)</span><br><span class="line">   │  │  MAX485     │     │</span><br><span class="line">RX ├──┤  收发器     ├─────┤ B (-)</span><br><span class="line">   │  │             │     │</span><br><span class="line">DE ├──┤  方向控制    │     │</span><br><span class="line">   │  │             │     │</span><br><span class="line">GND├──┤             ├─────┤ GND</span><br><span class="line">   │  └─────────────┘      │</span><br></pre></td></tr></table></figure>
+
+<h3 id="UART常见问题"><a href="#UART常见问题" class="headerlink" title="UART常见问题"></a>UART常见问题</h3><h4 id="波特率误差过大"><a href="#波特率误差过大" class="headerlink" title="波特率误差过大"></a>波特率误差过大</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">问题：系统时钟与波特率不匹配</span><br><span class="line">     误差超过2%会导致通信失败</span><br><span class="line"></span><br><span class="line">解决：</span><br><span class="line">1. 使用精确的外部晶振</span><br><span class="line">2. 选择系统时钟分频后误差小的波特率</span><br><span class="line">3. 使用波特率自动检测功能</span><br></pre></td></tr></table></figure>
+
+<h4 id="TX-RX接反"><a href="#TX-RX接反" class="headerlink" title="TX&#x2F;RX接反"></a>TX&#x2F;RX接反</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">常见错误：</span><br><span class="line">    MCU_A.TX ──── MCU_A.TX (错误！)</span><br><span class="line">    MCU_A.RX ──── MCU_A.RX (错误！)</span><br><span class="line"></span><br><span class="line">正确连接：</span><br><span class="line">    MCU_A.TX ──── MCU_B.RX</span><br><span class="line">    MCU_A.RX ──── MCU_B.TX</span><br></pre></td></tr></table></figure>
+
+<h4 id="RS485方向控制时序"><a href="#RS485方向控制时序" class="headerlink" title="RS485方向控制时序"></a>RS485方向控制时序</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">问题：发送完成后立即切换为接收模式</span><br><span class="line">     最后一个字节可能未发送完成</span><br><span class="line"></span><br><span class="line">解决：发送完成后延时再切换方向</span><br><span class="line"></span><br><span class="line">void RS485_Send(uint8_t *data, uint16_t len)</span><br><span class="line">&#123;</span><br><span class="line">    RS485_TX_MODE();  // 切换为发送模式</span><br><span class="line">    </span><br><span class="line">    for (int i = 0; i &lt; len; i++) &#123;</span><br><span class="line">        UART_SendByte(data[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    while (!UART_TX_COMPLETE());  // 等待发送完成</span><br><span class="line">    delay_us(100);                // 额外延时</span><br><span class="line">    RS485_RX_MODE();              // 切换为接收模式</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="SPI通信接口"><a href="#SPI通信接口" class="headerlink" title="SPI通信接口"></a>SPI通信接口</h2><h3 id="SPI基本连接"><a href="#SPI基本连接" class="headerlink" title="SPI基本连接"></a>SPI基本连接</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">MCU (主机)                    SPI设备 (从机)</span><br><span class="line">┌────────┐                    ┌────────┐</span><br><span class="line">│   SCK  ├────────────────────┤   SCK  │ 时钟</span><br><span class="line">│        │                    │        │</span><br><span class="line">│  MOSI  ├────────────────────┤  MOSI  │ 主出从入</span><br><span class="line">│        │                    │        │</span><br><span class="line">│  MISO  ├────────────────────┤  MISO  │ 主入从出</span><br><span class="line">│        │                    │        │</span><br><span class="line">│  CS/SS ├────────────────────┤   CS   │ 片选</span><br><span class="line">│        │                    │        │</span><br><span class="line">│   GND  ├────────────────────┤   GND  │ 地</span><br><span class="line">└────────┘                    └────────┘</span><br></pre></td></tr></table></figure>
+
+<h3 id="SPI模式配置"><a href="#SPI模式配置" class="headerlink" title="SPI模式配置"></a>SPI模式配置</h3><table>
+<thead>
+<tr>
+<th>模式</th>
+<th>CPOL</th>
+<th>CPHA</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Mode 0</td>
+<td>0</td>
+<td>0</td>
+<td>空闲低电平，第一边沿采样</td>
+</tr>
+<tr>
+<td>Mode 1</td>
+<td>0</td>
+<td>1</td>
+<td>空闲低电平，第二边沿采样</td>
+</tr>
+<tr>
+<td>Mode 2</td>
+<td>1</td>
+<td>0</td>
+<td>空闲高电平，第一边沿采样</td>
+</tr>
+<tr>
+<td>Mode 3</td>
+<td>1</td>
+<td>1</td>
+<td>空闲高电平，第二边沿采样</td>
+</tr>
+</tbody></table>
+<h3 id="多从机连接方式"><a href="#多从机连接方式" class="headerlink" title="多从机连接方式"></a>多从机连接方式</h3><h4 id="独立片选"><a href="#独立片选" class="headerlink" title="独立片选"></a>独立片选</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">         ┌─────┐</span><br><span class="line">    SCK ─┼─────┼─────── SCK ──────┐</span><br><span class="line">         │     │                  │</span><br><span class="line">   MOSI ─┼─────┼────── MOSI ──────┼───┐</span><br><span class="line">         │     │                  │   │</span><br><span class="line">   MISO ─┼─────┼────── MISO ──────┼───┼───┐</span><br><span class="line">         │ MCU │                  │   │   │</span><br><span class="line">   CS1  ─┼─────┼──┐               │   │   │</span><br><span class="line">         │     │  │   ┌───────┐   │   │   │</span><br><span class="line">   CS2  ─┼─────┼──┼───┤ 设备1 │───┘   │   │</span><br><span class="line">         │     │  │   └───────┘       │   │</span><br><span class="line">         └─────┘  │                   │   │</span><br><span class="line">                  │   ┌───────┐       │   │</span><br><span class="line">                  └───┤ 设备2 ├───────┘   │</span><br><span class="line">                      └───────┴───────────┘</span><br></pre></td></tr></table></figure>
+
+<h4 id="菊花链连接"><a href="#菊花链连接" class="headerlink" title="菊花链连接"></a>菊花链连接</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">         ┌─────┐                ┌───────┐</span><br><span class="line">    SCK ─┼─────┼────────────────┤  SCK  │</span><br><span class="line">         │     │                │       │</span><br><span class="line">   MOSI ─┼─────┼───→ DIN ──────→│  DIN  │ 设备1</span><br><span class="line">         │ MCU │                │       │</span><br><span class="line">   MISO ←┼─────┼───← DOUT ←─────┤ DOUT  │</span><br><span class="line">         │     │                └───┬───┘</span><br><span class="line">   CS   ─┼─────┼────────────────────┤</span><br><span class="line">         └─────┘                ┌───┴───┐</span><br><span class="line">                                │  DIN  │ 设备2</span><br><span class="line">                                │       │</span><br><span class="line">                                │ DOUT  │</span><br><span class="line">                                └───────┘</span><br></pre></td></tr></table></figure>
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>阅读原理图是嵌入式工程师的基本功，需要不断学习和积累。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%BC%80%E5%8F%91%E7%9C%8B%E5%9B%BE%E8%AF%B4%E8%AF%9D/" data-id="cuidxb7oCfBBt7X9gNZAKCADv" data-title="嵌入式开发看(原理)图说话" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" rel="tag">嵌入式学习</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" rel="tag">数据存储</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%87%BD%E6%95%B0%E6%8C%87%E9%92%88%E9%87%8D%E6%9E%84%E5%BA%94%E7%94%A8/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          函数指针重构应用
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%98%E5%82%A8%E5%BC%80%E5%8F%91%E9%AB%98%E6%95%88%E5%BA%94%E7%94%A8/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">嵌入式存储开发高效应用</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E5%85%A8%E5%BF%97T113S3/">全志T113S3</a></li></ul></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C%E8%AF%AD%E8%A8%80%E5%AE%8F/" rel="tag">C语言宏</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Debug%E6%97%A5%E5%BF%97/" rel="tag">Debug日志</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Makefile/" rel="tag">Makefile</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96/" rel="tag">内存优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="tag">博客环境搭建</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" rel="tag">学习记录</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" rel="tag">嵌入式学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" rel="tag">工具使用</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B8%B8%E8%A7%81%E5%8D%8F%E8%AE%AE%E7%AE%80%E4%BB%8B/" rel="tag">常见协议简介</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" rel="tag">数据传输</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" rel="tag">数据存储</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/" rel="tag">结构体</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%A9%B1%E5%8A%A8%E5%B1%8F/" rel="tag">驱动屏</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/C%E8%AF%AD%E8%A8%80%E5%AE%8F/" style="font-size: 10px;">C语言宏</a> <a href="/tags/Debug%E6%97%A5%E5%BF%97/" style="font-size: 10px;">Debug日志</a> <a href="/tags/Linux/" style="font-size: 18px;">Linux</a> <a href="/tags/Makefile/" style="font-size: 10px;">Makefile</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96/" style="font-size: 10px;">内存优化</a> <a href="/tags/%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" style="font-size: 10px;">博客环境搭建</a> <a href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" style="font-size: 10px;">学习记录</a> <a href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" style="font-size: 20px;">嵌入式学习</a> <a href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" style="font-size: 14px;">工具使用</a> <a href="/tags/%E5%B8%B8%E8%A7%81%E5%8D%8F%E8%AE%AE%E7%AE%80%E4%BB%8B/" style="font-size: 10px;">常见协议简介</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" style="font-size: 12px;">数据传输</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" style="font-size: 16px;">数据存储</a> <a href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/" style="font-size: 10px;">结构体</a> <a href="/tags/%E9%A9%B1%E5%8A%A8%E5%B1%8F/" style="font-size: 14px;">驱动屏</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/07/">July 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/05/">May 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/04/">April 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/02/">February 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/01/">January 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/02/">February 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">January 2023</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2026/07/26/%E7%BC%96%E8%AF%91%E9%93%BE%E6%8E%A5/MakeFile/Makefile.inc/">Makefile</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/26/%E8%BE%BE%E5%8F%91%E9%9D%A2%E8%AF%95%E5%87%86%E5%A4%87/%E4%B8%80%E9%9D%A2/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2026/05/28/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/Modbus%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">Modbus协议学习笔记</a>
+          </li>
+        
+          <li>
+            <a href="/2026/04/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/FreeRTOS%E5%B7%A5%E7%A8%8B%E5%8C%96%E8%A6%81%E7%82%B9/">FreeRTOS工程化要点：任务划分、优先级设计与CPU占用率监控</a>
+          </li>
+        
+          <li>
+            <a href="/2026/04/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E8%87%AA%E5%8A%A8%E5%88%9D%E5%A7%8B%E5%8C%96%E6%A1%86%E6%9E%B6/">自动初始化框架</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

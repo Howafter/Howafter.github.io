@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>FreeRTOS工程化要点：任务划分、优先级设计与CPU占用率监控 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="FreeRTOS工程化要点：任务划分、优先级设计与CPU占用率监控FreeRTOS任务怎么拆？优先级怎么配、CPU占用怎么看？ ## 一、任务划分原则 1、单一职责：一个任务只干一件事把”串口接收 + 数据解析 + 指令执行 + 结果反馈”全塞一个任务，解析环节一出问题整条链路全挂，而且任务执行时间拉长后会阻塞其他高优先级任务。 正确做法：按照职责拆成各独立任务，通过队列串联，某一环节异常不影响其">
+<meta property="og:type" content="article">
+<meta property="og:title" content="FreeRTOS工程化要点：任务划分、优先级设计与CPU占用率监控">
+<meta property="og:url" content="http://example.com/2026/04/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/FreeRTOS%E5%B7%A5%E7%A8%8B%E5%8C%96%E8%A6%81%E7%82%B9/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="FreeRTOS工程化要点：任务划分、优先级设计与CPU占用率监控FreeRTOS任务怎么拆？优先级怎么配、CPU占用怎么看？ ## 一、任务划分原则 1、单一职责：一个任务只干一件事把”串口接收 + 数据解析 + 指令执行 + 结果反馈”全塞一个任务，解析环节一出问题整条链路全挂，而且任务执行时间拉长后会阻塞其他高优先级任务。 正确做法：按照职责拆成各独立任务，通过队列串联，某一环节异常不影响其">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://mmbiz.qpic.cn/sz_mmbiz_png/K62vJYPSiaghvS95lSlGVEoib0U2J7nLDDfiaWiaaicBvcicws2Dic3y9VBBw8ibYGZaVHSjQ41kDwWmMF7T0d9ADhgFVKcQgX7XTQSujWFOnDgOqbs/640?wx_fmt=png&from=appmsg&wxfrom=13&tp=wxpic#imgIndex=0">
+<meta property="og:image" content="https://mmbiz.qpic.cn/sz_mmbiz_png/K62vJYPSiagiaYsHQrzh2rCgGXRbKoUCRRwTDUgJEbDDCvTNxKYzTrQchjsM0rAm3dNShiaXAqYXIpmQu9Tr5NDwYN8o7nuemme5rFWhC0Gcfg/640?wx_fmt=png&from=appmsg&tp=wxpic&wxfrom=5&wx_lazy=1#imgIndex=1">
+<meta property="article:published_time" content="2026-04-26T02:00:00.000Z">
+<meta property="article:modified_time" content="2026-04-26T02:00:00.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="嵌入式学习">
+<meta property="article:tag" content="数据存储">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://mmbiz.qpic.cn/sz_mmbiz_png/K62vJYPSiaghvS95lSlGVEoib0U2J7nLDDfiaWiaaicBvcicws2Dic3y9VBBw8ibYGZaVHSjQ41kDwWmMF7T0d9ADhgFVKcQgX7XTQSujWFOnDgOqbs/640?wx_fmt=png&from=appmsg&wxfrom=13&tp=wxpic#imgIndex=0">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-技巧学习/FreeRTOS工程化要点" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2026/04/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/FreeRTOS%E5%B7%A5%E7%A8%8B%E5%8C%96%E8%A6%81%E7%82%B9/" class="article-date">
+  <time class="dt-published" datetime="2026-04-26T02:00:00.000Z" itemprop="datePublished">2026-04-26</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      FreeRTOS工程化要点：任务划分、优先级设计与CPU占用率监控
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="FreeRTOS工程化要点：任务划分、优先级设计与CPU占用率监控"><a href="#FreeRTOS工程化要点：任务划分、优先级设计与CPU占用率监控" class="headerlink" title="FreeRTOS工程化要点：任务划分、优先级设计与CPU占用率监控"></a><strong>FreeRTOS工程化要点：任务划分、优先级设计与CPU占用率监控</strong></h1><p><strong>FreeRTOS任务怎么拆？优先级怎么配、CPU占用怎么看？</strong></p>
+<p><img src="https://mmbiz.qpic.cn/sz_mmbiz_png/K62vJYPSiaghvS95lSlGVEoib0U2J7nLDDfiaWiaaicBvcicws2Dic3y9VBBw8ibYGZaVHSjQ41kDwWmMF7T0d9ADhgFVKcQgX7XTQSujWFOnDgOqbs/640?wx_fmt=png&from=appmsg&wxfrom=13&tp=wxpic#imgIndex=0" alt="图片">## 一、任务划分原则</p>
+<h3 id="1、单一职责：一个任务只干一件事"><a href="#1、单一职责：一个任务只干一件事" class="headerlink" title="1、单一职责：一个任务只干一件事"></a>1、单一职责：一个任务只干一件事</h3><p>把”串口接收 + 数据解析 + 指令执行 + 结果反馈”全塞一个任务，解析环节一出问题整条链路全挂，而且任务执行时间拉长后会阻塞其他高优先级任务。</p>
+<p>正确做法：按照职责拆成各独立任务，通过队列串联，某一环节异常不影响其他环节。</p>
+<h3 id="2、低耦合与合理粒度"><a href="#2、低耦合与合理粒度" class="headerlink" title="2、低耦合与合理粒度"></a>2、低耦合与合理粒度</h3><p>任务间数据传递走队列、任务通知、事件组，别直接读写全局变量。任务数量上，一般中小项目控制在 <strong>5~8 个</strong> 比较合理——太少功能挤一起难维护，太多上下文切换开销吃不消。</p>
+<p>划分流程可以按下面这个思路走：</p>
+<p><img src="https://mmbiz.qpic.cn/sz_mmbiz_png/K62vJYPSiagiaYsHQrzh2rCgGXRbKoUCRRwTDUgJEbDDCvTNxKYzTrQchjsM0rAm3dNShiaXAqYXIpmQu9Tr5NDwYN8o7nuemme5rFWhC0Gcfg/640?wx_fmt=png&from=appmsg&tp=wxpic&wxfrom=5&wx_lazy=1#imgIndex=1" alt="图片">### 3、轻量化：单次执行控制在10ms以内</p>
+<p>看一下内核中空闲任务的主循环（<code>&lt;span leaf=&quot;&quot;&gt;tasks.c&lt;/span&gt;</code>）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">for( ; configCONTROL_INFINITE_LOOP(); )</span><br><span class="line">&#123;</span><br><span class="line">    prvCheckTasksWaitingTermination();</span><br><span class="line"></span><br><span class="line">    #if ( configUSE_IDLE_HOOK == 1 )</span><br><span class="line">    &#123;</span><br><span class="line">        vApplicationIdleHook();</span><br><span class="line">    &#125;</span><br><span class="line">    #endif</span><br><span class="line">    /* ... tickless idle, yield 逻辑 ... */</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>空闲任务只有在<strong>所有其他任务都阻塞</strong> 时才能拿到 CPU。你的任务一跑就是几十毫秒不释放，空闲任务跑不了，低功耗和看门狗喂狗逻辑都会出问题。耗时操作必须拆子任务或分段执行。</p>
+<h2 id="二、优先级设计"><a href="#二、优先级设计" class="headerlink" title="二、优先级设计"></a>二、优先级设计</h2><h3 id="核心原则：数字越大，优先级越高"><a href="#核心原则：数字越大，优先级越高" class="headerlink" title="核心原则：数字越大，优先级越高"></a>核心原则：数字越大，优先级越高</h3><p>这是非常多人搞反的点。FreeRTOS 中空闲任务优先级为 0，是<strong>最低</strong> 的：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/* FreeRTOS-Kernel/include/task.h */</span><br><span class="line">#define tskIDLE_PRIORITY    ( ( UBaseType_t ) 0U )</span><br></pre></td></tr></table></figure>
+
+<p>优先级范围是 <code>&lt;span leaf=&quot;&quot;&gt;0&lt;/span&gt;</code> 到 <code>&lt;span leaf=&quot;&quot;&gt;configMAX_PRIORITIES - 1&lt;/span&gt;</code>，数字越大越先执行。分配时，核心实时任务给大数字，后台任务给小数字。非必要别让多个任务共用同一优先级，否则触发<strong>时间片轮转</strong>，增加切换开销。</p>
+<table>
+<thead>
+<tr>
+<th>任务类型</th>
+<th>优先级</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>故障报警</td>
+<td>10</td>
+<td>必须最快响应</td>
+</tr>
+<tr>
+<td>传感器采集</td>
+<td>8</td>
+<td>实时性要求高</td>
+</tr>
+<tr>
+<td>数据解析&#x2F;指令执行</td>
+<td>6</td>
+<td><br/></td>
+</tr>
+<tr>
+<td>外设通信（串口等）</td>
+<td>4</td>
+<td><br/></td>
+</tr>
+<tr>
+<td>显示&#x2F;按键</td>
+<td>3</td>
+<td><br/></td>
+</tr>
+<tr>
+<td>日志&#x2F;自检</td>
+<td>1</td>
+<td>仅高于空闲任务</td>
+</tr>
+</tbody></table>
+<h2 id="三、CPU占用率监控"><a href="#三、CPU占用率监控" class="headerlink" title="三、CPU占用率监控"></a>三、CPU占用率监控</h2><p>CPU 占用率是系统健康度的晴雨表，建议控制在 30%~70%。FreeRTOS 内核原生支持运行时统计（<code>&lt;span leaf=&quot;&quot;&gt;configGENERATE_RUN_TIME_STATS&lt;/span&gt;</code>），每次上下文切换时自动累计每个任务的运行时间，精度高、零应用层计算代码，直接用就行。</p>
+<h3 id="1、内核原理"><a href="#1、内核原理" class="headerlink" title="1、内核原理"></a>1、内核原理</h3><p>开启 <code>&lt;span leaf=&quot;&quot;&gt;configGENERATE_RUN_TIME_STATS&lt;/span&gt;</code> 后，内核在每次任务切换时执行以下逻辑（<code>&lt;span leaf=&quot;&quot;&gt;tasks.c&lt;/span&gt;</code>）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">/* FreeRTOS-Kernel/tasks.c — 上下文切换时更新运行时统计 */</span><br><span class="line">#if ( configGENERATE_RUN_TIME_STATS == 1 )</span><br><span class="line">&#123;</span><br><span class="line">    ulTotalRunTime[ 0 ] = portGET_RUN_TIME_COUNTER_VALUE();</span><br><span class="line">    if( ulTotalRunTime[ 0 ] &gt; ulTaskSwitchedInTime[ 0 ] )</span><br><span class="line">    &#123;</span><br><span class="line">        pxCurrentTCB-&gt;ulRunTimeCounter +=</span><br><span class="line">            ( ulTotalRunTime[ 0 ] - ulTaskSwitchedInTime[ 0 ] );</span><br><span class="line">    &#125;</span><br><span class="line">    ulTaskSwitchedInTime[ 0 ] = ulTotalRunTime[ 0 ];</span><br><span class="line">&#125;</span><br><span class="line">#endif</span><br></pre></td></tr></table></figure>
+
+<p>每个 <strong>TCB</strong> 里有个 <code>&lt;span leaf=&quot;&quot;&gt;ulRunTimeCounter&lt;/span&gt;</code> 字段，记录该任务累计占用 CPU 的时间。调用 <code>&lt;span leaf=&quot;&quot;&gt;vTaskGetRunTimeStats()&lt;/span&gt;</code> 时，内核遍历所有任务，算出每个任务的时间占比，格式化成可读字符串直接输出。</p>
+<p>你只需要做两件事：<strong>配好 FreeRTOSConfig.h</strong> + <strong>提供一个高精度计数器</strong> 。</p>
+<h3 id="2、验证代码"><a href="#2、验证代码" class="headerlink" title="2、验证代码"></a>2、验证代码</h3><p>下面是一个例子：用 <strong>DWT 周期计数器</strong> 作为运行时统计的时间基准，创建了两个不同负载的测试任务 + 一个监控任务，串口输出统计结果。</p>
+<h4 id="（1）FreeRTOSConfig-h需要增加的配置"><a href="#（1）FreeRTOSConfig-h需要增加的配置" class="headerlink" title="（1）FreeRTOSConfig.h需要增加的配置"></a>（1）FreeRTOSConfig.h需要增加的配置</h4><p>在你已有的 <code>&lt;span leaf=&quot;&quot;&gt;FreeRTOSConfig.h&lt;/span&gt;</code> 中加入以下内容：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">/* ---------- 运行时统计相关 ---------- */</span><br><span class="line">#define configGENERATE_RUN_TIME_STATS           1</span><br><span class="line">#define configUSE_TRACE_FACILITY                1</span><br><span class="line">#define configUSE_STATS_FORMATTING_FUNCTIONS    1</span><br><span class="line"></span><br><span class="line">extern void     vConfigureTimerForRunTimeStats(void);</span><br><span class="line">extern uint32_t ulGetRunTimeCounterValue(void);</span><br><span class="line">#define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS() vConfigureTimerForRunTimeStats()</span><br><span class="line">#define portGET_RUN_TIME_COUNTER_VALUE()          ulGetRunTimeCounterValue()</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>这三个宏缺一不可：<code>&lt;span leaf=&quot;&quot;&gt;configGENERATE_RUN_TIME_STATS&lt;/span&gt;</code> 开启统计功能，<code>&lt;span leaf=&quot;&quot;&gt;configUSE_TRACE_FACILITY&lt;/span&gt;</code> 开启 <code>&lt;span leaf=&quot;&quot;&gt;uxTaskGetSystemState()&lt;/span&gt;</code>，<code>&lt;span leaf=&quot;&quot;&gt;configUSE_STATS_FORMATTING_FUNCTIONS&lt;/span&gt;</code> 开启 <code>&lt;span leaf=&quot;&quot;&gt;vTaskGetRunTimeStats()&lt;/span&gt;</code> 格式化输出。</p>
+</blockquote>
+<h4 id="（2）核心测试代码"><a href="#（2）核心测试代码" class="headerlink" title="（2）核心测试代码"></a>（2）核心测试代码</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line">/*------------------------------------------------------------</span><br><span class="line"> *    运行时统计计数器 — DWT CYCCNT (内核自带, 不占任何外设)</span><br><span class="line"> *</span><br><span class="line"> *    DWT 单元有一个 32 位周期计数器,</span><br><span class="line"> *    以内核主频计数 (L431 最高 80MHz → 分辨率 12.5ns)</span><br><span class="line"> *    32 位在 80MHz 下约 53.7 秒溢出, 但内核每次上下文切换</span><br><span class="line"> *    都会读取并做差值累加, 任务切换间隔远小于该值, 不影响统计</span><br><span class="line"> *------------------------------------------------------------*/</span><br><span class="line">void vConfigureTimerForRunTimeStats(void)</span><br><span class="line">&#123;</span><br><span class="line">    CoreDebug-&gt;DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;</span><br><span class="line">    DWT-&gt;CYCCNT = 0;</span><br><span class="line">    DWT-&gt;CTRL |= DWT_CTRL_CYCCNTENA_Msk;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">uint32_t ulGetRunTimeCounterValue(void)</span><br><span class="line">&#123;</span><br><span class="line">    return DWT-&gt;CYCCNT;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/*------------------------------------------------------------</span><br><span class="line"> * 测试任务</span><br><span class="line"> *------------------------------------------------------------*/</span><br><span class="line"></span><br><span class="line">/* 重载任务: 忙等 ~5ms + 休眠 20ms, 预期占用约 20% CPU */</span><br><span class="line">void Task_Heavy(void *pv)</span><br><span class="line">&#123;</span><br><span class="line">    volatileuint32_t i;</span><br><span class="line">    for (;;)</span><br><span class="line">    &#123;</span><br><span class="line">        for (i = 0; i &lt; 20000; i++) &#123;&#125;  /* 忙等, 模拟计算负载 */</span><br><span class="line">        vTaskDelay(pdMS_TO_TICKS(20));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/* 轻载任务: 几乎不占 CPU, 500ms 唤醒一次做极少工作 */</span><br><span class="line">void Task_Light(void *pv)</span><br><span class="line">&#123;</span><br><span class="line">    volatileuint32_t count = 0;</span><br><span class="line">    for (;;)</span><br><span class="line">    &#123;</span><br><span class="line">        count++;</span><br><span class="line">        vTaskDelay(pdMS_TO_TICKS(500));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/* 监控任务: 每 3 秒输出一次各任务的运行时间统计 */</span><br><span class="line">void Task_Monitor(void *pv)</span><br><span class="line">&#123;</span><br><span class="line">    staticchar buf[400];</span><br><span class="line"></span><br><span class="line">    for (;;)</span><br><span class="line">    &#123;</span><br><span class="line">        vTaskDelay(pdMS_TO_TICKS(3000));</span><br><span class="line"></span><br><span class="line">        printf(&quot;\r\n-------- Run Time Stats --------\r\n&quot;);</span><br><span class="line">        printf(&quot;Task            Abs Time    %%Time\r\n&quot;);</span><br><span class="line">        vTaskGetRunTimeStats(buf);</span><br><span class="line">        printf(&quot;%s&quot;, buf);</span><br><span class="line">        printf(&quot;--------------------------------\r\n&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int main(void)</span><br><span class="line">&#123;</span><br><span class="line">    // ...</span><br><span class="line"></span><br><span class="line">    xTaskCreate(Task_Heavy,   &quot;Heavy&quot;,   256, NULL, 4, NULL);</span><br><span class="line">    xTaskCreate(Task_Light,   &quot;Light&quot;,   128, NULL, 3, NULL);</span><br><span class="line">    xTaskCreate(Task_Monitor, &quot;Monitor&quot;, 512, NULL, 1, NULL);</span><br><span class="line"></span><br><span class="line">    vTaskStartScheduler();</span><br><span class="line"></span><br><span class="line">    for (;;) &#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="（3）串口输出"><a href="#（3）串口输出" class="headerlink" title="（3）串口输出"></a>（3）串口输出</h4><p>每 3 秒会看到类似输出：</p>
+<p>![图片](data:image&#x2F;svg+xml,%3C%3Fxml version&#x3D;’1.0’ encoding&#x3D;’UTF-8’%3F%3E%3Csvg width&#x3D;’1px’ height&#x3D;’1px’ viewBox&#x3D;’0 0 1 1’ version&#x3D;’1.1’ xmlns&#x3D;’<a target="_blank" rel="noopener" href="http://www.w3.org/2000/svg">http://www.w3.org/2000/svg</a>‘ xmlns:xlink&#x3D;’<a target="_blank" rel="noopener" href="http://www.w3.org/1999/xlink'%3E%3Ctitle%3E%3C/title%3E%3Cg">http://www.w3.org/1999/xlink&#39;%3E%3Ctitle%3E%3C/title%3E%3Cg</a> stroke&#x3D;’none’ stroke-width&#x3D;’1’ fill&#x3D;’none’ fill-rule&#x3D;’evenodd’ fill-opacity&#x3D;’0’%3E%3Cg transform&#x3D;’translate(-249.000000, -126.000000)’ fill&#x3D;’%23FFFFFF’%3E%3Crect x&#x3D;’249’ y&#x3D;’126’ width&#x3D;’1’ height&#x3D;’1’%3E%3C&#x2F;rect%3E%3C&#x2F;g%3E%3C&#x2F;g%3E%3C&#x2F;svg%3E)<code>&lt;span leaf=&quot;&quot;&gt;Heavy&lt;/span&gt;</code> 任务忙等约 5ms + 休眠 20ms，占用约 16%，符合预期。<code>&lt;span leaf=&quot;&quot;&gt;IDLE&lt;/span&gt;</code> 占 83% 说明系统大部分时间空闲。如果你在自己的项目里加上这个监控任务，一眼就能看出哪个任务吃 CPU 最多。</p>
+<h3 id="3、异常速查"><a href="#3、异常速查" class="headerlink" title="3、异常速查"></a>3、异常速查</h3><table>
+<thead>
+<tr>
+<th>现象</th>
+<th>常见原因</th>
+<th>优化方向</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>&gt;80%</td>
+<td>死循环无延时、中断过频、资源竞争激烈</td>
+<td>拆分耗时任务、降低中断频率</td>
+</tr>
+<tr>
+<td>&lt;20%</td>
+<td>延时过长、执行频率低</td>
+<td>缩短延时、充分利用 CPU</td>
+</tr>
+<tr>
+<td>波动大</td>
+<td>突发耗时操作、中断源不稳定</td>
+<td>分段执行、稳定中断源</td>
+</tr>
+</tbody></table>
+<h2 id="四、总结"><a href="#四、总结" class="headerlink" title="四、总结"></a>四、总结</h2><p>FreeRTOS 工程落地就三件事：</p>
+<ol>
+<li><strong>任务划分</strong> ——单一职责、轻量化、低耦合，5~8 个任务为宜，别把所有逻辑塞一个任务里，也别拆太碎。</li>
+<li><strong>优先级设计</strong> ——数字越大优先级越高（<code>&lt;span leaf=&quot;&quot;&gt;tskIDLE_PRIORITY = 0&lt;/span&gt;</code> 是最低），核心实时任务给高值，后台任务给低值；共享资源用 <code>&lt;span leaf=&quot;&quot;&gt;xSemaphoreCreateMutex()&lt;/span&gt;</code>，优先级继承内核自动搞定。</li>
+<li><strong>CPU 占用率监控</strong> ——开启 <code>&lt;span leaf=&quot;&quot;&gt;configGENERATE_RUN_TIME_STATS&lt;/span&gt;</code>，用 DWT CYCCNT 做时间基准（不占外设），<code>&lt;span leaf=&quot;&quot;&gt;vTaskGetRunTimeStats()&lt;/span&gt;</code> 直接输出每个任务的占比，30%~70% 是健康区间。</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2026/04/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/FreeRTOS%E5%B7%A5%E7%A8%8B%E5%8C%96%E8%A6%81%E7%82%B9/" data-id="cuidm-KN_XHpIwoxTarIGj2OD" data-title="FreeRTOS工程化要点：任务划分、优先级设计与CPU占用率监控" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" rel="tag">嵌入式学习</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" rel="tag">数据存储</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2026/05/28/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/Modbus%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Modbus协议学习笔记
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2026/04/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E8%87%AA%E5%8A%A8%E5%88%9D%E5%A7%8B%E5%8C%96%E6%A1%86%E6%9E%B6/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">自动初始化框架</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E5%85%A8%E5%BF%97T113S3/">全志T113S3</a></li></ul></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C%E8%AF%AD%E8%A8%80%E5%AE%8F/" rel="tag">C语言宏</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Debug%E6%97%A5%E5%BF%97/" rel="tag">Debug日志</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Makefile/" rel="tag">Makefile</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96/" rel="tag">内存优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="tag">博客环境搭建</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" rel="tag">学习记录</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" rel="tag">嵌入式学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" rel="tag">工具使用</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B8%B8%E8%A7%81%E5%8D%8F%E8%AE%AE%E7%AE%80%E4%BB%8B/" rel="tag">常见协议简介</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" rel="tag">数据传输</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" rel="tag">数据存储</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/" rel="tag">结构体</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%A9%B1%E5%8A%A8%E5%B1%8F/" rel="tag">驱动屏</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/C%E8%AF%AD%E8%A8%80%E5%AE%8F/" style="font-size: 10px;">C语言宏</a> <a href="/tags/Debug%E6%97%A5%E5%BF%97/" style="font-size: 10px;">Debug日志</a> <a href="/tags/Linux/" style="font-size: 18px;">Linux</a> <a href="/tags/Makefile/" style="font-size: 10px;">Makefile</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96/" style="font-size: 10px;">内存优化</a> <a href="/tags/%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" style="font-size: 10px;">博客环境搭建</a> <a href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" style="font-size: 10px;">学习记录</a> <a href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" style="font-size: 20px;">嵌入式学习</a> <a href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" style="font-size: 14px;">工具使用</a> <a href="/tags/%E5%B8%B8%E8%A7%81%E5%8D%8F%E8%AE%AE%E7%AE%80%E4%BB%8B/" style="font-size: 10px;">常见协议简介</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" style="font-size: 12px;">数据传输</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" style="font-size: 16px;">数据存储</a> <a href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/" style="font-size: 10px;">结构体</a> <a href="/tags/%E9%A9%B1%E5%8A%A8%E5%B1%8F/" style="font-size: 14px;">驱动屏</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/07/">July 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/05/">May 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/04/">April 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/02/">February 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/01/">January 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/02/">February 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">January 2023</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2026/07/26/%E7%BC%96%E8%AF%91%E9%93%BE%E6%8E%A5/MakeFile/Makefile.inc/">Makefile</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/26/%E8%BE%BE%E5%8F%91%E9%9D%A2%E8%AF%95%E5%87%86%E5%A4%87/%E4%B8%80%E9%9D%A2/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2026/05/28/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/Modbus%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">Modbus协议学习笔记</a>
+          </li>
+        
+          <li>
+            <a href="/2026/04/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/FreeRTOS%E5%B7%A5%E7%A8%8B%E5%8C%96%E8%A6%81%E7%82%B9/">FreeRTOS工程化要点：任务划分、优先级设计与CPU占用率监控</a>
+          </li>
+        
+          <li>
+            <a href="/2026/04/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E8%87%AA%E5%8A%A8%E5%88%9D%E5%A7%8B%E5%8C%96%E6%A1%86%E6%9E%B6/">自动初始化框架</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

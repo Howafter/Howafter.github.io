@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Modbus协议学习笔记 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="实际上Modbus并不复杂，可以拆分为硬件层面和软件层面。 在硬件层面，Modbus的底层就是串口。 在软件层面，Modbus就是一套软件协议。 Modbus硬件组成 既然在硬件层面，Modbus是串口的话，那么这就涉及到很多种电平，TTL电平、232电平，485电平。 对于传统的串口，通常使用TTL电平，也就是说主控芯片发出来的信号，不需要电平转换，但传输的距离就比较短，一般小于1米。大多数情况">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Modbus协议学习笔记">
+<meta property="og:url" content="http://example.com/2026/05/28/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/Modbus%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="实际上Modbus并不复杂，可以拆分为硬件层面和软件层面。 在硬件层面，Modbus的底层就是串口。 在软件层面，Modbus就是一套软件协议。 Modbus硬件组成 既然在硬件层面，Modbus是串口的话，那么这就涉及到很多种电平，TTL电平、232电平，485电平。 对于传统的串口，通常使用TTL电平，也就是说主控芯片发出来的信号，不需要电平转换，但传输的距离就比较短，一般小于1米。大多数情况">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_jpg/5Wk2VJxZibPo0UhuE1s8fM5a3oiaECjM3z65kUqKVibnU2uC89xjN9yNLENZJRBArrVhq4radTAYOCD06SCJibhZtvTousaAJdYGfCnYsNZAJN0/640?wx_fmt=jpeg&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=4">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_jpg/5Wk2VJxZibPrCefNQukahR9b1A8ZL2IOwRibTvIN79CbjOxp1rib8qPhwlJMp2RF4LLymibdc6caNdC6EzYaHgCsBCNFITruIdIt59T2Aa7e48k/640?wx_fmt=jpeg&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=5">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_jpg/5Wk2VJxZibPoyiaybMRQErXRCKxRNssiakapUQCSvhS4kUIfKFbsSzGzlQpwuuxlBjUrkN2BVWQHLVpl10aqyibphjCj4GCibncicVw8yngBsM94Y/640?wx_fmt=jpeg&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=6">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_jpg/5Wk2VJxZibPpAmUP8dicS8iaW6M9ZESBI5dibszA14Gk3HfE17BRmf9UEmgaOPuicvtYyQYAK4icMGWBIuTCOyDqKJLSLU84wRRz8jH36mPYZzJkw/640?wx_fmt=jpeg&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=7">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_png/5Wk2VJxZibPrGbWfb6SD0kdXUibISsTpdsKc4kPicrCXu6M1xY9v2cNAN7Tl67ibjs1wC1J8Fq4iaVXOawdQU1gLrB5gV06KzdhuKM3fZaoV9u8s/640?wx_fmt=png&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=8">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_jpg/5Wk2VJxZibPr4BGxs4TZ4n20xX4WZAJNVicNp7LGF1QjEZwXxRc8cYonDsBxqDGrEoIHPxOoOnGEuufvibapZzvfLwpUmmwcqsTBhKb4W1gmTo/640?wx_fmt=jpeg&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=9">
+<meta property="og:image" content="https://mmbiz.qpic.cn/sz_mmbiz_jpg/5Wk2VJxZibPq8ia2t9qmibLFh05qYkTPRG7mKa5yBj2yWqxk2NVxoCT6lv8p2ricmnbibUudkFZQeQJdbDrRUDFqdW6oeB3wKhCxhUe1jaDSujGQ/640?wx_fmt=jpeg&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=10">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_jpg/5Wk2VJxZibPpVhZzCGfHJEMWK9yzCZM7UBnbtNjrWoymibUEdh0Tv8ZwVnuGD3EBBpO6x8z7dylveXjLuNbc5GMAI0tfeSKNZIAwLMflOzHqc/640?wx_fmt=jpeg&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=11">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_jpg/5Wk2VJxZibPqMCwCiazd62ibHRagW7Z5e6aTgh7PzQtf56PeRw2ZHs4WRia1n448jhd0qaVhrWKuDHVu2C7wic2k5w6k4mOyMjnhtq9qlwWXjC8w/640?wx_fmt=jpeg&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=12">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_jpg/5Wk2VJxZibPptmS9z2FXwPI040TdnaiaJdyDAj6p0hT9o95wt3UNuOzrg0S3ZW2Hl33jG9sPIKo7EusEsqX4Uz0pyy3fTCGiaa9UDAPibCIeGJo/640?wx_fmt=jpeg&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=13">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_jpg/5Wk2VJxZibPogrACAgjuJbKpYxYYwmA1kO7R9znbKKqWVUnNRYicRyvr9v2CpeBAaic7QQZp18f6rKRKhsu6Oj1gOz5qh4SruwnTqLPDSMONCc/640?wx_fmt=jpeg&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=14">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_jpg/5Wk2VJxZibPrkmtDv5tXf11SZV9iaIHrWGNtDO8ic68J1A8XSibu8ZgXKu3IgA9WhiatsuVWO9XBVUibTTiauTFLp8RcuaicLEUxHibtiaI0lE2I0ibges/640?wx_fmt=jpeg&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=15">
+<meta property="og:image" content="https://mmbiz.qpic.cn/mmbiz_jpg/5Wk2VJxZibPpvicq4KLUbNy2qW1jLEqZStu2q0pLkM3u7XkMUuk0w1Zv7aKIS9vKjibSpBOfZbhugjjBjHxg8NicvOepURlx9XgyoB4FyRWewcI/640?wx_fmt=jpeg&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=16">
+<meta property="og:image" content="https://mmbiz.qpic.cn/sz_mmbiz_jpg/5Wk2VJxZibPqPDNG1g9Jjm5FKO0GUtvseoQWjNv37f1t5kJNvuO8n7xG5ZflZiacwC3rEahv6F7CbrTM74CmXVct3fq3qZBAeHibsXxByO75bc/640?wx_fmt=jpeg&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=17">
+<meta property="article:published_time" content="2026-05-28T02:00:00.000Z">
+<meta property="article:modified_time" content="2026-05-28T02:00:00.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="嵌入式学习">
+<meta property="article:tag" content="数据传输">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://mmbiz.qpic.cn/mmbiz_jpg/5Wk2VJxZibPo0UhuE1s8fM5a3oiaECjM3z65kUqKVibnU2uC89xjN9yNLENZJRBArrVhq4radTAYOCD06SCJibhZtvTousaAJdYGfCnYsNZAJN0/640?wx_fmt=jpeg&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=4">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-技巧学习/Modbus协议学习笔记" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2026/05/28/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/Modbus%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" class="article-date">
+  <time class="dt-published" datetime="2026-05-28T02:00:00.000Z" itemprop="datePublished">2026-05-28</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Modbus协议学习笔记
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>实际上Modbus并不复杂，可以拆分为硬件层面和软件层面。</p>
+<p><strong>在硬件层面，Modbus的底层就是串口。</strong></p>
+<p><strong>在软件层面，Modbus就是一套软件协议。</strong></p>
+<p><strong>Modbus硬件组成</strong></p>
+<p>既然在硬件层面，Modbus是串口的话，那么这就涉及到很多种电平，TTL电平、232电平，485电平。</p>
+<p>对于传统的串口，通常使用TTL电平，也就是说主控芯片发出来的信号，不需要电平转换，但传输的距离就比较短，一般小于1米。大多数情况下，传统串口是用在芯片间的通信，如果在板间通信使用传统串口的话，距离最好不要超过1米。</p>
+<p>对于距离稍远的板间通信，比如30到50米之间，就需要经过电平转换，也就是把板子出来的TTL电平，通过芯片转换成RS232电平，到达接收端之后，再把RS232电平转换成TTL电平，通信的两端都需要电平转换芯片，这样就可以延长通信距离。</p>
+<p>对于传输的距离长达1千米的通信，就需要使用另外一个电平了——RS485电平，最长距离可达1200米。电平转换逻辑，与RS232一样，通信的两端都需要使用RS485与TTL转换芯片。</p>
+<p>在上面三种电平中，RS485的抗干扰能力最强，尤其在工业控制场景中，需要高抗干扰能力。那么用于工业控制的Modbus，底层硬件一般来就使用RS485。</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_jpg/5Wk2VJxZibPo0UhuE1s8fM5a3oiaECjM3z65kUqKVibnU2uC89xjN9yNLENZJRBArrVhq4radTAYOCD06SCJibhZtvTousaAJdYGfCnYsNZAJN0/640?wx_fmt=jpeg&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=4" alt="Image"></p>
+<p><strong>Modbus软件协议</strong></p>
+<p>Modbus在软件上规定了一套协议，可以用来访问多个设备，一个Master可以访问多个Slave，也就是一主多从的协议。</p>
+<p>为了适配不同的硬件、传输距离等，Modbus的主流传输版本有以下三种：</p>
+<p><strong>1）</strong> <strong>ASCII：</strong> 这是最早的版本，全部用可见的ASCII字符传输，可读性强，调试方便，但效率低，同样的数据要发两倍的长度。</p>
+<p><strong>2）</strong> <strong>RTU：</strong> 目前工业最主流，用得最多的版本，采用二进制编码，不浪费字节，效率高实时性好，工业现场首选。</p>
+<p><strong>3）</strong> <strong>TCP：</strong> 为了突破距离限制，把RTU的二进制包放到以太网包里传输，距离无限、速度快，在远程监控、物联网网关中，使用频繁。</p>
+<p>无论哪种版本，只是包装格式不同，以RTU为例，主控发出的Modbus数据里，必定含有如下信息：</p>
+<p>设备地址：你要访问从设备1，还是访问从设备2；</p>
+<p>访问哪类寄存器，读还是写，只访问1个寄存器，还是多个寄存器：这被称为功能码；</p>
+<p>起始寄存器地址、寄存器数量：这在数据里定义；</p>
+<p>为了保证数据传输的可靠，还附带有CRC检验码。</p>
+<p>由此，得到了主控发出的数据包格式，如下：</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_jpg/5Wk2VJxZibPrCefNQukahR9b1A8ZL2IOwRibTvIN79CbjOxp1rib8qPhwlJMp2RF4LLymibdc6caNdC6EzYaHgCsBCNFITruIdIt59T2Aa7e48k/640?wx_fmt=jpeg&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=5" alt="Image"></p>
+<p>其中从数据的角度上看，Modbus是主控对寄存器的读写操作，比如想得到按键输入状态时，读取一位数据；想控制LED时，需要输出一位数据，想读取LED当前状态时，读取到一位数据；想获得参数时，读取“输入寄存器”的数据；想设置参数时，“保存寄存器”进行写数据，可以是多位数据，也可以读“保存寄存器”。</p>
+<p>因此这些寄存器可以归纳为以下四类：</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_jpg/5Wk2VJxZibPoyiaybMRQErXRCKxRNssiakapUQCSvhS4kUIfKFbsSzGzlQpwuuxlBjUrkN2BVWQHLVpl10aqyibphjCj4GCibncicVw8yngBsM94Y/640?wx_fmt=jpeg&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=6" alt="Image"></p>
+<p>为了更加清晰明了的理解Modbus的数据帧，大家可以分析下面这组数据包是什么。</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_jpg/5Wk2VJxZibPpAmUP8dicS8iaW6M9ZESBI5dibszA14Gk3HfE17BRmf9UEmgaOPuicvtYyQYAK4icMGWBIuTCOyDqKJLSLU84wRRz8jH36mPYZzJkw/640?wx_fmt=jpeg&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=7" alt="Image"></p>
+<p><strong>Modbus操作传感器实战</strong></p>
+<p>了解了Modbus RTU的数据包的格式之后，就以读取传感器数据为例，进行Modbus实战。</p>
+<p>硬件接线如下：</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_png/5Wk2VJxZibPrGbWfb6SD0kdXUibISsTpdsKc4kPicrCXu6M1xY9v2cNAN7Tl67ibjs1wC1J8Fq4iaVXOawdQU1gLrB5gV06KzdhuKM3fZaoV9u8s/640?wx_fmt=png&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=8" alt="Image"></p>
+<p>每个传感器都有一个点表，也就是寄存器说明：</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_jpg/5Wk2VJxZibPr4BGxs4TZ4n20xX4WZAJNVicNp7LGF1QjEZwXxRc8cYonDsBxqDGrEoIHPxOoOnGEuufvibapZzvfLwpUmmwcqsTBhKb4W1gmTo/640?wx_fmt=jpeg&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=9" alt="Image"></p>
+<p>03H就是传感器的地址，它有5个DO数字量输出寄存器，分别控制蜂鸣器和LED的状态，还有2个AI模拟量输入寄存器，获取温湿度数据。</p>
+<p><strong>第一种寄存器操作是可以使用工具——Modbus Poll</strong> ，需要在PC端进行安装。</p>
+<p>打开Modbus Poll，就可以连接设备，选择波特率115200，然后就可以通过地址，读写定义寄存器了。</p>
+<p>对于不同的寄存器，只需要右键“读写定义”，选择功能。</p>
+<p><img src="https://mmbiz.qpic.cn/sz_mmbiz_jpg/5Wk2VJxZibPq8ia2t9qmibLFh05qYkTPRG7mKa5yBj2yWqxk2NVxoCT6lv8p2ricmnbibUudkFZQeQJdbDrRUDFqdW6oeB3wKhCxhUe1jaDSujGQ/640?wx_fmt=jpeg&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=10" alt="Image"></p>
+<p>功能确定之后，就可以操作不同的寄存器，在Value中，选择on或off，蜂鸣器或者LED就会相应的动作。</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_jpg/5Wk2VJxZibPpVhZzCGfHJEMWK9yzCZM7UBnbtNjrWoymibUEdh0Tv8ZwVnuGD3EBBpO6x8z7dylveXjLuNbc5GMAI0tfeSKNZIAwLMflOzHqc/640?wx_fmt=jpeg&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=11" alt="Image"></p>
+<p>对于温湿度读取，同样的操作，先读写定义，然后读input register。</p>
+<p><strong>第二种，操作方式就是通过串口收发数据来控制外设</strong> 。</p>
+<p>将对应的RTU数据通过串口发送，也可以对蜂鸣器、LED控制，读取温湿度数据。</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_jpg/5Wk2VJxZibPqMCwCiazd62ibHRagW7Z5e6aTgh7PzQtf56PeRw2ZHs4WRia1n448jhd0qaVhrWKuDHVu2C7wic2k5w6k4mOyMjnhtq9qlwWXjC8w/640?wx_fmt=jpeg&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=12" alt="Image"></p>
+<p>对于温湿度数据的解析，需要阅读Modbus协议的数据包格式解析（文末提供了131页Modbus协议中文文档下载）。</p>
+<p>以读到的数据为例，在文档的第六章，04功能码这里：</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_jpg/5Wk2VJxZibPptmS9z2FXwPI040TdnaiaJdyDAj6p0hT9o95wt3UNuOzrg0S3ZW2Hl33jG9sPIKo7EusEsqX4Uz0pyy3fTCGiaa9UDAPibCIeGJo/640?wx_fmt=jpeg&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=13" alt="Image"></p>
+<p>03是地址，功能码是04，02是两个字节，分别是013E，即31.8度。</p>
+<p>以上两种操作是通过纯粹的串口工具，发出数据包，然后得到回应。如果要把Modbus的功能集成进产品里面去的话，就需要写程序，可以使用各种Modbus的开源库，也可以自己去写代码。</p>
+<p><strong>第三种，通过程序实现Modbus的一些基本操作。</strong></p>
+<p>以STM32H5连接Modbus传感器为例：</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_jpg/5Wk2VJxZibPogrACAgjuJbKpYxYYwmA1kO7R9znbKKqWVUnNRYicRyvr9v2CpeBAaic7QQZp18f6rKRKhsu6Oj1gOz5qh4SruwnTqLPDSMONCc/640?wx_fmt=jpeg&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=14" alt="Image"></p>
+<p>在代码中，创建Modbus的结构体，主要确定使用哪个串口，以及串口参数：</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_jpg/5Wk2VJxZibPrkmtDv5tXf11SZV9iaIHrWGNtDO8ic68J1A8XSibu8ZgXKu3IgA9WhiatsuVWO9XBVUibTTiauTFLp8RcuaicLEUxHibtiaI0lE2I0ibges/640?wx_fmt=jpeg&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=15" alt="Image"></p>
+<p>Modbus的核心在下面这个函数：</p>
+<p><img src="https://mmbiz.qpic.cn/mmbiz_jpg/5Wk2VJxZibPpvicq4KLUbNy2qW1jLEqZStu2q0pLkM3u7XkMUuk0w1Zv7aKIS9vKjibSpBOfZbhugjjBjHxg8NicvOepURlx9XgyoB4FyRWewcI/640?wx_fmt=jpeg&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=16" alt="Image"></p>
+<p>DO是要去操作寄存器，访问哪个设备，访问DO寄存器里面的哪一个寄存器，还有要写入的数值是怎样，构造好数据包之后，接着就是校验码，把校验码填进去，然后使用串口来发送数据包，接着就可以去读取数据包，解析里面的数据。</p>
+<p><img src="https://mmbiz.qpic.cn/sz_mmbiz_jpg/5Wk2VJxZibPqPDNG1g9Jjm5FKO0GUtvseoQWjNv37f1t5kJNvuO8n7xG5ZflZiacwC3rEahv6F7CbrTM74CmXVct3fq3qZBAeHibsXxByO75bc/640?wx_fmt=jpeg&from=appmsg&tp=webp&wxfrom=5&wx_lazy=1#imgIndex=17" alt="Image"></p>
+<p>代码的工程文件分享为大家，可以结合视频，进行代码的分析，从而更加了解如何通过代码编程对Modbus进行读写操作。</p>
+<p>好了，简单的总结下本节课的内容：首先，从硬件和软件层面，了解Modbus的本质是什么；然后，对Modbus的数据包进行解读，了解数据构成和意义；最后，通过工具和代码两种方式，操作Modbus传感器。</p>
+<p>相信看完本节课内容，基本可以入门Modbus的，如果想要深入学习，就需要自己进行实战了。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2026/05/28/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/Modbus%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" data-id="cuidcV5OE3_rW6vEr0GnxuZTH" data-title="Modbus协议学习笔记" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" rel="tag">嵌入式学习</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" rel="tag">数据传输</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2026/07/26/%E8%BE%BE%E5%8F%91%E9%9D%A2%E8%AF%95%E5%87%86%E5%A4%87/%E4%B8%80%E9%9D%A2/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          (no title)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2026/04/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/FreeRTOS%E5%B7%A5%E7%A8%8B%E5%8C%96%E8%A6%81%E7%82%B9/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">FreeRTOS工程化要点：任务划分、优先级设计与CPU占用率监控</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E5%85%A8%E5%BF%97T113S3/">全志T113S3</a></li></ul></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C%E8%AF%AD%E8%A8%80%E5%AE%8F/" rel="tag">C语言宏</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Debug%E6%97%A5%E5%BF%97/" rel="tag">Debug日志</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Makefile/" rel="tag">Makefile</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96/" rel="tag">内存优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="tag">博客环境搭建</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" rel="tag">学习记录</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" rel="tag">嵌入式学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" rel="tag">工具使用</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B8%B8%E8%A7%81%E5%8D%8F%E8%AE%AE%E7%AE%80%E4%BB%8B/" rel="tag">常见协议简介</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" rel="tag">数据传输</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" rel="tag">数据存储</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/" rel="tag">结构体</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%A9%B1%E5%8A%A8%E5%B1%8F/" rel="tag">驱动屏</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/C%E8%AF%AD%E8%A8%80%E5%AE%8F/" style="font-size: 10px;">C语言宏</a> <a href="/tags/Debug%E6%97%A5%E5%BF%97/" style="font-size: 10px;">Debug日志</a> <a href="/tags/Linux/" style="font-size: 18px;">Linux</a> <a href="/tags/Makefile/" style="font-size: 10px;">Makefile</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96/" style="font-size: 10px;">内存优化</a> <a href="/tags/%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" style="font-size: 10px;">博客环境搭建</a> <a href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" style="font-size: 10px;">学习记录</a> <a href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" style="font-size: 20px;">嵌入式学习</a> <a href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" style="font-size: 14px;">工具使用</a> <a href="/tags/%E5%B8%B8%E8%A7%81%E5%8D%8F%E8%AE%AE%E7%AE%80%E4%BB%8B/" style="font-size: 10px;">常见协议简介</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" style="font-size: 12px;">数据传输</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" style="font-size: 16px;">数据存储</a> <a href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/" style="font-size: 10px;">结构体</a> <a href="/tags/%E9%A9%B1%E5%8A%A8%E5%B1%8F/" style="font-size: 14px;">驱动屏</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/07/">July 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/05/">May 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/04/">April 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/02/">February 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/01/">January 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/02/">February 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">January 2023</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2026/07/26/%E7%BC%96%E8%AF%91%E9%93%BE%E6%8E%A5/MakeFile/Makefile.inc/">Makefile</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/26/%E8%BE%BE%E5%8F%91%E9%9D%A2%E8%AF%95%E5%87%86%E5%A4%87/%E4%B8%80%E9%9D%A2/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2026/05/28/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/Modbus%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">Modbus协议学习笔记</a>
+          </li>
+        
+          <li>
+            <a href="/2026/04/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/FreeRTOS%E5%B7%A5%E7%A8%8B%E5%8C%96%E8%A6%81%E7%82%B9/">FreeRTOS工程化要点：任务划分、优先级设计与CPU占用率监控</a>
+          </li>
+        
+          <li>
+            <a href="/2026/04/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E8%87%AA%E5%8A%A8%E5%88%9D%E5%A7%8B%E5%8C%96%E6%A1%86%E6%9E%B6/">自动初始化框架</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="我将为您详细解释如何实现 INIT_TASK_EXPORT 替换方案，并提供具体的操作步骤，以便您在另一个工程项目中实现此功能。 实现 INIT_TASK_EXPORT 替换方案的详细步骤方案概述这个方案是为了将原有的 INIT_TASK_EXPORT(…) 机制迁移到 lierda_app_main 统一任务创建流程中，通过一个注册表来管理初始化函数的执行顺序。 具体实现步骤步骤1：创建注册表数">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://example.com/temp/%E7%BB%9F%E4%B8%80%E5%88%9D%E5%A7%8B%E5%8C%96.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="我将为您详细解释如何实现 INIT_TASK_EXPORT 替换方案，并提供具体的操作步骤，以便您在另一个工程项目中实现此功能。 实现 INIT_TASK_EXPORT 替换方案的详细步骤方案概述这个方案是为了将原有的 INIT_TASK_EXPORT(…) 机制迁移到 lierda_app_main 统一任务创建流程中，通过一个注册表来管理初始化函数的执行顺序。 具体实现步骤步骤1：创建注册表数">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2026-07-26T05:16:00.259Z">
+<meta property="article:modified_time" content="2026-07-26T05:16:00.259Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="page-" class="h-entry article article-type-page" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/temp/%E7%BB%9F%E4%B8%80%E5%88%9D%E5%A7%8B%E5%8C%96.html" class="article-date">
+  <time class="dt-published" datetime="2026-07-26T05:16:00.259Z" itemprop="datePublished">2026-07-26</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>我将为您详细解释如何实现 <a href="file://d:\Works\csdk\Lierda\NT26-FCN\new\OpenCPU_SDK_General\SDK\PLAT\appsdk\inc\init.h#L49-L55">INIT_TASK_EXPORT</a> 替换方案，并提供具体的操作步骤，以便您在另一个工程项目中实现此功能。</p>
+<h1 id="实现-INIT-TASK-EXPORT-替换方案的详细步骤"><a href="#实现-INIT-TASK-EXPORT-替换方案的详细步骤" class="headerlink" title="实现 INIT_TASK_EXPORT 替换方案的详细步骤"></a>实现 INIT_TASK_EXPORT 替换方案的详细步骤</h1><h2 id="方案概述"><a href="#方案概述" class="headerlink" title="方案概述"></a>方案概述</h2><p>这个方案是为了将原有的 <a href="file://d:\Works\csdk\Lierda\NT26-FCN\new\OpenCPU_SDK_General\SDK\PLAT\appsdk\inc\init.h#L49-L55">INIT_TASK_EXPORT(…)</a> 机制迁移到 <code>lierda_app_main</code> 统一任务创建流程中，通过一个注册表来管理初始化函数的执行顺序。</p>
+<h2 id="具体实现步骤"><a href="#具体实现步骤" class="headerlink" title="具体实现步骤"></a>具体实现步骤</h2><h3 id="步骤1：创建注册表数据结构"><a href="#步骤1：创建注册表数据结构" class="headerlink" title="步骤1：创建注册表数据结构"></a>步骤1：创建注册表数据结构</h3><p>首先，我们需要创建一个注册表来存储初始化函数指针。</p>
+<p><strong>创建文件 <code>init_task_registry.h</code></strong>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifndef</span> INIT_TASK_REGISTRY_H</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> INIT_TASK_REGISTRY_H</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdint.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 定义初始化函数指针类型</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="title function_">void</span> <span class="params">(*init_func_ptr)</span><span class="params">(<span class="type">void</span>)</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 定义最大注册函数数量</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> MAX_INIT_FUNCTIONS 50</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 注册表结构定义</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    init_func_ptr func;</span><br><span class="line">    <span class="type">uint8_t</span> priority;     <span class="comment">// 优先级，数值越小优先级越高</span></span><br><span class="line">    <span class="type">const</span> <span class="type">char</span>* name;     <span class="comment">// 函数名称（可选，用于调试）</span></span><br><span class="line">&#125; <span class="type">init_task_entry_t</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 注册表声明</span></span><br><span class="line"><span class="keyword">extern</span> <span class="type">init_task_entry_t</span> init_task_registry[MAX_INIT_FUNCTIONS];</span><br><span class="line"><span class="keyword">extern</span> <span class="type">uint8_t</span> init_task_count;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 注册函数</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">register_init_task</span><span class="params">(init_func_ptr func, <span class="type">uint8_t</span> priority, <span class="type">const</span> <span class="type">char</span>* name)</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 执行所有注册的初始化任务</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">run_all_init_tasks</span><span class="params">(<span class="type">void</span>)</span>;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span> <span class="comment">// INIT_TASK_REGISTRY_H</span></span></span><br></pre></td></tr></table></figure>
+
+<h3 id="步骤2：实现注册表功能"><a href="#步骤2：实现注册表功能" class="headerlink" title="步骤2：实现注册表功能"></a>步骤2：实现注册表功能</h3><p><strong>创建文件 <code>init_task_registry.c</code></strong>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;init_task_registry.h&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 注册表定义</span></span><br><span class="line"><span class="type">init_task_entry_t</span> init_task_registry[MAX_INIT_FUNCTIONS];</span><br><span class="line"><span class="type">uint8_t</span> init_task_count = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 注册初始化任务</span></span><br><span class="line"><span class="comment"> * @param func 要注册的函数指针</span></span><br><span class="line"><span class="comment"> * @param priority 优先级（数值越小优先级越高）</span></span><br><span class="line"><span class="comment"> * @param name 函数名称（用于调试）</span></span><br><span class="line"><span class="comment"> * @return 成功返回0，失败返回-1</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">register_init_task</span><span class="params">(init_func_ptr func, <span class="type">uint8_t</span> priority, <span class="type">const</span> <span class="type">char</span>* name)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (init_task_count &gt;= MAX_INIT_FUNCTIONS || func == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>; <span class="comment">// 注册表已满或函数指针为空</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 添加到注册表</span></span><br><span class="line">    init_task_registry[init_task_count].func = func;</span><br><span class="line">    init_task_registry[init_task_count].priority = priority;</span><br><span class="line">    init_task_registry[init_task_count].name = name ? name : <span class="string">&quot;unnamed&quot;</span>;</span><br><span class="line">    </span><br><span class="line">    init_task_count++;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 对注册的任务按优先级排序（简单冒泡排序）</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="type">static</span> <span class="type">void</span> <span class="title function_">sort_init_tasks</span><span class="params">(<span class="type">void</span>)</span> &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; init_task_count - <span class="number">1</span>; i++) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> j = <span class="number">0</span>; j &lt; init_task_count - <span class="number">1</span> - i; j++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (init_task_registry[j].priority &gt; init_task_registry[j + <span class="number">1</span>].priority) &#123;</span><br><span class="line">                <span class="comment">// 交换位置</span></span><br><span class="line">                <span class="type">init_task_entry_t</span> temp = init_task_registry[j];</span><br><span class="line">                init_task_registry[j] = init_task_registry[j + <span class="number">1</span>];</span><br><span class="line">                init_task_registry[j + <span class="number">1</span>] = temp;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 执行所有注册的初始化任务</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">run_all_init_tasks</span><span class="params">(<span class="type">void</span>)</span> &#123;</span><br><span class="line">    <span class="comment">// 按优先级排序</span></span><br><span class="line">    sort_init_tasks();</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 依次执行所有注册的初始化任务</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; init_task_count; i++) &#123;</span><br><span class="line">        <span class="keyword">if</span> (init_task_registry[i].func != <span class="literal">NULL</span>) &#123;</span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> DEBUG_INIT_TASK</span></span><br><span class="line">            <span class="comment">// 如果需要调试，可以输出当前正在执行的初始化任务</span></span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;Running init task: %s (priority: %d)\n&quot;</span>, </span><br><span class="line">                   init_task_registry[i].name, init_task_registry[i].priority);</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line">            init_task_registry[i].func();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="步骤3：创建兼容层宏定义"><a href="#步骤3：创建兼容层宏定义" class="headerlink" title="步骤3：创建兼容层宏定义"></a>步骤3：创建兼容层宏定义</h3><p><strong>创建或修改 <code>init_task_compat.h</code> 文件</strong>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifndef</span> INIT_TASK_COMPAT_H</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> INIT_TASK_COMPAT_H</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;init_task_registry.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 定义兼容宏，将原来的 INIT_TASK_EXPORT 映射到新的注册机制</span></span><br><span class="line"><span class="comment">// 假设原来的优先级是字符串形式 &quot;0&quot;-&quot;5&quot;，这里将其转换为数字</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> INIT_TASK_EXPORT(func, priority_str) \</span></span><br><span class="line"><span class="meta">    static int __init_##func##_registered = __register_init_##func(); \</span></span><br><span class="line"><span class="meta">    static int __register_init_##func(void) &#123; \</span></span><br><span class="line"><span class="meta">        uint8_t priority = (priority_str)[0] - <span class="string">&#x27;0&#x27;</span>; <span class="comment">/* 将字符转换为数字 */</span> \</span></span><br><span class="line"><span class="meta">        register_init_task((init_func_ptr)(func), priority, #func); \</span></span><br><span class="line"><span class="meta">        return 0; \</span></span><br><span class="line"><span class="meta">    &#125;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 如果您的代码中使用的是其他形式的优先级，可以根据实际情况调整</span></span><br><span class="line"><span class="comment">// 例如，如果优先级已经是数字，则直接使用：</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> INIT_TASK_EXPORT_NUM(func, priority_num) \</span></span><br><span class="line"><span class="meta">    static int __init_##func##_registered = __register_init_##func(); \</span></span><br><span class="line"><span class="meta">    static int __register_init_##func(void) &#123; \</span></span><br><span class="line"><span class="meta">        register_init_task((init_func_ptr)(func), priority_num, #func); \</span></span><br><span class="line"><span class="meta">        return 0; \</span></span><br><span class="line"><span class="meta">    &#125;</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span> <span class="comment">// INIT_TASK_COMPAT_H</span></span></span><br></pre></td></tr></table></figure>
+
+<h3 id="步骤4：修改主程序入口"><a href="#步骤4：修改主程序入口" class="headerlink" title="步骤4：修改主程序入口"></a>步骤4：修改主程序入口</h3><p>找到您的 <a href="file:///d:/Works/csdk/Lierda/NT26-FCN/new/OpenCPU_SDK_General/SDK/PLAT/appsdk/liotapi/lierda_app_main.h#L27-L27">lierda_app_main</a> 函数，在适当的位置调用 <code>run_all_init_tasks()</code>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;init_task_registry.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span> &#123;</span><br><span class="line">    <span class="comment">// ... 其他初始化代码 ...</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 在所有模块初始化完成后，执行注册的初始化任务</span></span><br><span class="line">    run_all_init_tasks();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ... 后续代码 ...</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>或者，如果您想在特定分支中调用：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;init_task_registry.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">void</span> <span class="title function_">lierda_app_main</span><span class="params">(<span class="type">void</span>)</span> &#123;</span><br><span class="line">    <span class="comment">// ... 其他初始化代码 ...</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">ifdef</span> AIROCOV_DEMO_ENABLED  <span class="comment">// 或者其他适当的条件编译标志</span></span></span><br><span class="line">    <span class="comment">// 执行所有注册的 airocov 初始化任务</span></span><br><span class="line">    airocov_run_all_init_tasks();  <span class="comment">// 这个函数可以是 run_all_init_tasks 的别名</span></span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// ... 后续代码 ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="步骤5：创建-airocov-run-all-init-tasks-函数"><a href="#步骤5：创建-airocov-run-all-init-tasks-函数" class="headerlink" title="步骤5：创建 airocov_run_all_init_tasks 函数"></a>步骤5：创建 airocov_run_all_init_tasks 函数</h3><p>为了保持与文档描述的一致性，可以创建一个专用函数：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 在 init_task_registry.c 中添加以下函数</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">airocov_run_all_init_tasks</span><span class="params">(<span class="type">void</span>)</span> &#123;</span><br><span class="line">    run_all_init_tasks();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="步骤6：更新现有代码"><a href="#步骤6：更新现有代码" class="headerlink" title="步骤6：更新现有代码"></a>步骤6：更新现有代码</h3><p>对于现有的使用 <a href="file://d:\Works\csdk\Lierda\NT26-FCN\new\OpenCPU_SDK_General\SDK\PLAT\appsdk\inc\init.h#L49-L55">INIT_TASK_EXPORT</a> 的代码，您有两种选择：</p>
+<h4 id="选择A：直接包含兼容头文件"><a href="#选择A：直接包含兼容头文件" class="headerlink" title="选择A：直接包含兼容头文件"></a>选择A：直接包含兼容头文件</h4><p>如果您的代码文件中有很多 <a href="file://d:\Works\csdk\Lierda\NT26-FCN\new\OpenCPU_SDK_General\SDK\PLAT\appsdk\inc\init.h#L49-L55">INIT_TASK_EXPORT</a> 调用，只需在每个文件顶部包含兼容头文件：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;init_task_compat.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 保持原有的 INIT_TASK_EXPORT 调用不变</span></span><br><span class="line">INIT_TASK_EXPORT(my_init_function, <span class="string">&quot;1&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<h4 id="选择B：批量替换（可选）"><a href="#选择B：批量替换（可选）" class="headerlink" title="选择B：批量替换（可选）"></a>选择B：批量替换（可选）</h4><p>如果您想完全替换所有 <a href="file://d:\Works\csdk\Lierda\NT26-FCN\new\OpenCPU_SDK_General\SDK\PLAT\appsdk\inc\init.h#L49-L55">INIT_TASK_EXPORT</a> 调用，可以使用查找替换功能：</p>
+<ul>
+<li>将 <a href="file://d:\Works\csdk\Lierda\NT26-FCN\new\OpenCPU_SDK_General\SDK\PLAT\appsdk\inc\init.h#L49-L55">INIT_TASK_EXPORT(func, “priority”)</a> 替换为 <code>register_init_task((init_func_ptr)func, priority, #func);</code></li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>通过以上步骤，您可以：</p>
+<ol>
+<li>创建一个注册表来收集所有的初始化函数</li>
+<li>通过兼容层将原有的 <a href="file://d:\Works\csdk\Lierda\NT26-FCN\new\OpenCPU_SDK_General\SDK\PLAT\appsdk\inc\init.h#L49-L55">INIT_TASK_EXPORT</a> 映射到新机制</li>
+<li>在主程序中统一按优先级顺序执行所有初始化任务</li>
+<li>保持原有代码风格的同时实现统一控制</li>
+</ol>
+<p>这种方法的优点是：</p>
+<ul>
+<li>保留了原有的 luat 风格源码（通过兼容层）</li>
+<li>在 Lierda 上按受控顺序启动初始化任务</li>
+<li>便于调试和维护</li>
+<li>可扩展性强</li>
+</ul>
+<p>请根据您的具体项目结构调整路径和文件名。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/temp/%E7%BB%9F%E4%B8%80%E5%88%9D%E5%A7%8B%E5%8C%96.html" data-id="cuidAc2nbtoZ5s_N-xjhepkeo" data-title="" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E5%85%A8%E5%BF%97T113S3/">全志T113S3</a></li></ul></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C%E8%AF%AD%E8%A8%80%E5%AE%8F/" rel="tag">C语言宏</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Debug%E6%97%A5%E5%BF%97/" rel="tag">Debug日志</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Makefile/" rel="tag">Makefile</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96/" rel="tag">内存优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="tag">博客环境搭建</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" rel="tag">学习记录</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" rel="tag">嵌入式学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" rel="tag">工具使用</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B8%B8%E8%A7%81%E5%8D%8F%E8%AE%AE%E7%AE%80%E4%BB%8B/" rel="tag">常见协议简介</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" rel="tag">数据传输</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" rel="tag">数据存储</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/" rel="tag">结构体</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%A9%B1%E5%8A%A8%E5%B1%8F/" rel="tag">驱动屏</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/C%E8%AF%AD%E8%A8%80%E5%AE%8F/" style="font-size: 10px;">C语言宏</a> <a href="/tags/Debug%E6%97%A5%E5%BF%97/" style="font-size: 10px;">Debug日志</a> <a href="/tags/Linux/" style="font-size: 18px;">Linux</a> <a href="/tags/Makefile/" style="font-size: 10px;">Makefile</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96/" style="font-size: 10px;">内存优化</a> <a href="/tags/%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" style="font-size: 10px;">博客环境搭建</a> <a href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" style="font-size: 10px;">学习记录</a> <a href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" style="font-size: 20px;">嵌入式学习</a> <a href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" style="font-size: 14px;">工具使用</a> <a href="/tags/%E5%B8%B8%E8%A7%81%E5%8D%8F%E8%AE%AE%E7%AE%80%E4%BB%8B/" style="font-size: 10px;">常见协议简介</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" style="font-size: 12px;">数据传输</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" style="font-size: 16px;">数据存储</a> <a href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/" style="font-size: 10px;">结构体</a> <a href="/tags/%E9%A9%B1%E5%8A%A8%E5%B1%8F/" style="font-size: 14px;">驱动屏</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/07/">July 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/05/">May 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/04/">April 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/02/">February 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/01/">January 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/02/">February 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">January 2023</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2026/07/26/%E7%BC%96%E8%AF%91%E9%93%BE%E6%8E%A5/MakeFile/Makefile.inc/">Makefile</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/26/%E8%BE%BE%E5%8F%91%E9%9D%A2%E8%AF%95%E5%87%86%E5%A4%87/%E4%B8%80%E9%9D%A2/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2026/05/28/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/Modbus%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">Modbus协议学习笔记</a>
+          </li>
+        
+          <li>
+            <a href="/2026/04/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/FreeRTOS%E5%B7%A5%E7%A8%8B%E5%8C%96%E8%A6%81%E7%82%B9/">FreeRTOS工程化要点：任务划分、优先级设计与CPU占用率监控</a>
+          </li>
+        
+          <li>
+            <a href="/2026/04/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E8%87%AA%E5%8A%A8%E5%88%9D%E5%A7%8B%E5%8C%96%E6%A1%86%E6%9E%B6/">自动初始化框架</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

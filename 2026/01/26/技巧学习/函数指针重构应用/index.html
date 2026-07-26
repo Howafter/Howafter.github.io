@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>函数指针重构应用 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="函数指针重构应用在嵌入式软件开发中，从简单的回调函数到复杂的状态机，从启动代码到驱动框架，函数指针几乎无处不在。 回调函数表背景在嵌入式开发中，经常需要处理不同的命令、事件或消息。传统的做法是使用switch-case语句： 12345678910111213141516171819202122232425262728&#x2F;&#x2F; 传统方式：冗长的switch-casetypedefenum &#123;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="函数指针重构应用">
+<meta property="og:url" content="http://example.com/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%87%BD%E6%95%B0%E6%8C%87%E9%92%88%E9%87%8D%E6%9E%84%E5%BA%94%E7%94%A8/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="函数指针重构应用在嵌入式软件开发中，从简单的回调函数到复杂的状态机，从启动代码到驱动框架，函数指针几乎无处不在。 回调函数表背景在嵌入式开发中，经常需要处理不同的命令、事件或消息。传统的做法是使用switch-case语句： 12345678910111213141516171819202122232425262728&#x2F;&#x2F; 传统方式：冗长的switch-casetypedefenum &#123;">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2026-01-26T02:00:00.000Z">
+<meta property="article:modified_time" content="2026-01-26T02:00:00.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="嵌入式学习">
+<meta property="article:tag" content="数据存储">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-技巧学习/函数指针重构应用" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%87%BD%E6%95%B0%E6%8C%87%E9%92%88%E9%87%8D%E6%9E%84%E5%BA%94%E7%94%A8/" class="article-date">
+  <time class="dt-published" datetime="2026-01-26T02:00:00.000Z" itemprop="datePublished">2026-01-26</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      函数指针重构应用
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="函数指针重构应用"><a href="#函数指针重构应用" class="headerlink" title="函数指针重构应用"></a><strong>函数指针重构应用</strong></h1><p>在嵌入式软件开发中，从简单的回调函数到复杂的状态机，从启动代码到驱动框架，函数指针几乎无处不在。</p>
+<h2 id="回调函数表"><a href="#回调函数表" class="headerlink" title="回调函数表"></a>回调函数表</h2><h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>在嵌入式开发中，经常需要处理不同的命令、事件或消息。传统的做法是使用switch-case语句：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">// 传统方式：冗长的switch-case</span><br><span class="line">typedefenum &#123;</span><br><span class="line">    CMD_START = 0,</span><br><span class="line">    CMD_STOP,</span><br><span class="line">    CMD_RESET,</span><br><span class="line">    CMD_STATUS,</span><br><span class="line">    CMD_MAX</span><br><span class="line">&#125; CommandType;</span><br><span class="line"></span><br><span class="line">voidprocess_command(CommandType cmd) &#123;</span><br><span class="line">    switch (cmd) &#123;</span><br><span class="line">        case CMD_START:</span><br><span class="line">            handle_start();</span><br><span class="line">            break;</span><br><span class="line">        case CMD_STOP:</span><br><span class="line">            handle_stop();</span><br><span class="line">            break;</span><br><span class="line">        case CMD_RESET:</span><br><span class="line">            handle_reset();</span><br><span class="line">            break;</span><br><span class="line">        case CMD_STATUS:</span><br><span class="line">            handle_status();</span><br><span class="line">            break;</span><br><span class="line">        default:</span><br><span class="line">            handle_unknown();</span><br><span class="line">            break;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这种方式存在问题：</p>
+<ul>
+<li>新增命令需要修改switch-case结构</li>
+<li>代码冗长，可读性差</li>
+<li>难以动态扩展</li>
+<li>不符合<strong>开闭原则</strong>（OCP）</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">注：</span><br><span class="line">开闭原则（OCP）是面向对象设计的核心原则之一，指软件实体应当对扩展开放，对修改关闭 。其核心思想是在不修改原有代码的前提下，通过扩展新功能来应对需求变化。</span><br><span class="line">例如支付系统新增支付方式时，只需增加新类而无需改动核心逻辑。该原则能避免代码频繁修改带来的风险，提升系统维护性。</span><br></pre></td></tr></table></figure>
+
+<h3 id="解决策略"><a href="#解决策略" class="headerlink" title="解决策略"></a>解决策略</h3><p>回调函数表的核心思想是：<strong>将函数指针存储在数组中，通过索引直接调用对应的函数</strong> 。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">// 第一步：定义函数指针类型</span><br><span class="line">typedefvoid(*CommandHandler)(void);</span><br><span class="line"></span><br><span class="line">// 第二步：定义处理函数</span><br><span class="line">voidhandle_start(void) &#123;</span><br><span class="line">    printf(&quot;执行启动命令\n&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">voidhandle_stop(void) &#123;</span><br><span class="line">    printf(&quot;执行停止命令\n&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">voidhandle_reset(void) &#123;</span><br><span class="line">    printf(&quot;执行复位命令\n&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">voidhandle_status(void) &#123;</span><br><span class="line">    printf(&quot;执行状态查询\n&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">voidhandle_unknown(void) &#123;</span><br><span class="line">    printf(&quot;未知命令\n&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 第三步：构建回调表</span><br><span class="line">static CommandHandler cmd_table[] = &#123;</span><br><span class="line">    [CMD_START]  = handle_start,</span><br><span class="line">    [CMD_STOP]   = handle_stop,</span><br><span class="line">    [CMD_RESET]  = handle_reset,</span><br><span class="line">    [CMD_STATUS] = handle_status</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">// 第四步：使用回调表</span><br><span class="line">voidprocess_command(CommandType cmd) &#123;</span><br><span class="line">    if (cmd &lt; CMD_MAX &amp;&amp; cmd_table[cmd] != NULL) &#123;</span><br><span class="line">        cmd_table[cmd]();</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        handle_unknown();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<p>解释一下 <code>cmd_table[cmd]()</code> 这个表达式，这是 C 语言中使用函数指针数组的常见方式。</p>
+<p>首先，让我们理解 <code>cmd_table</code> 是什么：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="title function_">void</span><span class="params">(*CommandHandler)</span><span class="params">(<span class="type">void</span>)</span>;  <span class="comment">// 定义函数指针类型</span></span><br><span class="line"><span class="type">static</span> CommandHandler cmd_table[] = &#123;</span><br><span class="line">    [CMD_START]  = handle_start,</span><br><span class="line">    [CMD_STOP]   = handle_stop,</span><br><span class="line">    [CMD_RESET]  = handle_reset,</span><br><span class="line">    [CMD_STATUS] = handle_status</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p><code>cmd_table</code> 是一个函数指针数组，每个元素都是一个 <code>CommandHandler</code> 类型的指针，即指向 <code>void(void)</code> 函数的指针。</p>
+<p>在 C 语言中，函数指针的调用方式与普通函数调用非常相似。当你有函数指针 <code>func_ptr</code> 时，调用它的方式是 <code>func_ptr()</code>。</p>
+<p>所以，<code>cmd_table[cmd]</code> 是从数组中取出的函数指针，而 <code>cmd_table[cmd]()</code> 就是调用这个指针指向的函数。</p>
+<p>让我用一个简单的例子来说明：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">greet</span><span class="params">()</span> &#123; <span class="built_in">printf</span>(<span class="string">&quot;Hello&quot;</span>); &#125;</span><br><span class="line"><span class="type">void</span> <span class="title function_">bye</span><span class="params">()</span> &#123; <span class="built_in">printf</span>(<span class="string">&quot;Goodbye&quot;</span>); &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="title function_">void</span><span class="params">(*FuncPtr)</span><span class="params">()</span>;</span><br><span class="line">FuncPtr func_array[<span class="number">2</span>] = &#123; greet, bye &#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 调用 func_array[0] 指向的函数</span></span><br><span class="line">func_array[<span class="number">0</span>]();  <span class="comment">// 输出 &quot;Hello&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>在上面的例子中，<code>func_array[0]</code> 是一个指向 <code>greet</code> 函数的指针，<code>func_array[0]()</code> 就是调用 <code>greet</code> 函数。</p>
+<p>回到你的代码：</p>
+<ul>
+<li><code>cmd_table[cmd]</code> 是一个函数指针</li>
+<li><code>cmd_table[cmd]()</code> 是调用这个函数指针指向的函数</li>
+</ul>
+<p>C 语言允许省略函数指针的解引用操作符 <code>*</code>，所以 <code>cmd_table[cmd]()</code> 等同于 <code>(*cmd_table[cmd])()</code>，但前者更简洁，是 C 语言的惯用写法。</p>
+<p>在你的代码中，<code>process_command</code> 函数会根据传入的命令类型 <code>cmd</code>，从 <code>cmd_table</code> 中找到对应的函数指针，然后调用它。如果 <code>cmd</code> 无效，就调用 <code>handle_unknown()</code>。</p>
+<p>例如：</p>
+<ul>
+<li>如果 <code>cmd = CMD_START</code>，则 <code>cmd_table[CMD_START]</code> 是 <code>handle_start</code> 函数的指针，<code>cmd_table[CMD_START]()</code> 就是调用 <code>handle_start()</code>。</li>
+<li>如果 <code>cmd = CMD_STATUS</code>，则 <code>cmd_table[CMD_STATUS]()</code> 就是调用 <code>handle_status()</code>。</li>
+</ul>
+<p>这是一种常见的回调机制实现方式，用于实现命令处理表。</p>
+<hr>
+<h3 id="带参数的回调表"><a href="#带参数的回调表" class="headerlink" title="带参数的回调表"></a>带参数的回调表</h3><p>对于项目中处理函数需要接收参数的，可以通过以下方式实现：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">// 定义带参数的函数指针类型</span><br><span class="line">typedefvoid(*CommandHandlerEx)(uint32_t param, void* user_data);</span><br><span class="line"></span><br><span class="line">// 处理函数带参数</span><br><span class="line">voidhandle_start(uint32_t param, void* user_data) &#123;</span><br><span class="line">    printf(&quot;启动命令，参数：%lu\n&quot;, param);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">voidhandle_stop(uint32_t param, void* user_data) &#123;</span><br><span class="line">    printf(&quot;停止命令，参数：%lu\n&quot;, param);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 回调表</span><br><span class="line">static CommandHandlerEx cmd_table_ex[] = &#123;</span><br><span class="line">    [CMD_START]  = handle_start,</span><br><span class="line">    [CMD_STOP]   = handle_stop,</span><br><span class="line">    // ...</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">// 调用时传递参数</span><br><span class="line">voidprocess_command_ex(CommandType cmd, uint32_t param, void* user_data) &#123;</span><br><span class="line">    if (cmd &lt; CMD_MAX &amp;&amp; cmd_table_ex[cmd] != NULL) &#123;</span><br><span class="line">        cmd_table_ex[cmd](param, user_data);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="应用示例：串口命令解析器"><a href="#应用示例：串口命令解析器" class="headerlink" title="应用示例：串口命令解析器"></a>应用示例：串口命令解析器</h3><p>实现串口命令解析器：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">// command_parser.h</span><br><span class="line">#ifndef COMMAND_PARSER_H</span><br><span class="line">#define COMMAND_PARSER_H</span><br><span class="line"></span><br><span class="line">#include &lt;stdint.h&gt;</span><br><span class="line">#include &lt;stddef.h&gt;</span><br><span class="line"></span><br><span class="line">typedefenum &#123;</span><br><span class="line">    CMD_START = 0,</span><br><span class="line">    CMD_STOP,</span><br><span class="line">    CMD_RESET,</span><br><span class="line">    CMD_SET,</span><br><span class="line">    CMD_GET,</span><br><span class="line">    CMD_HELP,</span><br><span class="line">    CMD_MAX</span><br><span class="line">&#125; CommandType;</span><br><span class="line"></span><br><span class="line">typedefvoid(*CommandHandler)(int argc, char* argv[]);</span><br><span class="line"></span><br><span class="line">typedefstruct &#123;</span><br><span class="line">    constchar* name;</span><br><span class="line">    constchar* desc;</span><br><span class="line">    constchar* usage;</span><br><span class="line">    CommandHandler handler;</span><br><span class="line">&#125; CommandInfo;</span><br><span class="line"></span><br><span class="line">voidcommand_parser_init(void);</span><br><span class="line">intcommand_parser_exec(const char* cmd_line);</span><br><span class="line">voidcommand_parser_print_help(void);</span><br><span class="line"></span><br><span class="line">#endif // COMMAND_PARSER_H</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br></pre></td><td class="code"><pre><span class="line">// command_parser.c</span><br><span class="line">#include &quot;command_parser.h&quot;</span><br><span class="line">#include &lt;string.h&gt;</span><br><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">#include &lt;stdlib.h&gt;</span><br><span class="line"></span><br><span class="line">staticvoidcmd_start_handler(int argc, char* argv[]) &#123;</span><br><span class="line">    printf(&quot;设备启动中...\n&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">staticvoidcmd_stop_handler(int argc, char* argv[]) &#123;</span><br><span class="line">    printf(&quot;设备停止中...\n&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">staticvoidcmd_reset_handler(int argc, char* argv[]) &#123;</span><br><span class="line">    printf(&quot;设备复位中...\n&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">staticvoidcmd_set_handler(int argc, char* argv[]) &#123;</span><br><span class="line">    if (argc &lt; 3) &#123;</span><br><span class="line">        printf(&quot;用法: set &lt;参数名&gt; &lt;值&gt;\n&quot;);</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    printf(&quot;设置 %s = %s\n&quot;, argv[1], argv[2]);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">staticvoidcmd_get_handler(int argc, char* argv[]) &#123;</span><br><span class="line">    if (argc &lt; 2) &#123;</span><br><span class="line">        printf(&quot;用法: get &lt;参数名&gt;\n&quot;);</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    printf(&quot;获取 %s 的值\n&quot;, argv[1]);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">staticvoidcmd_help_handler(int argc, char* argv[]) &#123;</span><br><span class="line">    command_parser_print_help();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">staticconst CommandInfo cmd_table[] = &#123;</span><br><span class="line">    [CMD_START] = &#123;</span><br><span class="line">        .name = &quot;start&quot;,</span><br><span class="line">        .desc = &quot;启动设备&quot;,</span><br><span class="line">        .usage = &quot;start&quot;,</span><br><span class="line">        .handler = cmd_start_handler</span><br><span class="line">    &#125;,</span><br><span class="line">    [CMD_STOP] = &#123;</span><br><span class="line">        .name = &quot;stop&quot;,</span><br><span class="line">        .desc = &quot;停止设备&quot;,</span><br><span class="line">        .usage = &quot;stop&quot;,</span><br><span class="line">        .handler = cmd_stop_handler</span><br><span class="line">    &#125;,</span><br><span class="line">    [CMD_RESET] = &#123;</span><br><span class="line">        .name = &quot;reset&quot;,</span><br><span class="line">        .desc = &quot;复位设备&quot;,</span><br><span class="line">        .usage = &quot;reset&quot;,</span><br><span class="line">        .handler = cmd_reset_handler</span><br><span class="line">    &#125;,</span><br><span class="line">    [CMD_SET] = &#123;</span><br><span class="line">        .name = &quot;set&quot;,</span><br><span class="line">        .desc = &quot;设置参数&quot;,</span><br><span class="line">        .usage = &quot;set &lt;参数名&gt; &lt;值&gt;&quot;,</span><br><span class="line">        .handler = cmd_set_handler</span><br><span class="line">    &#125;,</span><br><span class="line">    [CMD_GET] = &#123;</span><br><span class="line">        .name = &quot;get&quot;,</span><br><span class="line">        .desc = &quot;获取参数&quot;,</span><br><span class="line">        .usage = &quot;get &lt;参数名&gt;&quot;,</span><br><span class="line">        .handler = cmd_get_handler</span><br><span class="line">    &#125;,</span><br><span class="line">    [CMD_HELP] = &#123;</span><br><span class="line">        .name = &quot;help&quot;,</span><br><span class="line">        .desc = &quot;显示帮助&quot;,</span><br><span class="line">        .usage = &quot;help&quot;,</span><br><span class="line">        .handler = cmd_help_handler</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">voidcommand_parser_init(void) &#123;</span><br><span class="line">    printf(&quot;命令解析器初始化完成\n&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">staticintsplit_command(char* cmd_line, char* argv[], int max_args) &#123;</span><br><span class="line">    int argc = 0;</span><br><span class="line">    char* token = strtok(cmd_line, &quot; \t\n&quot;);</span><br><span class="line">    </span><br><span class="line">    while (token != NULL &amp;&amp; argc &lt; max_args) &#123;</span><br><span class="line">        argv[argc++] = token;</span><br><span class="line">        token = strtok(NULL, &quot; \t\n&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    return argc;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">intcommand_parser_exec(const char* cmd_line) &#123;</span><br><span class="line">    if (cmd_line == NULL || strlen(cmd_line) == 0) &#123;</span><br><span class="line">        return-1;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    char buffer[256];</span><br><span class="line">    strncpy(buffer, cmd_line, sizeof(buffer) - 1);</span><br><span class="line">    buffer[sizeof(buffer) - 1] = &#x27;\0&#x27;;</span><br><span class="line">    </span><br><span class="line">    char* argv[10];</span><br><span class="line">    int argc = split_command(buffer, argv, 10);</span><br><span class="line">    </span><br><span class="line">    if (argc == 0) &#123;</span><br><span class="line">        return-1;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    for (int i = 0; i &lt; CMD_MAX; i++) &#123;</span><br><span class="line">        if (cmd_table[i].handler != NULL &amp;&amp; </span><br><span class="line">            strcmp(cmd_table[i].name, argv[0]) == 0) &#123;</span><br><span class="line">            cmd_table[i].handler(argc, argv);</span><br><span class="line">            return0;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    printf(&quot;未知命令: %s\n&quot;, argv[0]);</span><br><span class="line">    printf(&quot;输入 &#x27;help&#x27; 查看可用命令\n&quot;);</span><br><span class="line">    return-1;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">voidcommand_parser_print_help(void) &#123;</span><br><span class="line">    printf(&quot;\n可用命令:\n&quot;);</span><br><span class="line">    printf(&quot;------------------------\n&quot;);</span><br><span class="line">    for (int i = 0; i &lt; CMD_MAX; i++) &#123;</span><br><span class="line">        if (cmd_table[i].handler != NULL) &#123;</span><br><span class="line">            printf(&quot;  %-10s %s\n&quot;, cmd_table[i].name, cmd_table[i].desc);</span><br><span class="line">            printf(&quot;    用法: %s\n\n&quot;, cmd_table[i].usage);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<pre data-processed="true"><svg aria-roledescription="flowchart-v2" role="graphics-document document" viewBox="0 0 400.477294921875 715.875" xmlns="http://www.w3.org/2000/svg" width="100%" aria-label="插图"><g><marker orient="auto" markerHeight="8" markerWidth="8" markerUnits="userSpaceOnUse" refY="5" refX="5" viewBox="0 0 10 10"><path d="M 0 0 L 10 5 L 0 10 z"></path></marker><marker orient="auto" markerHeight="8" markerWidth="8" markerUnits="userSpaceOnUse" refY="5" refX="4.5" viewBox="0 0 10 10"><path d="M 0 5 L 10 10 L 10 0 z"></path></marker><marker orient="auto" markerHeight="11" markerWidth="11" markerUnits="userSpaceOnUse" refY="5" refX="11" viewBox="0 0 10 10"><circle r="5" cy="5" cx="5"></circle></marker><marker orient="auto" markerHeight="11" markerWidth="11" markerUnits="userSpaceOnUse" refY="5" refX="-1" viewBox="0 0 10 10"><circle r="5" cy="5" cx="5"></circle></marker><marker orient="auto" markerHeight="11" markerWidth="11" markerUnits="userSpaceOnUse" refY="5.2" refX="12" viewBox="0 0 11 11"><path d="M 1,1 l 9,9 M 10,1 l -9,9"></path></marker><marker orient="auto" markerHeight="11" markerWidth="11" markerUnits="userSpaceOnUse" refY="5.2" refX="-1" viewBox="0 0 11 11"><path d="M 1,1 l 9,9 M 10,1 l -9,9"></path></marker><g><g></g><g><path marker-end="url(#mermaid-1773662593043_flowchart-v2-pointEnd)" d="M205.858,62L205.858,66.167C205.858,70.333,205.858,78.667,205.858,86.333C205.858,94,205.858,101,205.858,104.5L205.858,108"></path><path marker-end="url(#mermaid-1773662593043_flowchart-v2-pointEnd)" d="M205.858,166L205.858,170.167C205.858,174.333,205.858,182.667,205.858,190.333C205.858,198,205.858,205,205.858,208.5L205.858,212"></path><path marker-end="url(#mermaid-1773662593043_flowchart-v2-pointEnd)" d="M205.858,270L205.858,274.167C205.858,278.333,205.858,286.667,205.928,294.417C205.998,302.167,206.139,309.334,206.209,312.917L206.28,316.501"></path><path marker-end="url(#mermaid-1773662593043_flowchart-v2-pointEnd)" d="M168.491,438.508L156.615,450.902C144.74,463.297,120.989,488.086,109.114,505.98C97.239,523.875,97.239,534.875,97.239,540.375L97.239,545.875"></path><path marker-end="url(#mermaid-1773662593043_flowchart-v2-pointEnd)" d="M244.225,438.508L255.934,450.902C267.643,463.297,291.06,488.086,302.769,505.98C314.477,523.875,314.477,534.875,314.477,540.375L314.477,545.875"></path><path marker-end="url(#mermaid-1773662593043_flowchart-v2-pointEnd)" d="M97.239,603.875L97.239,608.042C97.239,612.208,97.239,620.542,105.341,628.587C113.443,636.633,129.647,644.39,137.749,648.269L145.852,652.148"></path><path marker-end="url(#mermaid-1773662593043_flowchart-v2-pointEnd)" d="M314.477,603.875L314.477,608.042C314.477,612.208,314.477,620.542,306.375,628.587C298.273,636.633,282.069,644.39,273.966,648.269L265.864,652.148"></path></g><g><g><g transform="translate(0, 0)"><foreignObject height="0" width="0"><p><span></span></p></foreignObject></g></g><g><g transform="translate(0, 0)"><foreignObject height="0" width="0"><p><span></span></p></foreignObject></g></g><g><g transform="translate(0, 0)"><foreignObject height="0" width="0"><p><span></span></p></foreignObject></g></g><g transform="translate(97.23863983154297, 512.875)"><g transform="translate(-8, -12)"><foreignObject height="24" width="16"><p><span></span></p><p><span leaf="">是</span></p><p><span leaf=""></span></p></foreignObject></g></g><g transform="translate(314.47727966308594, 512.875)"><g transform="translate(-8, -12)"><foreignObject height="24" width="16"><p><span></span></p><p><span leaf="">否</span></p><p><span leaf=""></span></p></foreignObject></g></g><g><g transform="translate(0, 0)"><foreignObject height="0" width="0"><p><span></span></p></foreignObject></g></g><g><g transform="translate(0, 0)"><foreignObject height="0" width="0"><p><span></span></p></foreignObject></g></g></g><g><g transform="translate(205.85795974731445, 35)"><rect height="54" width="140" y="-27" x="-70"></rect><g transform="translate(-40, -12)"><rect></rect><foreignObject height="24" width="80"><section xmlns="http://www.w3.org/1999/xhtml"><span><span leaf="">接收命令行</span></span></section></foreignObject></g></g><g transform="translate(205.85795974731445, 139)"><rect height="54" width="124" y="-27" x="-62"></rect><g transform="translate(-32, -12)"><rect></rect><foreignObject height="24" width="64"><section xmlns="http://www.w3.org/1999/xhtml"><span><span leaf="">分割参数</span></span></section></foreignObject></g></g><g transform="translate(205.85795974731445, 243)"><rect height="54" width="140" y="-27" x="-70"></rect><g transform="translate(-40, -12)"><rect></rect><foreignObject height="24" width="80"><section xmlns="http://www.w3.org/1999/xhtml"><span><span leaf="">遍历回调表</span></span></section></foreignObject></g></g><g transform="translate(205.85795974731445, 397.9375)"><polygon transform="translate(-77.9375,77.9375)" points="77.9375,0 155.875,-77.9375 77.9375,-155.875 0,-77.9375"></polygon><g transform="translate(-50.9375, -12)"><rect></rect><foreignObject height="24" width="101.875"><section xmlns="http://www.w3.org/1999/xhtml"><span><span leaf="">找到匹配命令?</span></span></section></foreignObject></g></g><g transform="translate(97.23863983154297, 576.875)"><rect height="54" width="178.47727966308594" y="-27" x="-89.23863983154297"></rect><g transform="translate(-59.23863983154297, -12)"><rect></rect><foreignObject height="24" width="118.47727966308594"><section xmlns="http://www.w3.org/1999/xhtml"><span><span leaf="">调用对应handler</span></span></section></foreignObject></g></g><g transform="translate(314.47727966308594, 576.875)"><rect height="54" width="156" y="-27" x="-78"></rect><g transform="translate(-48, -12)"><rect></rect><foreignObject height="24" width="96"><section xmlns="http://www.w3.org/1999/xhtml"><span><span leaf="">提示未知命令</span></span></section></foreignObject></g></g><g transform="translate(205.85795974731445, 680.875)"><rect height="54" width="124" y="-27" x="-62"></rect><g transform="translate(-32, -12)"><rect></rect><foreignObject height="24" width="64"><section xmlns="http://www.w3.org/1999/xhtml"><span><span leaf="">执行完成</span></span></section></foreignObject></g></g></g></g></g></svg></pre>
+
+<h2 id="状态机跳转"><a href="#状态机跳转" class="headerlink" title="状态机跳转"></a>状态机跳转</h2><h3 id="状态机"><a href="#状态机" class="headerlink" title="状态机"></a>状态机</h3><p>状态机用于处理具有多个状态和状态转换的系统。传统的状态机实现通常使用switch-case语句：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">// 传统状态机实现</span><br><span class="line">typedefenum &#123;</span><br><span class="line">    STATE_IDLE = 0,</span><br><span class="line">    STATE_CONNECTING,</span><br><span class="line">    STATE_CONNECTED,</span><br><span class="line">    STATE_ERROR,</span><br><span class="line">    STATE_MAX</span><br><span class="line">&#125; StateType;</span><br><span class="line"></span><br><span class="line">typedefenum &#123;</span><br><span class="line">    EVENT_CONNECT = 0,</span><br><span class="line">    EVENT_CONNECTED,</span><br><span class="line">    EVENT_DISCONNECT,</span><br><span class="line">    EVENT_ERROR,</span><br><span class="line">    EVENT_MAX</span><br><span class="line">&#125; EventType;</span><br><span class="line"></span><br><span class="line">static StateType current_state = STATE_IDLE;</span><br><span class="line"></span><br><span class="line">voidstate_machine_run(EventType event) &#123;</span><br><span class="line">    switch (current_state) &#123;</span><br><span class="line">        case STATE_IDLE:</span><br><span class="line">            switch (event) &#123;</span><br><span class="line">                case EVENT_CONNECT:</span><br><span class="line">                    printf(&quot;从IDLE切换到CONNECTING\n&quot;);</span><br><span class="line">                    current_state = STATE_CONNECTING;</span><br><span class="line">                    break;</span><br><span class="line">                default:</span><br><span class="line">                    break;</span><br><span class="line">            &#125;</span><br><span class="line">            break;</span><br><span class="line">            </span><br><span class="line">        case STATE_CONNECTING:</span><br><span class="line">            switch (event) &#123;</span><br><span class="line">                case EVENT_CONNECTED:</span><br><span class="line">                    printf(&quot;从CONNECTING切换到CONNECTED\n&quot;);</span><br><span class="line">                    current_state = STATE_CONNECTED;</span><br><span class="line">                    break;</span><br><span class="line">                case EVENT_ERROR:</span><br><span class="line">                    printf(&quot;从CONNECTING切换到ERROR\n&quot;);</span><br><span class="line">                    current_state = STATE_ERROR;</span><br><span class="line">                    break;</span><br><span class="line">                default:</span><br><span class="line">                    break;</span><br><span class="line">            &#125;</span><br><span class="line">            break;</span><br><span class="line">            </span><br><span class="line">        // 更多状态...</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这种方式存在的问题：</p>
+<ul>
+<li>• 嵌套的switch-case导致代码难以阅读</li>
+<li>• 新增状态需要修改多处代码</li>
+<li>• 状态转换逻辑分散，难以维护</li>
+</ul>
+<h3 id="函数指针状态机"><a href="#函数指针状态机" class="headerlink" title="函数指针状态机"></a>函数指针状态机</h3><p>用函数指针来重构状态机：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br></pre></td><td class="code"><pre><span class="line">// 第一步：定义状态函数类型</span><br><span class="line">typedefvoid(*StateFunc)(EventType event);</span><br><span class="line"></span><br><span class="line">// 第二步：定义状态处理函数</span><br><span class="line">staticvoidstate_idle(EventType event);</span><br><span class="line">staticvoidstate_connecting(EventType event);</span><br><span class="line">staticvoidstate_connected(EventType event);</span><br><span class="line">staticvoidstate_error(EventType event);</span><br><span class="line"></span><br><span class="line">// 第三步：定义状态转换表</span><br><span class="line">typedefstruct &#123;</span><br><span class="line">    StateFunc current_state;</span><br><span class="line">    EventType event;</span><br><span class="line">    StateFunc next_state;</span><br><span class="line">    void (*action)(void);</span><br><span class="line">&#125; StateTransition;</span><br><span class="line"></span><br><span class="line">// 状态表</span><br><span class="line">static StateTransition transition_table[] = &#123;</span><br><span class="line">    &#123;state_idle,      EVENT_CONNECT,    state_connecting, action_connect_start&#125;,</span><br><span class="line">    &#123;state_connecting, EVENT_CONNECTED,  state_connected,  action_connect_success&#125;,</span><br><span class="line">    &#123;state_connecting, EVENT_ERROR,      state_error,      action_connect_fail&#125;,</span><br><span class="line">    &#123;state_connected,  EVENT_DISCONNECT, state_idle,       action_disconnect&#125;,</span><br><span class="line">    &#123;state_connected,  EVENT_ERROR,      state_error,      action_error&#125;,</span><br><span class="line">    &#123;state_error,      EVENT_CONNECT,    state_connecting, action_reconnect&#125;,</span><br><span class="line">    &#123;NULL, 0, NULL, NULL&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">// 当前状态函数指针</span><br><span class="line">static StateFunc current_state_func = state_idle;</span><br><span class="line"></span><br><span class="line">// 状态处理函数实现</span><br><span class="line">staticvoidstate_idle(EventType event) &#123;</span><br><span class="line">    printf(&quot;当前状态: IDLE\n&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">staticvoidstate_connecting(EventType event) &#123;</span><br><span class="line">    printf(&quot;当前状态: CONNECTING\n&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">staticvoidstate_connected(EventType event) &#123;</span><br><span class="line">    printf(&quot;当前状态: CONNECTED\n&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">staticvoidstate_error(EventType event) &#123;</span><br><span class="line">    printf(&quot;当前状态: ERROR\n&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 动作函数</span><br><span class="line">staticvoidaction_connect_start(void) &#123;</span><br><span class="line">    printf(&quot;开始连接...\n&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">staticvoidaction_connect_success(void) &#123;</span><br><span class="line">    printf(&quot;连接成功!\n&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">staticvoidaction_connect_fail(void) &#123;</span><br><span class="line">    printf(&quot;连接失败!\n&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">staticvoidaction_disconnect(void) &#123;</span><br><span class="line">    printf(&quot;断开连接...\n&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">staticvoidaction_error(void) &#123;</span><br><span class="line">    printf(&quot;发生错误!\n&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">staticvoidaction_reconnect(void) &#123;</span><br><span class="line">    printf(&quot;尝试重连...\n&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 状态机运行函数</span><br><span class="line">voidstate_machine_run(EventType event) &#123;</span><br><span class="line">    current_state_func(event);</span><br><span class="line">    </span><br><span class="line">    for (int i = 0; transition_table[i].current_state != NULL; i++) &#123;</span><br><span class="line">        if (transition_table[i].current_state == current_state_func &amp;&amp;</span><br><span class="line">            transition_table[i].event == event) &#123;</span><br><span class="line">            </span><br><span class="line">            if (transition_table[i].action != NULL) &#123;</span><br><span class="line">                transition_table[i].action();</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            current_state_func = transition_table[i].next_state;</span><br><span class="line">            break;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="底层初始化中应用"><a href="#底层初始化中应用" class="headerlink" title="底层初始化中应用"></a>底层初始化中应用</h2><h3 id="启动代码"><a href="#启动代码" class="headerlink" title="启动代码"></a>启动代码</h3><p>在嵌入式系统中，启动代码（Startup Code）是系统上电后执行的第一段代码。它负责：</p>
+<ol>
+<li>初始化堆栈指针</li>
+<li>初始化数据段（.data）</li>
+<li><ol start="3">
+<li>清零<strong>BSS段</strong>（.bss）</li>
+</ol>
+</li>
+<li><ol start="4">
+<li>调用系统初始化函数</li>
+</ol>
+</li>
+<li><ol start="5">
+<li>跳转到main函数</li>
+</ol>
+</li>
+</ol>
+<p>函数指针在启动代码中扮演着重要角色，特别是在中断向量表和初始化函数表的实现中。</p>
+<h3 id="中断向量表"><a href="#中断向量表" class="headerlink" title="中断向量表"></a>中断向量表</h3><p>中断向量表是一个函数指针数组，每个元素对应一个中断处理函数的地址。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">; ARM Cortex-M启动代码示例（汇编）</span><br><span class="line">    .section .isr_vector, &quot;a&quot;</span><br><span class="line">    .align 2</span><br><span class="line">    .globl __isr_vector</span><br><span class="line">__isr_vector:</span><br><span class="line">    .word   _estack                    /* 栈顶地址 */</span><br><span class="line">    .word   Reset_Handler               /* 复位中断 */</span><br><span class="line">    .word   NMI_Handler                 /* 不可屏蔽中断 */</span><br><span class="line">    .word   HardFault_Handler           /* 硬件故障 */</span><br><span class="line">    .word   MemManage_Handler           /* 内存管理 */</span><br><span class="line">    .word   BusFault_Handler            /* 总线故障 */</span><br><span class="line">    .word   UsageFault_Handler          /* 使用故障 */</span><br><span class="line">    .word   0                           /* 保留 */</span><br><span class="line">    .word   0                           /* 保留 */</span><br><span class="line">    .word   0                           /* 保留 */</span><br><span class="line">    .word   0                           /* 保留 */</span><br><span class="line">    .word   SVC_Handler                 /* SVC调用 */</span><br><span class="line">    .word   DebugMon_Handler            /* 调试监视器 */</span><br><span class="line">    .word   0                           /* 保留 */</span><br><span class="line">    .word   PendSV_Handler              /* PendSV */</span><br><span class="line">    .word   SysTick_Handler             /* SysTick定时器 */</span><br><span class="line">    /* 外部中断 */</span><br><span class="line">    .word   WWDG_IRQHandler</span><br><span class="line">    .word   PVD_IRQHandler</span><br><span class="line">    .word   TAMP_STAMP_IRQHandler</span><br><span class="line">    /* ... 更多中断 ... */</span><br></pre></td></tr></table></figure>
+
+<p>对应的C语言实现：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">// 在C中定义中断向量表</span><br><span class="line">typedefvoid(*InterruptHandler)(void);</span><br><span class="line"></span><br><span class="line">__attribute__((section(&quot;.isr_vector&quot;)))</span><br><span class="line">const InterruptHandler __isr_vector[] = &#123;</span><br><span class="line">    (InterruptHandler)_estack,</span><br><span class="line">    Reset_Handler,</span><br><span class="line">    NMI_Handler,</span><br><span class="line">    HardFault_Handler,</span><br><span class="line">    MemManage_Handler,</span><br><span class="line">    BusFault_Handler,</span><br><span class="line">    UsageFault_Handler,</span><br><span class="line">    0,</span><br><span class="line">    0,</span><br><span class="line">    0,</span><br><span class="line">    0,</span><br><span class="line">    SVC_Handler,</span><br><span class="line">    DebugMon_Handler,</span><br><span class="line">    0,</span><br><span class="line">    PendSV_Handler,</span><br><span class="line">    SysTick_Handler,</span><br><span class="line">    WWDG_IRQHandler,</span><br><span class="line">    PVD_IRQHandler,</span><br><span class="line">    TAMP_STAMP_IRQHandler,</span><br><span class="line">    // ...</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%87%BD%E6%95%B0%E6%8C%87%E9%92%88%E9%87%8D%E6%9E%84%E5%BA%94%E7%94%A8/" data-id="cuidwkhhSYscHInH6SdZfWCw_" data-title="函数指针重构应用" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" rel="tag">嵌入式学习</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" rel="tag">数据存储</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/APN%E7%89%A9%E8%81%94%E7%BD%91/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          APN物联网
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%BC%80%E5%8F%91%E7%9C%8B%E5%9B%BE%E8%AF%B4%E8%AF%9D/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">嵌入式开发看(原理)图说话</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E5%85%A8%E5%BF%97T113S3/">全志T113S3</a></li></ul></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C%E8%AF%AD%E8%A8%80%E5%AE%8F/" rel="tag">C语言宏</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Debug%E6%97%A5%E5%BF%97/" rel="tag">Debug日志</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Makefile/" rel="tag">Makefile</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96/" rel="tag">内存优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="tag">博客环境搭建</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" rel="tag">学习记录</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" rel="tag">嵌入式学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" rel="tag">工具使用</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B8%B8%E8%A7%81%E5%8D%8F%E8%AE%AE%E7%AE%80%E4%BB%8B/" rel="tag">常见协议简介</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" rel="tag">数据传输</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" rel="tag">数据存储</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/" rel="tag">结构体</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%A9%B1%E5%8A%A8%E5%B1%8F/" rel="tag">驱动屏</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/C%E8%AF%AD%E8%A8%80%E5%AE%8F/" style="font-size: 10px;">C语言宏</a> <a href="/tags/Debug%E6%97%A5%E5%BF%97/" style="font-size: 10px;">Debug日志</a> <a href="/tags/Linux/" style="font-size: 18px;">Linux</a> <a href="/tags/Makefile/" style="font-size: 10px;">Makefile</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96/" style="font-size: 10px;">内存优化</a> <a href="/tags/%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" style="font-size: 10px;">博客环境搭建</a> <a href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" style="font-size: 10px;">学习记录</a> <a href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" style="font-size: 20px;">嵌入式学习</a> <a href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" style="font-size: 14px;">工具使用</a> <a href="/tags/%E5%B8%B8%E8%A7%81%E5%8D%8F%E8%AE%AE%E7%AE%80%E4%BB%8B/" style="font-size: 10px;">常见协议简介</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" style="font-size: 12px;">数据传输</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" style="font-size: 16px;">数据存储</a> <a href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/" style="font-size: 10px;">结构体</a> <a href="/tags/%E9%A9%B1%E5%8A%A8%E5%B1%8F/" style="font-size: 14px;">驱动屏</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/07/">July 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/05/">May 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/04/">April 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/02/">February 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/01/">January 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/02/">February 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">January 2023</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2026/07/26/%E7%BC%96%E8%AF%91%E9%93%BE%E6%8E%A5/MakeFile/Makefile.inc/">Makefile</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/26/%E8%BE%BE%E5%8F%91%E9%9D%A2%E8%AF%95%E5%87%86%E5%A4%87/%E4%B8%80%E9%9D%A2/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2026/05/28/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/Modbus%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">Modbus协议学习笔记</a>
+          </li>
+        
+          <li>
+            <a href="/2026/04/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/FreeRTOS%E5%B7%A5%E7%A8%8B%E5%8C%96%E8%A6%81%E7%82%B9/">FreeRTOS工程化要点：任务划分、优先级设计与CPU占用率监控</a>
+          </li>
+        
+          <li>
+            <a href="/2026/04/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E8%87%AA%E5%8A%A8%E5%88%9D%E5%A7%8B%E5%8C%96%E6%A1%86%E6%9E%B6/">自动初始化框架</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

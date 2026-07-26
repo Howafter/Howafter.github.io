@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="物资定位管理系统完整技术方案1. 系统概述本系统基于 Air780EG 模组（集成 4G LTE + GNSS）与 NRF52832（集成 UWB DW1000 + BLE + Sub-1G），实现多模态物资定位管理。系统通过四条独立的数据线路获取、处理并上报定位数据，最终汇聚至云平台进行统一管理与展示。  2. 硬件架构1234567graph TD    A[Air780EG Main Con">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://example.com/temp/%E7%89%A9%E8%B5%84%E5%AE%9A%E4%BD%8D%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="物资定位管理系统完整技术方案1. 系统概述本系统基于 Air780EG 模组（集成 4G LTE + GNSS）与 NRF52832（集成 UWB DW1000 + BLE + Sub-1G），实现多模态物资定位管理。系统通过四条独立的数据线路获取、处理并上报定位数据，最终汇聚至云平台进行统一管理与展示。  2. 硬件架构1234567graph TD    A[Air780EG Main Con">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2026-07-26T05:16:00.258Z">
+<meta property="article:modified_time" content="2026-07-26T05:16:00.258Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="page-" class="h-entry article article-type-page" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/temp/%E7%89%A9%E8%B5%84%E5%AE%9A%E4%BD%8D%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F.html" class="article-date">
+  <time class="dt-published" datetime="2026-07-26T05:16:00.258Z" itemprop="datePublished">2026-07-26</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="物资定位管理系统完整技术方案"><a href="#物资定位管理系统完整技术方案" class="headerlink" title="物资定位管理系统完整技术方案"></a>物资定位管理系统完整技术方案</h1><h2 id="1-系统概述"><a href="#1-系统概述" class="headerlink" title="1. 系统概述"></a>1. 系统概述</h2><p>本系统基于 <strong>Air780EG</strong> 模组（集成 4G LTE + GNSS）与 <strong>NRF52832</strong>（集成 UWB DW1000 + BLE + Sub-1G），实现多模态物资定位管理。系统通过四条独立的数据线路获取、处理并上报定位数据，最终汇聚至云平台进行统一管理与展示。</p>
+<hr>
+<h2 id="2-硬件架构"><a href="#2-硬件架构" class="headerlink" title="2. 硬件架构"></a>2. 硬件架构</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">graph TD</span><br><span class="line">    A[Air780EG Main Controller] --&gt;|SPI| B[NRF52832 Co-processor]</span><br><span class="line">    B --&gt;|UWB Radio| C[DW1000 Module]</span><br><span class="line">    B --&gt;|BLE Radio| D[BLE Beacons]</span><br><span class="line">    B --&gt;|Sub-1G Radio| E[Sub-1G Sensor Nodes]</span><br><span class="line">    A --&gt;|GNSS Antenna| F[AT6558 GNSS Chip]</span><br><span class="line">    A --&gt;|4G LTE Network| G[Cloud Platform]</span><br></pre></td></tr></table></figure>
+
+<h3 id="核心组件"><a href="#核心组件" class="headerlink" title="核心组件"></a>核心组件</h3><ul>
+<li><strong>主控 MCU</strong>: Air780EG (EC618) - 负责 4G 通信、GNSS 解析、业务逻辑调度</li>
+<li><strong>协处理器</strong>: NRF52832 - 负责 UWB&#x2F;BLE&#x2F;Sub-1G 射频数据采集</li>
+<li><strong>定位芯片</strong>: AT6558 (支持 GPS+BDS+GALILEO)</li>
+<li><strong>通信模块</strong>: 4G LTE Cat.1</li>
+</ul>
+<hr>
+<h2 id="3-四条数据线路详细方案"><a href="#3-四条数据线路详细方案" class="headerlink" title="3. 四条数据线路详细方案"></a>3. 四条数据线路详细方案</h2><h3 id="3-1-UWB-定位数据线路"><a href="#3-1-UWB-定位数据线路" class="headerlink" title="3.1 UWB 定位数据线路"></a>3.1 UWB 定位数据线路</h3><h4 id="3-1-1-数据获取"><a href="#3-1-1-数据获取" class="headerlink" title="3.1.1 数据获取"></a>3.1.1 数据获取</h4><ul>
+<li><strong>硬件链路</strong>: DW1000 UWB 标签 → NRF52832 (SPI&#x2F;UART) → Air780EG (SPI)</li>
+<li><strong>采集频率</strong>: 由 NRF52832 固件控制，通常 1-10Hz</li>
+<li><strong>原始数据格式</strong> (6字节节点数据):<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="type">uint8_t</span> type_rssi;  <span class="comment">// [7:5]=类型(0x01=DIST), [4:0]=电池电量</span></span><br><span class="line">    <span class="type">int8_t</span> rssi;        <span class="comment">// RSSI 信号强度</span></span><br><span class="line">    <span class="type">uint16_t</span> anchor_id; <span class="comment">// 锚点 ID</span></span><br><span class="line">    <span class="type">uint16_t</span> distance_cm; <span class="comment">// 距离 (厘米)</span></span><br><span class="line">&#125; DistNode;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="3-1-2-数据处理-Air780EG-端"><a href="#3-1-2-数据处理-Air780EG-端" class="headerlink" title="3.1.2 数据处理 (Air780EG 端)"></a>3.1.2 数据处理 (Air780EG 端)</h4><p><strong>文件</strong>: <a href="file://d:\Works\csdk\Air780EG\CSDK\mluatos-soc-2022_all\project\airocov_780E_at6558\nrfdata\11_nrfcomm_v2.c">11_nrfcomm_v2.c</a> → <code>parse_dist_binary()</code></p>
+<ol>
+<li><p><strong>数据解析</strong>:</p>
+<ul>
+<li>从 SPI 接收 NRF52832 上传的二进制数据包</li>
+<li>提取 UWB 测距数据 (<a href="file://d:\Works\csdk\Air780EG\CSDK\mluatos-soc-2022_all\project\airocov_780E_at6558\inc\air780eg_proto.h#L37-L40">DistNode</a>)</li>
+<li>转换单位: cm → mm (<code>distmm = distcm * 10</code>)</li>
+</ul>
+</li>
+<li><p><strong>时间戳同步</strong>:</p>
+<ul>
+<li>使用 <a href="file://d:\Works\csdk\Air780EG\CSDK\mluatos-soc-2022_all\interface\include\luat_rtc.h#L46-L46">luat_rtc_get()</a> 获取当前 RTC 时间</li>
+<li>转换为 Unix Timestamp (UTC)</li>
+</ul>
+</li>
+<li><p><strong>运动状态标记</strong>:</p>
+<ul>
+<li>调用 <a href="file://d:\Works\csdk\Air780EG\CSDK\mluatos-soc-2022_all\project\airocov_780E_at6558\devmanage\devscanf.h#L108-L108">system_stat_get_motion_state()</a> 获取当前设备运动状态</li>
+<li>标记该数据点是在静止还是运动状态下采集</li>
+</ul>
+</li>
+<li><p><strong>缓冲存储</strong>:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ringbuffer_write(&amp;rb_dist, &amp;udist_node, <span class="number">1</span>);</span><br><span class="line">gnss_data_ready_notify(); <span class="comment">// 触发 MQTT 上报事件</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+<h4 id="3-1-3-数据发送-4G-MQTT"><a href="#3-1-3-数据发送-4G-MQTT" class="headerlink" title="3.1.3 数据发送 (4G MQTT)"></a>3.1.3 数据发送 (4G MQTT)</h4><p><strong>文件</strong>: <a href="file://d:\Works\csdk\Air780EG\CSDK\mluatos-soc-2022_all\project\airocov_780E_at6558\gnss_client.c">_client.c</a> → <code>__report_data_pack()</code></p>
+<ul>
+<li><p><strong>打包格式</strong> (JSON):</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;dist&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;num&quot;</span><span class="punctuation">:</span> <span class="number">2</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;data&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">      <span class="punctuation">[</span><span class="number">1712563200</span><span class="punctuation">,</span> <span class="number">1</span><span class="punctuation">,</span> <span class="number">1001</span><span class="punctuation">,</span> <span class="number">-1</span><span class="punctuation">,</span> <span class="number">-1</span><span class="punctuation">,</span> <span class="number">-65</span><span class="punctuation">,</span> <span class="number">1250</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">      <span class="punctuation">[</span><span class="number">1712563200</span><span class="punctuation">,</span> <span class="number">1</span><span class="punctuation">,</span> <span class="number">1002</span><span class="punctuation">,</span> <span class="number">-1</span><span class="punctuation">,</span> <span class="number">-1</span><span class="punctuation">,</span> <span class="number">-70</span><span class="punctuation">,</span> <span class="number">3400</span><span class="punctuation">]</span></span><br><span class="line">    <span class="punctuation">]</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>字段说明</strong>:<ul>
+<li><code>[0]</code>: Unix 时间戳 (秒)</li>
+<li><code>[1]</code>: 运动状态 (0&#x3D;静止, 1&#x3D;运动)</li>
+<li><code>[2]</code>: 锚点 ID</li>
+<li><code>[3]</code>: TDOA 序列号 (保留，填 -1)</li>
+<li><code>[4]</code>: TOF 序列号 (保留，填 -1)</li>
+<li><code>[5]</code>: RSSI (dBm)</li>
+<li><code>[6]</code>: 距离 (毫米)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>上报策略</strong>:</p>
+<ul>
+<li>批量上报: 缓冲区达到 <code>DIST_REPORT_DATA_MAXLEN</code> (30条) 或超时 60s</li>
+<li>与 GNSS&#x2F;BLE 数据合并在同一 MQTT 消息中</li>
+</ul>
+</li>
+</ul>
+<h4 id="3-1-4-平台端接收与处理"><a href="#3-1-4-平台端接收与处理" class="headerlink" title="3.1.4 平台端接收与处理"></a>3.1.4 平台端接收与处理</h4><ul>
+<li><strong>数据存储</strong>:<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE TABLE</span> uwb_location (</span><br><span class="line">    dev_id <span class="type">VARCHAR</span>(<span class="number">32</span>),</span><br><span class="line">    <span class="type">timestamp</span> <span class="type">BIGINT</span>,</span><br><span class="line">    anchor_id <span class="type">INT</span>,</span><br><span class="line">    distance_mm <span class="type">INT</span>,</span><br><span class="line">    rssi <span class="type">INT</span>,</span><br><span class="line">    motion_state TINYINT,</span><br><span class="line">    <span class="keyword">PRIMARY KEY</span> (dev_id, <span class="type">timestamp</span>, anchor_id)</span><br><span class="line">);</span><br></pre></td></tr></table></figure></li>
+<li><strong>定位解算</strong>:<ul>
+<li>使用三边测量法 (Trilateration) 计算物资坐标</li>
+<li>输入: 至少 3 个锚点的距离数据</li>
+<li>输出: (X, Y, Z) 三维坐标</li>
+</ul>
+</li>
+<li><strong>应用场景</strong>:<ul>
+<li>室内高精度定位 (精度 10-30cm)</li>
+<li>电子围栏告警</li>
+<li>轨迹回放</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="3-2-BLE-蓝牙定位数据线路"><a href="#3-2-BLE-蓝牙定位数据线路" class="headerlink" title="3.2 BLE 蓝牙定位数据线路"></a>3.2 BLE 蓝牙定位数据线路</h3><h4 id="3-2-1-数据获取"><a href="#3-2-1-数据获取" class="headerlink" title="3.2.1 数据获取"></a>3.2.1 数据获取</h4><ul>
+<li><strong>硬件链路</strong>: BLE Beacon → NRF52832 (BLE Scanner) → Air780EG (SPI)</li>
+<li><strong>扫描模式</strong>: 被动扫描 iBeacon 广播包</li>
+<li><strong>原始数据格式</strong> (6字节节点数据):<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="type">uint8_t</span> type_battery; <span class="comment">// [7:5]=类型(0x02=BCON), [4:0]=电池电量</span></span><br><span class="line">    <span class="type">int8_t</span> rssi;          <span class="comment">// RSSI 信号强度</span></span><br><span class="line">    <span class="type">uint16_t</span> major;       <span class="comment">// iBeacon Major ID</span></span><br><span class="line">    <span class="type">uint16_t</span> minor;       <span class="comment">// iBeacon Minor ID</span></span><br><span class="line">&#125; BconNode;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="3-2-2-数据处理-Air780EG-端"><a href="#3-2-2-数据处理-Air780EG-端" class="headerlink" title="3.2.2 数据处理 (Air780EG 端)"></a>3.2.2 数据处理 (Air780EG 端)</h4><p><strong>文件</strong>: <a href="file://d:\Works\csdk\Air780EG\CSDK\mluatos-soc-2022_all\project\airocov_780E_at6558\nrfdata\11_nrfcomm_v2.c">11_nrfcomm_v2.c</a> → <code>parse_bcon_binary()</code></p>
+<ol>
+<li><p><strong>数据解析</strong>:</p>
+<ul>
+<li>提取 iBeacon 的 <code>Major</code> 和 <code>Minor</code> ID</li>
+<li>记录 RSSI 信号强度</li>
+<li>电池电量换算: <code>battery_percent = (raw_value &amp; 0x1F) * 4</code></li>
+</ul>
+</li>
+<li><p><strong>指纹库匹配</strong> (可选):</p>
+<ul>
+<li>若部署了蓝牙指纹定位算法，需查询预先建立的 RSSI 指纹数据库</li>
+<li>否则仅作为存在性检测或粗略定位</li>
+</ul>
+</li>
+<li><p><strong>缓冲存储</strong>:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ringbuffer_write(&amp;rb_bcon, &amp;udist_node, <span class="number">1</span>);</span><br><span class="line">gnss_data_ready_notify();</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h4 id="3-2-3-数据发送-4G-MQTT"><a href="#3-2-3-数据发送-4G-MQTT" class="headerlink" title="3.2.3 数据发送 (4G MQTT)"></a>3.2.3 数据发送 (4G MQTT)</h4><p><strong>文件</strong>: <a href="file://d:\Works\csdk\Air780EG\CSDK\mluatos-soc-2022_all\project\airocov_780E_at6558\gnss_client.c">_client.c</a> → <code>__report_data_pack()</code></p>
+<ul>
+<li><p><strong>打包格式</strong> (JSON):</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;bcon&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;num&quot;</span><span class="punctuation">:</span> <span class="number">3</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;data&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">      <span class="punctuation">[</span><span class="number">1712563200</span><span class="punctuation">,</span> <span class="number">1</span><span class="punctuation">,</span> <span class="number">100</span><span class="punctuation">,</span> <span class="number">200</span><span class="punctuation">,</span> <span class="number">-75</span><span class="punctuation">,</span> <span class="number">80</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">      <span class="punctuation">[</span><span class="number">1712563200</span><span class="punctuation">,</span> <span class="number">1</span><span class="punctuation">,</span> <span class="number">100</span><span class="punctuation">,</span> <span class="number">201</span><span class="punctuation">,</span> <span class="number">-82</span><span class="punctuation">,</span> <span class="number">76</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">      <span class="punctuation">[</span><span class="number">1712563200</span><span class="punctuation">,</span> <span class="number">0</span><span class="punctuation">,</span> <span class="number">101</span><span class="punctuation">,</span> <span class="number">300</span><span class="punctuation">,</span> <span class="number">-68</span><span class="punctuation">,</span> <span class="number">92</span><span class="punctuation">]</span></span><br><span class="line">    <span class="punctuation">]</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>字段说明</strong>:<ul>
+<li><code>[0]</code>: Unix 时间戳 (秒)</li>
+<li><code>[1]</code>: 运动状态</li>
+<li><code>[2]</code>: Major ID</li>
+<li><code>[3]</code>: Minor ID</li>
+<li><code>[4]</code>: RSSI (dBm)</li>
+<li><code>[5]</code>: 电池电量 (%)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>上报策略</strong>: 同 UWB，批量合并上报</p>
+</li>
+</ul>
+<h4 id="3-2-4-平台端接收与处理"><a href="#3-2-4-平台端接收与处理" class="headerlink" title="3.2.4 平台端接收与处理"></a>3.2.4 平台端接收与处理</h4><ul>
+<li><strong>数据存储</strong>:<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE TABLE</span> ble_beacon (</span><br><span class="line">    dev_id <span class="type">VARCHAR</span>(<span class="number">32</span>),</span><br><span class="line">    <span class="type">timestamp</span> <span class="type">BIGINT</span>,</span><br><span class="line">    major_id <span class="type">INT</span>,</span><br><span class="line">    minor_id <span class="type">INT</span>,</span><br><span class="line">    rssi <span class="type">INT</span>,</span><br><span class="line">    battery_pct <span class="type">INT</span>,</span><br><span class="line">    motion_state TINYINT</span><br><span class="line">);</span><br></pre></td></tr></table></figure></li>
+<li><strong>定位算法</strong>:<ul>
+<li><strong>近邻法</strong>: 根据最强 RSSI 判断所在区域</li>
+<li><strong>加权质心法</strong>: 使用多个 Beacon 的 RSSI 估算位置</li>
+<li><strong>指纹匹配</strong>: 对比历史指纹数据库</li>
+</ul>
+</li>
+<li><strong>应用场景</strong>:<ul>
+<li>室内外过渡区域定位</li>
+<li>低功耗资产追踪</li>
+<li>proximity 告警 (靠近&#x2F;远离)</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="3-3-Sub-1G-传感器数据线路"><a href="#3-3-Sub-1G-传感器数据线路" class="headerlink" title="3.3 Sub-1G 传感器数据线路"></a>3.3 Sub-1G 传感器数据线路</h3><h4 id="3-3-1-数据获取"><a href="#3-3-1-数据获取" class="headerlink" title="3.3.1 数据获取"></a>3.3.1 数据获取</h4><ul>
+<li><p><strong>硬件链路</strong>: Sub-1G 传感器节点 → NRF52832 (Sub-1G Receiver) → Air780EG (SPI)</p>
+</li>
+<li><p><strong>通信协议</strong>: 自定义二进制协议 (带 CRC16 校验)</p>
+</li>
+<li><p><strong>数据类型</strong>:</p>
+<ol>
+<li><strong>心跳包</strong> (<a href="file://d:\Works\csdk\Air780EG\CSDK\mluatos-soc-2022_all\project\airocov_780E_at6558\inc\air780eg_proto.h#L19-L20">SUB1G_REPORT_TYPE_HEARTBEAT</a>): 包含设备状态、电池电压</li>
+<li><strong>传感器数据</strong> (<code>SUB1G_REPORT_TYPE_SNSR</code>): 步数、气压计数据</li>
+<li><strong>GPS 透传</strong> (<a href="file://d:\Works\csdk\Air780EG\CSDK\mluatos-soc-2022_all\project\airocov_780E_at6558\inc\air780eg_proto.h#L20-L21">SUB1G_REPORT_TYPE_GPS</a>): 子设备自身 GNSS 数据</li>
+<li><strong>混合报告</strong>: 包含多种节点类型</li>
+</ol>
+</li>
+<li><p><strong>原始数据格式</strong> (6字节节点数据):</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> &#123;</span></span><br><span class="line">    <span class="type">uint8_t</span> type_misc;    <span class="comment">// [7:5]=类型(0x03=SNSR, 0x04=MISC)</span></span><br><span class="line">    <span class="type">int8_t</span> status_flags;  <span class="comment">// [7]=运动标志, [6:0]=警告标志 (bit4=SOS)</span></span><br><span class="line">    <span class="type">uint16_t</span> step_count;  <span class="comment">// 步数计数器</span></span><br><span class="line">    <span class="type">uint16_t</span> baro_diff;   <span class="comment">// 气压差值 (用于楼层检测)</span></span><br><span class="line">&#125; SnsrNode;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="3-3-2-数据处理-Air780EG-端"><a href="#3-3-2-数据处理-Air780EG-端" class="headerlink" title="3.3.2 数据处理 (Air780EG 端)"></a>3.3.2 数据处理 (Air780EG 端)</h4><p><strong>文件</strong>: <a href="file://d:\Works\csdk\Air780EG\CSDK\mluatos-soc-2022_all\project\airocov_780E_at6558\nrfdata\11_nrfcomm_v2.c">11_nrfcomm_v2.c</a> → <code>parse_sub1g_data_v2()</code></p>
+<ol>
+<li><p><strong>CRC 校验</strong>:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">uint16_t</span> crc16rx = crc16_compute(data, len, <span class="literal">NULL</span>);</span><br><span class="line"><span class="keyword">if</span> (crc16rx != received_crc) &#123;</span><br><span class="line">    debug(<span class="string">&quot;CRC error, discard packet&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>SOS 报警检测</strong>:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> new_sos = status_flags &amp; <span class="number">16</span>;</span><br><span class="line"><span class="keyword">if</span> (old_sos != new_sos &amp;&amp; new_sos) &#123;</span><br><span class="line">    audio_sos_trigger(); <span class="comment">// 触发本地语音告警</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>运动状态同步</strong>:</p>
+<ul>
+<li>从 MISC 节点提取运动标志</li>
+<li>调用 <a href="file://d:\Works\csdk\Air780EG\CSDK\mluatos-soc-2022_all\project\airocov_780E_at6558\devmanage\devscanf.h#L109-L109">system_stat_set_motion_state(ms)</a> 更新全局状态</li>
+<li>触发 <code>_device_motion_notify(ms)</code> 通知 GNSS 模块调整工作模式</li>
+</ul>
+</li>
+<li><p><strong>GNSS 数据透传处理</strong>:</p>
+<ul>
+<li>若收到 <a href="file://d:\Works\csdk\Air780EG\CSDK\mluatos-soc-2022_all\project\airocov_780E_at6558\inc\air780eg_proto.h#L20-L21">SUB1G_REPORT_TYPE_GPS</a> 类型，直接解析 <a href="file://d:\Works\csdk\Air780EG\CSDK\mluatos-soc-2022_all\project\airocov_780E_at6558\inc\air780eg_proto.h#L88-L98">gps_payload_t</a></li>
+<li>写入 <code>rb_sub1g</code> 环形缓冲区，供 Sub-1G 专用通道上报</li>
+</ul>
+</li>
+</ol>
+<h4 id="3-3-3-数据发送"><a href="#3-3-3-数据发送" class="headerlink" title="3.3.3 数据发送"></a>3.3.3 数据发送</h4><p><strong>方式一: 通过 4G MQTT 上报 (传感器状态)</strong></p>
+<ul>
+<li>将步数、气压、SOS 状态嵌入主设备的 MQTT 心跳包或状态包</li>
+<li><strong>JSON 示例</strong>:<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;sensor&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;step_count&quot;</span><span class="punctuation">:</span> <span class="number">1250</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;baro_diff&quot;</span><span class="punctuation">:</span> <span class="number">120</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;sos_alarm&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;battery&quot;</span><span class="punctuation">:</span> <span class="number">85</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+<p><strong>方式二: Sub-1G 反向通信 (若支持)</strong></p>
+<ul>
+<li>NRF52832 可通过 Sub-1G 下行链路向传感器节点发送配置命令</li>
+<li>例如: 修改上报频率、进入休眠模式</li>
+</ul>
+<h4 id="3-3-4-平台端接收与处理"><a href="#3-3-4-平台端接收与处理" class="headerlink" title="3.3.4 平台端接收与处理"></a>3.3.4 平台端接收与处理</h4><ul>
+<li><strong>数据存储</strong>:<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE TABLE</span> sub1g_sensor (</span><br><span class="line">    sensor_id <span class="type">VARCHAR</span>(<span class="number">32</span>),</span><br><span class="line">    <span class="type">timestamp</span> <span class="type">BIGINT</span>,</span><br><span class="line">    step_count <span class="type">INT</span>,</span><br><span class="line">    baro_diff <span class="type">INT</span>,</span><br><span class="line">    sos_alarm <span class="type">BOOLEAN</span>,</span><br><span class="line">    battery_pct <span class="type">INT</span></span><br><span class="line">);</span><br></pre></td></tr></table></figure></li>
+<li><strong>业务逻辑</strong>:<ul>
+<li><strong>SOS 告警</strong>: 立即推送 APP&#x2F;短信通知</li>
+<li><strong>活动量统计</strong>: 累计步数，判断人员活跃度</li>
+<li><strong>楼层检测</strong>: 通过气压差值判断上下楼行为</li>
+<li><strong>低电量预警</strong>: 电池 &lt; 20% 时提醒更换</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="3-4-4G-GNSS-定位数据线路"><a href="#3-4-4G-GNSS-定位数据线路" class="headerlink" title="3.4 4G GNSS 定位数据线路"></a>3.4 4G GNSS 定位数据线路</h3><h4 id="3-4-1-数据获取"><a href="#3-4-1-数据获取" class="headerlink" title="3.4.1 数据获取"></a>3.4.1 数据获取</h4><ul>
+<li><strong>硬件链路</strong>: GNSS 天线 → AT6558 芯片 → Air780EG (UART2 @ 115200bps)</li>
+<li><strong>协议</strong>: NMEA 0183 (主要解析 <code>$GNGGA</code> 和 <code>$GNRMC</code>)</li>
+<li><strong>初始化配置</strong> (<a href="file://d:\Works\csdk\Air780EG\CSDK\mluatos-soc-2022_all\project\airocov_780E_at6558\gnss\gnss_main.c">gnss_main.c</a> → <code>gnss_setup_task()</code>):<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 设置波特率 115200</span></span><br><span class="line">luat_uart_write(GNSS_UART_ID, <span class="string">&quot;$PCAS01,5*19\r\n&quot;</span>, ...);</span><br><span class="line"><span class="comment">// 启用 GPS+BDS+GALILEO</span></span><br><span class="line">luat_uart_write(GNSS_UART_ID, <span class="string">&quot;$PCAS04,7*1E\r\n&quot;</span>, ...);</span><br><span class="line"><span class="comment">// 设置动态模型为&quot;便携式&quot;</span></span><br><span class="line">luat_uart_write(GNSS_UART_ID, <span class="string">&quot;$PCAS11,0*1D\r\n&quot;</span>, ...);</span><br><span class="line"><span class="comment">// 保存配置</span></span><br><span class="line">luat_uart_write(GNSS_UART_ID, <span class="string">&quot;$PCAS00*01\r\n&quot;</span>, ...);</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h4 id="3-4-2-数据处理-Air780EG-端"><a href="#3-4-2-数据处理-Air780EG-端" class="headerlink" title="3.4.2 数据处理 (Air780EG 端)"></a>3.4.2 数据处理 (Air780EG 端)</h4><p><strong>文件</strong>: <a href="file://d:\Works\csdk\Air780EG\CSDK\mluatos-soc-2022_all\project\airocov_780E_at6558\gnss\gnss_main.c">gnss_main.c</a> → <code>nmea_parse_packet()</code></p>
+<ol>
+<li><p><strong>NMEA 解析</strong>:</p>
+<ul>
+<li>解析 <code>$GNGGA</code>: 获取纬度、经度、海拔、HDOP、卫星数、Fix Quality</li>
+<li>解析 <code>$GNRMC</code>: 获取速度、航向、日期、时间、定位状态 (A&#x2F;V)</li>
+<li>有效性检查: <code>status == &#39;A&#39;</code> 且 <code>mode != &#39;N&#39;/&#39;M&#39;/&#39;E&#39;</code></li>
+</ul>
+</li>
+<li><p><strong>RTC 同步</strong>:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (year &gt; <span class="number">2000</span> &amp;&amp; rmc.status == <span class="string">&#x27;A&#x27;</span>) &#123;</span><br><span class="line">    luat_rtc_set(&amp;tblock_gnss); <span class="comment">// 使用 GNSS 时间校准本地 RTC</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>数据结构构建</strong>:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">gnss_t</span> gnss_data = &#123;</span><br><span class="line">    .unixsec = unix_utc,</span><br><span class="line">    .montion = system_stat_get_motion_state(),</span><br><span class="line">    .gnss = &#123;</span><br><span class="line">        .latitude = latitude,</span><br><span class="line">        .longitude = longitude,</span><br><span class="line">        .altitude = gga.altitude,</span><br><span class="line">        .hdop = gga.hdop,</span><br><span class="line">        .status = rmc.status,</span><br><span class="line">        .mode = rmc.mode,</span><br><span class="line">        .fix_quality = gga.fix_quality,</span><br><span class="line">        .num_satellites = gga.num_satellites,</span><br><span class="line">        .speed = rmc.speed * <span class="number">1.852f</span>,  <span class="comment">// knots → km/h</span></span><br><span class="line">        .course = rmc.course</span><br><span class="line">    &#125;,</span><br><span class="line">    .date = &#123;...&#125;,</span><br><span class="line">    .time = &#123;...&#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>双缓冲写入</strong>:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ringbuffer_write(&amp;rb_gnss, &amp;gnss_data, <span class="number">1</span>);    <span class="comment">// 4G 上报用</span></span><br><span class="line">ringbuffer_write(&amp;rb_sub1g, &amp;gnss_data, <span class="number">1</span>);   <span class="comment">// Sub-1G 上报用</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>静止状态优化</strong> (<code>gnss_static_buffer_add()</code>):</p>
+<ul>
+<li><strong>运动检测</strong>: 基于速度 (&lt; 0.1 km&#x2F;h) 和位置漂移 (&lt; 50m) 判断静止</li>
+<li><strong>数据滤波</strong>: 积累 10 个点后，根据 HDOP、卫星数、Fix Quality 评分，保留最优 5 个点</li>
+<li><strong>低功耗策略</strong>:<ul>
+<li>运动状态: 每 40s 定位并上报</li>
+<li>静止状态: 关闭 GNSS 电源，每 30 分钟唤醒一次，上报滤波后的最优点</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h4 id="3-4-3-数据发送-4G-MQTT"><a href="#3-4-3-数据发送-4G-MQTT" class="headerlink" title="3.4.3 数据发送 (4G MQTT)"></a>3.4.3 数据发送 (4G MQTT)</h4><p><strong>文件</strong>: <a href="file://d:\Works\csdk\Air780EG\CSDK\mluatos-soc-2022_all\project\airocov_780E_at6558\gnss_client.c">_client.c</a> → <code>process_and_publish_gnss_data()</code></p>
+<ul>
+<li><p><strong>常规上报格式</strong> (JSON):</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;rptv2&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;devID&quot;</span><span class="punctuation">:</span> <span class="number">123456</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;SEQ&quot;</span><span class="punctuation">:</span> <span class="number">65536</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;IMEI&quot;</span><span class="punctuation">:</span> <span class="string">&quot;86xxxxxxxxxxx&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;ICCID&quot;</span><span class="punctuation">:</span> <span class="string">&quot;8986xxxxxxxxxxxx&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;warn&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;gnss&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;num&quot;</span><span class="punctuation">:</span> <span class="number">1</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;data&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">      <span class="punctuation">[</span><span class="number">1712563200</span><span class="punctuation">,</span> <span class="number">1</span><span class="punctuation">,</span> <span class="string">&quot;31.230569&quot;</span><span class="punctuation">,</span> <span class="string">&quot;121.473702&quot;</span><span class="punctuation">,</span> <span class="string">&quot;123.50&quot;</span><span class="punctuation">,</span> <span class="string">&quot;1.50&quot;</span><span class="punctuation">,</span> <span class="number">1</span><span class="punctuation">,</span> <span class="number">12</span><span class="punctuation">,</span> <span class="string">&quot;A&quot;</span><span class="punctuation">,</span> <span class="string">&quot;A&quot;</span><span class="punctuation">,</span> <span class="string">&quot;5.20&quot;</span><span class="punctuation">,</span> <span class="string">&quot;135.00&quot;</span><span class="punctuation">]</span></span><br><span class="line">    <span class="punctuation">]</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;soft_vers&quot;</span><span class="punctuation">:</span> <span class="number">2024040801</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>GNSS 数据字段</strong>:<ul>
+<li><code>[0]</code>: Unix 时间戳</li>
+<li><code>[1]</code>: 运动状态</li>
+<li><code>[2]</code>: 纬度 (度, 6位小数)</li>
+<li><code>[3]</code>: 经度 (度, 6位小数)</li>
+<li><code>[4]</code>: 海拔 (米, 2位小数)</li>
+<li><code>[5]</code>: HDOP (2位小数)</li>
+<li><code>[6]</code>: Fix Quality (0&#x3D;无效, 1&#x3D;GNSS, 2&#x3D;DGPS, 4&#x3D;RTK Fixed)</li>
+<li><code>[7]</code>: 卫星数</li>
+<li><code>[8]</code>: 定位模式 (A&#x3D;自主, D&#x3D;差分, E&#x3D;估算, N&#x3D;无效)</li>
+<li><code>[9]</code>: 状态 (A&#x3D;有效, V&#x3D;无效)</li>
+<li><code>[10]</code>: 速度 (km&#x2F;h, 3位小数)</li>
+<li><code>[11]</code>: 航向 (度, 2位小数)</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>静止状态优化上报</strong> (<code>process_and_publish_static_gnss_data()</code>):</p>
+<ul>
+<li>使用过滤后的最优点集合 (<code>best_points[]</code>)</li>
+<li>时间戳采用服务器当前时间 (<code>time(NULL)</code>) 而非 GNSS 原始时间</li>
+<li>其他字段与常规上报相同</li>
+</ul>
+</li>
+<li><p><strong>上报触发机制</strong>:</p>
+<ol>
+<li><strong>定时上报</strong>: <code>timer_report</code> 定时器 (默认 40s)</li>
+<li><strong>手动查询</strong>: 收到 MQTT 命令 <code>req.location.msg</code></li>
+<li><strong>批量策略</strong>: 缓冲区达到 <code>GNSS_REPORT_DATA_MAXLEN</code> (30条) 或超时 60s</li>
+</ol>
+</li>
+</ul>
+<h4 id="3-4-4-平台端接收与处理"><a href="#3-4-4-平台端接收与处理" class="headerlink" title="3.4.4 平台端接收与处理"></a>3.4.4 平台端接收与处理</h4><ul>
+<li><strong>数据存储</strong>:<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE TABLE</span> gnss_location (</span><br><span class="line">    dev_id <span class="type">VARCHAR</span>(<span class="number">32</span>),</span><br><span class="line">    <span class="type">timestamp</span> <span class="type">BIGINT</span>,</span><br><span class="line">    latitude <span class="type">DECIMAL</span>(<span class="number">10</span>, <span class="number">6</span>),</span><br><span class="line">    longitude <span class="type">DECIMAL</span>(<span class="number">10</span>, <span class="number">6</span>),</span><br><span class="line">    altitude <span class="type">DECIMAL</span>(<span class="number">8</span>, <span class="number">2</span>),</span><br><span class="line">    hdop <span class="type">DECIMAL</span>(<span class="number">4</span>, <span class="number">2</span>),</span><br><span class="line">    fix_quality TINYINT,</span><br><span class="line">    satellites TINYINT,</span><br><span class="line">    speed_kmh <span class="type">DECIMAL</span>(<span class="number">6</span>, <span class="number">3</span>),</span><br><span class="line">    course_deg <span class="type">DECIMAL</span>(<span class="number">6</span>, <span class="number">2</span>),</span><br><span class="line">    motion_state TINYINT,</span><br><span class="line">    <span class="keyword">PRIMARY KEY</span> (dev_id, <span class="type">timestamp</span>)</span><br><span class="line">);</span><br></pre></td></tr></table></figure></li>
+<li><strong>业务逻辑</strong>:<ul>
+<li><strong>轨迹回放</strong>: 按时间顺序绘制移动路径</li>
+<li><strong>地理围栏</strong>: 判断坐标是否在预设区域内</li>
+<li><strong>超速告警</strong>: 速度 &gt; 阈值时触发</li>
+<li><strong>定位质量评估</strong>: HDOP &lt; 2.0 为高精度，&gt; 5.0 为低精度</li>
+<li><strong>静止检测</strong>: 连续多点坐标不变且速度为 0，判定为停车&#x2F;停留</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="4-数据融合与协同工作机制"><a href="#4-数据融合与协同工作机制" class="headerlink" title="4. 数据融合与协同工作机制"></a>4. 数据融合与协同工作机制</h2><h3 id="4-1-多源定位优先级"><a href="#4-1-多源定位优先级" class="headerlink" title="4.1 多源定位优先级"></a>4.1 多源定位优先级</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">室内场景: UWB (最高精度) &gt; BLE (中等精度) &gt; GNSS (无信号)</span><br><span class="line">室外场景: GNSS RTK (厘米级) &gt; GNSS 标准 (米级) &gt; BLE (辅助)</span><br><span class="line">过渡区域: GNSS + BLE 融合定位</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-2-功耗优化策略"><a href="#4-2-功耗优化策略" class="headerlink" title="4.2 功耗优化策略"></a>4.2 功耗优化策略</h3><table>
+<thead>
+<tr>
+<th>状态</th>
+<th>GNSS 工作模式</th>
+<th>上报频率</th>
+<th>UWB&#x2F;BLE 扫描</th>
+<th>Sub-1G 监听</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>持续运动</strong></td>
+<td>1Hz 连续定位</td>
+<td>40s</td>
+<td>开启</td>
+<td>开启</td>
+</tr>
+<tr>
+<td><strong>短暂静止</strong> (&lt; 2min)</td>
+<td>保持开启</td>
+<td>40s</td>
+<td>开启</td>
+<td>开启</td>
+</tr>
+<tr>
+<td><strong>长期静止</strong> (&gt; 2min)</td>
+<td>关闭电源</td>
+<td>30min (滤波数据)</td>
+<td>降低扫描频率</td>
+<td>降低监听频率</td>
+</tr>
+<tr>
+<td><strong>深度睡眠</strong></td>
+<td>关闭</td>
+<td>停止</td>
+<td>关闭</td>
+<td>关闭</td>
+</tr>
+</tbody></table>
+<h3 id="4-3-状态机流转"><a href="#4-3-状态机流转" class="headerlink" title="4.3 状态机流转"></a>4.3 状态机流转</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">stateDiagram-v2</span><br><span class="line">    [*] --&gt; MOTION_DETECTION</span><br><span class="line">    MOTION_DETECTION --&gt; ACTIVE_MODE: 检测到运动</span><br><span class="line">    MOTION_DETECTION --&gt; STATIONARY_MODE: 静止超过2分钟</span><br><span class="line">    </span><br><span class="line">    ACTIVE_MODE --&gt; ACTIVE_MODE: 持续定位, 40s上报</span><br><span class="line">    ACTIVE_MODE --&gt; STATIONARY_MODE: 静止超过2分钟</span><br><span class="line">    </span><br><span class="line">    STATIONARY_MODE --&gt; STATIONARY_MODE: GNSS关闭, 30min上报滤波数据</span><br><span class="line">    STATIONARY_MODE --&gt; ACTIVE_MODE: 检测到运动</span><br><span class="line">    </span><br><span class="line">    ACTIVE_MODE --&gt; SOS_ALARM: Sub-1G SOS触发</span><br><span class="line">    STATIONARY_MODE --&gt; SOS_ALARM: Sub-1G SOS触发</span><br><span class="line">    </span><br><span class="line">    SOS_ALARM --&gt; ACTIVE_MODE: 告警解除</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="5-平台端数据接口规范"><a href="#5-平台端数据接口规范" class="headerlink" title="5. 平台端数据接口规范"></a>5. 平台端数据接口规范</h2><h3 id="5-1-MQTT-Topic-定义"><a href="#5-1-MQTT-Topic-定义" class="headerlink" title="5.1 MQTT Topic 定义"></a>5.1 MQTT Topic 定义</h3><ul>
+<li><p><strong>上行数据</strong> (设备 → 平台):</p>
+<ul>
+<li><code>/dev/{imei}/uplink/status</code> - 设备状态心跳</li>
+<li><code>/dev/{imei}/uplink/location</code> - 定位数据上报</li>
+<li><code>/dev/{imei}/uplink/alarm</code> - 告警事件 (SOS、低电量等)</li>
+</ul>
+</li>
+<li><p><strong>下行命令</strong> (平台 → 设备):</p>
+<ul>
+<li><code>/dev/{imei}/downlink</code> - 通用命令通道<ul>
+<li><code>{&quot;type&quot;: &quot;cfg.gnss.period&quot;, &quot;val&quot;: 40}</code> - 设置 GNSS 定位周期</li>
+<li><code>{&quot;type&quot;: &quot;cfg.rpt.period&quot;, &quot;val&quot;: 40}</code> - 设置数据上报周期</li>
+<li><code>{&quot;type&quot;: &quot;req.location.msg&quot;}</code> - 手动触发定位上报</li>
+<li><code>{&quot;type&quot;: &quot;cfg.static.period&quot;, &quot;val&quot;: 1800}</code> - 设置静止状态上报周期</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="5-2-数据完整性保障"><a href="#5-2-数据完整性保障" class="headerlink" title="5.2 数据完整性保障"></a>5.2 数据完整性保障</h3><ul>
+<li><strong>序列号机制</strong>: 全局递增 <code>SEQ</code> 字段，平台端检测丢包</li>
+<li><strong>CRC 校验</strong>: Sub-1G 链路层 CRC16，应用层 JSON 格式校验</li>
+<li><strong>重试机制</strong>: MQTT QoS 1，确保至少送达一次</li>
+<li><strong>断点续传</strong>: 网络恢复后，优先上报积压的环形缓冲区数据</li>
+</ul>
+<h3 id="5-3-异常处理"><a href="#5-3-异常处理" class="headerlink" title="5.3 异常处理"></a>5.3 异常处理</h3><table>
+<thead>
+<tr>
+<th>异常场景</th>
+<th>处理策略</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>GNSS 长时间无信号</td>
+<td>切换为 BLE&#x2F;UWB 定位，标记 <code>fix_quality=0</code></td>
+</tr>
+<tr>
+<td>4G 网络断开</td>
+<td>数据缓存至 Flash，网络恢复后补传</td>
+</tr>
+<tr>
+<td>电池电量 &lt; 10%</td>
+<td>降低 GNSS 频率至 300s，关闭 UWB&#x2F;BLE 扫描</td>
+</tr>
+<tr>
+<td>NRF52832 通信失败</td>
+<td>重试 100 次后判定硬件故障，上报告警</td>
+</tr>
+<tr>
+<td>SOS 报警触发</td>
+<td>立即上报，忽略批量策略，优先级最高</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="6-关键技术指标"><a href="#6-关键技术指标" class="headerlink" title="6. 关键技术指标"></a>6. 关键技术指标</h2><table>
+<thead>
+<tr>
+<th>指标项</th>
+<th>UWB</th>
+<th>BLE</th>
+<th>Sub-1G</th>
+<th>GNSS (4G)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>定位精度</strong></td>
+<td>10-30 cm</td>
+<td>3-10 m</td>
+<td>N&#x2F;A (传感器)</td>
+<td>2-5 m (标准), &lt;10 cm (RTK)</td>
+</tr>
+<tr>
+<td><strong>覆盖范围</strong></td>
+<td>室内 50m</td>
+<td>室内&#x2F;外 100m</td>
+<td>室外 1-5 km</td>
+<td>全球</td>
+</tr>
+<tr>
+<td><strong>功耗</strong></td>
+<td>高 (100mA+)</td>
+<td>中 (10-20mA)</td>
+<td>低 (&lt;5mA)</td>
+<td>高 (50-100mA)</td>
+</tr>
+<tr>
+<td><strong>更新频率</strong></td>
+<td>1-10 Hz</td>
+<td>1-5 Hz</td>
+<td>1-60 min</td>
+<td>1 Hz (运动), 1&#x2F;30 min (静止)</td>
+</tr>
+<tr>
+<td><strong>典型应用</strong></td>
+<td>仓库精确定位</td>
+<td>区域存在检测</td>
+<td>远程传感器监控</td>
+<td>户外轨迹追踪</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="7-总结"><a href="#7-总结" class="headerlink" title="7. 总结"></a>7. 总结</h2><p>本方案通过 <strong>UWB + BLE + Sub-1G + 4G GNSS</strong> 四线并行的架构，实现了：</p>
+<ol>
+<li><strong>全场景覆盖</strong>: 室内高精度 (UWB) + 室外广域 (GNSS) + 过渡区辅助 (BLE)</li>
+<li><strong>低功耗优化</strong>: 基于运动状态的自适应采样与上报策略</li>
+<li><strong>多源融合</strong>: 多种定位技术互补，提升可靠性</li>
+<li><strong>实时告警</strong>: Sub-1G 传感器直连，SOS 毫秒级响应</li>
+<li><strong>云端协同</strong>: 标准化 MQTT 接口，支持远程配置与 OTA 升级</li>
+</ol>
+<p>该系统适用于 <strong>物流仓储、人员安全监护、资产追踪、智慧工地</strong> 等多种物联网应用场景。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/temp/%E7%89%A9%E8%B5%84%E5%AE%9A%E4%BD%8D%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F.html" data-id="cuidslVAHB1gup6nIj4Etzlcx" data-title="" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E5%85%A8%E5%BF%97T113S3/">全志T113S3</a></li></ul></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C%E8%AF%AD%E8%A8%80%E5%AE%8F/" rel="tag">C语言宏</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Debug%E6%97%A5%E5%BF%97/" rel="tag">Debug日志</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Makefile/" rel="tag">Makefile</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96/" rel="tag">内存优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="tag">博客环境搭建</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" rel="tag">学习记录</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" rel="tag">嵌入式学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" rel="tag">工具使用</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B8%B8%E8%A7%81%E5%8D%8F%E8%AE%AE%E7%AE%80%E4%BB%8B/" rel="tag">常见协议简介</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" rel="tag">数据传输</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" rel="tag">数据存储</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/" rel="tag">结构体</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%A9%B1%E5%8A%A8%E5%B1%8F/" rel="tag">驱动屏</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/C%E8%AF%AD%E8%A8%80%E5%AE%8F/" style="font-size: 10px;">C语言宏</a> <a href="/tags/Debug%E6%97%A5%E5%BF%97/" style="font-size: 10px;">Debug日志</a> <a href="/tags/Linux/" style="font-size: 18px;">Linux</a> <a href="/tags/Makefile/" style="font-size: 10px;">Makefile</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96/" style="font-size: 10px;">内存优化</a> <a href="/tags/%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" style="font-size: 10px;">博客环境搭建</a> <a href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" style="font-size: 10px;">学习记录</a> <a href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" style="font-size: 20px;">嵌入式学习</a> <a href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" style="font-size: 14px;">工具使用</a> <a href="/tags/%E5%B8%B8%E8%A7%81%E5%8D%8F%E8%AE%AE%E7%AE%80%E4%BB%8B/" style="font-size: 10px;">常见协议简介</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" style="font-size: 12px;">数据传输</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" style="font-size: 16px;">数据存储</a> <a href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/" style="font-size: 10px;">结构体</a> <a href="/tags/%E9%A9%B1%E5%8A%A8%E5%B1%8F/" style="font-size: 14px;">驱动屏</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/07/">July 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/05/">May 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/04/">April 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/02/">February 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/01/">January 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/02/">February 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">January 2023</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2026/07/26/%E7%BC%96%E8%AF%91%E9%93%BE%E6%8E%A5/MakeFile/Makefile.inc/">Makefile</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/26/%E8%BE%BE%E5%8F%91%E9%9D%A2%E8%AF%95%E5%87%86%E5%A4%87/%E4%B8%80%E9%9D%A2/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2026/05/28/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/Modbus%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">Modbus协议学习笔记</a>
+          </li>
+        
+          <li>
+            <a href="/2026/04/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/FreeRTOS%E5%B7%A5%E7%A8%8B%E5%8C%96%E8%A6%81%E7%82%B9/">FreeRTOS工程化要点：任务划分、优先级设计与CPU占用率监控</a>
+          </li>
+        
+          <li>
+            <a href="/2026/04/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E8%87%AA%E5%8A%A8%E5%88%9D%E5%A7%8B%E5%8C%96%E6%A1%86%E6%9E%B6/">自动初始化框架</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
