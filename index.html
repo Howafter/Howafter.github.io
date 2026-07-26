@@ -637,6 +637,122 @@
 <td>体现你的<strong>工程经验</strong>——面试官很在意你能不能帮客户提前”避坑”</td>
 </tr>
 </tbody></table>
+<h1 id="RTK-部分-补充内容"><a href="#RTK-部分-补充内容" class="headerlink" title="RTK 部分 补充内容"></a>RTK 部分 补充内容</h1><h3 id="一、什么是”可能会考”的部分（建议准备）"><a href="#一、什么是”可能会考”的部分（建议准备）" class="headerlink" title="一、什么是”可能会考”的部分（建议准备）"></a>一、什么是”可能会考”的部分（建议准备）</h3><p>作为GNSS FAE岗位，面试官如果知道你面的是<strong>GNSS方向的芯片原厂FAE</strong>，<strong>很可能</strong>会问到差分定位的基本概念，但<strong>不太会</strong>考RTCM协议的二进制报文细节。你需要准备的是：</p>
+<table>
+<thead>
+<tr>
+<th>知识点</th>
+<th>需要掌握程度</th>
+<th>原因</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>RTK vs PPK 的核心区别</strong></td>
+<td>✅ 必须会</td>
+<td>最基础的概念题</td>
+</tr>
+<tr>
+<td><strong>RTCM是什么</strong></td>
+<td>✅ 必须会</td>
+<td>是RTK的”语言”，FAE面试常问基础协议</td>
+</tr>
+<tr>
+<td><strong>NTRIP协议</strong></td>
+<td>⚠️ 了解即可</td>
+<td>知道是”网络传输差分数据的协议”就够了</td>
+</tr>
+<tr>
+<td><strong>RTK的硬性约束</strong></td>
+<td>✅ 必须会</td>
+<td>距离限制、通信链路可靠性、基站架设</td>
+</tr>
+<tr>
+<td><strong>RTCM报文结构细节</strong></td>
+<td>❌ 不用背</td>
+<td>FAE面试不会让你手写RTCM帧结构</td>
+</tr>
+<tr>
+<td><strong>PPK后处理算法</strong></td>
+<td>❌ 不用背</td>
+<td>那是算法工程师的范围</td>
+</tr>
+</tbody></table>
+<h3 id="二、最可能被问到的”面试题”及回答模板"><a href="#二、最可能被问到的”面试题”及回答模板" class="headerlink" title="二、最可能被问到的”面试题”及回答模板"></a>二、最可能被问到的”面试题”及回答模板</h3><h4 id="Q1：RTK和PPK有什么区别？"><a href="#Q1：RTK和PPK有什么区别？" class="headerlink" title="Q1：RTK和PPK有什么区别？"></a>Q1：RTK和PPK有什么区别？</h4><blockquote>
+<p>直接从我已经掌握的知识回答：</p>
+<p>“RTK是<strong>实时动态差分</strong>，基准站通过无线电链路或4G&#x2F;NTRIP网络，实时把载波相位改正数发给流动站，流动站实时解算出厘米级定位[[1]]。RTK的优势是<strong>实时可用</strong>，适用于自动驾驶、无人机实时导航、测量放样等场景。</p>
+<p>PPK是<strong>后处理动态差分</strong>，基准站和流动站各自独立记录原始观测数据，<strong>没有实时通信链路</strong>[[2]]，飞行结束后在电脑上做后处理解算。PPK的优势是<strong>作业半径大、不受通信距离限制</strong>，适用于测绘航测。</p>
+<p><strong>关键区别三点</strong>：① RTK实时出结果，PPK需要后期处理；② RTK需要稳定的实时数据链，PPK不需要；③ RTK受距离限制（通常&lt;20km），PPK不受实时通信距离限制[[3]]。”</p>
+</blockquote>
+<h4 id="Q2：RTCM是什么？"><a href="#Q2：RTCM是什么？" class="headerlink" title="Q2：RTCM是什么？"></a>Q2：RTCM是什么？</h4><blockquote>
+<p>“RTCM是国际海事无线电技术委员会制定的<strong>差分GNSS数据标准格式</strong>，是RTK定位的”传输语言”[[4]]。基准站把卫星的伪距和载波相位观测值按RTCM格式编码后，通过数据链发给流动站[[5]]。目前主流版本是RTCM 3.x，比2.x效率更高、支持多星座[[6]]。</p>
+<p>FAE工作中，客户如果出现RTK无法固定解的问题，我们通常会先检查RTCM数据链路的<strong>完整性</strong>——数据格式是否匹配、数据率是否足够、通信链路是否有丢包[[7]]。”</p>
+</blockquote>
+<h4 id="Q3：RTK固定解不稳定的常见原因有哪些？-FAE实操向"><a href="#Q3：RTK固定解不稳定的常见原因有哪些？-FAE实操向" class="headerlink" title="Q3：RTK固定解不稳定的常见原因有哪些？(FAE实操向)"></a>Q3：RTK固定解不稳定的常见原因有哪些？(FAE实操向)</h4><blockquote>
+<p>“作为FAE，客户最常见的问题就是RTK固定率不够高，排查思路是：</p>
+<ol>
+<li><strong>基站距离</strong>：流动站离基站越远，空间误差去相关效果越差，&gt;30km固定困难</li>
+<li><strong>通信链路质量</strong>：NTRIP网络延迟、丢包，或者电台功率不足</li>
+<li><strong>多径环境</strong>：高楼遮挡导致观测值质量差，载波相位周跳频繁</li>
+<li><strong>卫星几何</strong>：可见星数不够或PDOP值太高（&lt;4颗星无法RTK）</li>
+<li><strong>硬件因素</strong>：天线相位中心不稳定、射频前端干扰”</li>
+</ol>
+</blockquote>
+<h3 id="三、面试官问”RTK相关”的触发条件"><a href="#三、面试官问”RTK相关”的触发条件" class="headerlink" title="三、面试官问”RTK相关”的触发条件"></a>三、面试官问”RTK相关”的触发条件</h3><p>面试中通常<strong>不是</strong>每个GNSS FAE都会被问到差分技术——要看：</p>
+<table>
+<thead>
+<tr>
+<th>触发条件</th>
+<th>回答策略</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>你面的岗位明确提到了”高精度定位&#x2F;厘米级定位&#x2F;RTK”</td>
+<td>✅ 必须充分准备</td>
+</tr>
+<tr>
+<td>面试官追问”你做过什么高精度项目？”</td>
+<td>✅ 顺势带出RTK&#x2F;PPK知识</td>
+</tr>
+<tr>
+<td>面试官没提差分，全程在聊场景题+项目管理</td>
+<td>❌ 不用主动提，除非被问</td>
+</tr>
+<tr>
+<td>你简历上写了差分&#x2F;RTK相关经验</td>
+<td>✅ 必须能讲清楚</td>
+</tr>
+</tbody></table>
+<h3 id="四、最省时间的准备方式（如果决定要补）"><a href="#四、最省时间的准备方式（如果决定要补）" class="headerlink" title="四、最省时间的准备方式（如果决定要补）"></a>四、最省时间的准备方式（如果决定要补）</h3><table>
+<thead>
+<tr>
+<th>优先级</th>
+<th>内容</th>
+<th>参考来源</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>第1优先级</td>
+<td>熟练掌握 RTK vs PPK 区别（3句话说明白）</td>
+<td>[[8]][[9]][[10]]</td>
+</tr>
+<tr>
+<td>第2优先级</td>
+<td>RTCM是什么、NTRIP是什么（概念级，30秒讲清）</td>
+<td>[[11]][[12]]</td>
+</tr>
+<tr>
+<td>第3优先级</td>
+<td>客户RTK固定不下来的<strong>FAE排查SOP</strong>（3-5步）</td>
+<td>上述Q3</td>
+</tr>
+<tr>
+<td>不用准备</td>
+<td>RTCM报文帧结构、RTKLIB源码、PPP算法细节</td>
+<td>❌ 面试不考</td>
+</tr>
+</tbody></table>
+<hr>
+<p><strong>一句话总结</strong>：如果你的面试方向是<strong>GNSS芯片原厂FAE</strong>，差分RTK&#x2F;PPK基础知识<strong>值得准备</strong>，但不是”必须从零学”。<br>花<strong>30分钟</strong>把上面Q1-Q3的模板背熟，遇到能回答；遇不到也没损失。全力优先保证你之前练的<strong>场景题 + 英文 + 项目管理</strong>这三大块。</p>
 <h1 id="FAE场景题-英文准备（6-8小时）"><a href="#FAE场景题-英文准备（6-8小时）" class="headerlink" title="FAE场景题 + 英文准备（6-8小时）"></a>FAE场景题 + 英文准备（6-8小时）</h1><hr>
 <h2 id="第一部分：FAE场景题专项训练（约3-4小时）"><a href="#第一部分：FAE场景题专项训练（约3-4小时）" class="headerlink" title="第一部分：FAE场景题专项训练（约3-4小时）"></a>第一部分：FAE场景题专项训练（约3-4小时）</h2><h3 id="场景题-1：客户现场问题排查"><a href="#场景题-1：客户现场问题排查" class="headerlink" title="场景题 1：客户现场问题排查"></a>场景题 1：客户现场问题排查</h3><blockquote>
 <p><strong>题干</strong>：客户反馈设备在某个区域经常收不到GNSS信号，你作为FAE如何远程&#x2F;现场排查？</p>
@@ -1363,11 +1479,254 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2026/07/26/%E8%BE%BE%E5%8F%91%E9%9D%A2%E8%AF%95%E5%87%86%E5%A4%87/%E4%BA%8C%E9%9D%A2/" data-id="cuids63un_IO8GDxOeD27v0rP" data-title="达发科技面试(二面)" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2026/07/26/%E8%BE%BE%E5%8F%91%E9%9D%A2%E8%AF%95%E5%87%86%E5%A4%87/%E4%BA%8C%E9%9D%A2/" data-id="cuidw0jzEUzU4dI0xMeCXHwTR" data-title="达发科技面试(二面)" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E9%9D%A2%E8%AF%95/" rel="tag">面试</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-编译链接/MakeFile/Makefile.inc" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2026/07/26/%E7%BC%96%E8%AF%91%E9%93%BE%E6%8E%A5/MakeFile/Makefile.inc/" class="article-date">
+  <time class="dt-published" datetime="2026-07-26T05:16:00.256Z" itemprop="datePublished">2026-07-26</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2026/07/26/%E7%BC%96%E8%AF%91%E9%93%BE%E6%8E%A5/MakeFile/Makefile.inc/">Makefile</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <ul>
+<li>源码</li>
+</ul>
+<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line">LIOT_AIROCOV_CUSTOMER_APP_PATH = <span class="variable">$(TOP)</span>/PLAT/project/<span class="variable">$(TARGET)</span>/<span class="variable">$(CORE)</span>/apps/<span class="variable">$(PROJECT)</span>/airocov_lierda</span><br><span class="line"></span><br><span class="line">CFLAGS_INC     +=  -I <span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_PATH)</span>/inc</span><br><span class="line">CFLAGS_INC     +=  -I <span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_PATH)</span>/bsp_adapter_inc</span><br><span class="line"></span><br><span class="line">LIOT_AIROCOV_CUSTOMER_APP_SRC_DIRS += <span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_PATH)</span>/src</span><br><span class="line">LIOT_AIROCOV_CUSTOMER_APP_SRC_DIRS += <span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_PATH)</span>/bsp_adapter_src</span><br><span class="line"></span><br><span class="line">LIOT_AIROCOV_CUSTOMER_APP_EXCLUDE_FILES :=</span><br><span class="line">		   </span><br><span class="line">LIOT_AIROCOV_CUSTOMER_APP_CSRC = <span class="variable">$(<span class="built_in">foreach</span> <span class="built_in">dir</span>, <span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_SRC_DIRS)</span>, $(<span class="built_in">wildcard</span> <span class="variable">$(dir)</span>/*.c)</span>)</span><br><span class="line">LIOT_AIROCOV_CUSTOMER_APP_CFILES = <span class="variable">$(<span class="built_in">filter</span>-out <span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_EXCLUDE_FILES)</span>, <span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_CSRC)</span>)</span></span><br><span class="line">LIOT_AIROCOV_CUSTOMER_APP_COBJSTEMP := <span class="variable">$(<span class="built_in">patsubst</span> %.c, %.o, <span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_CFILES)</span>)</span></span><br><span class="line">LIOT_AIROCOV_CUSTOMER_APP_COBJSTEMP :=<span class="variable">$(<span class="built_in">subst</span> <span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_PATH)</span>,PLAT/project/<span class="variable">$(TARGET)</span>/<span class="variable">$(CORE)</span>/apps/<span class="variable">$(PROJECT)</span>/airocov_lierda,<span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_COBJSTEMP)</span>)</span></span><br><span class="line">LIOT_AIROCOV_CUSTOMER_APP_COBJS := <span class="variable">$(<span class="built_in">addprefix</span> <span class="variable">$(BUILDDIR)</span>/, <span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_COBJSTEMP)</span>)</span></span><br><span class="line"></span><br><span class="line">LIOT_AIROCOV_CUSTOMER_APP_PPFILES := <span class="variable">$(<span class="built_in">patsubst</span> %.o, %.pp, <span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_COBJS)</span>)</span></span><br><span class="line">PPFILES += <span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_PPFILES)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">ifneq</span> (<span class="variable">$(MAKECMDGOALS)</span>, unilog)</span><br><span class="line"><span class="keyword">-include</span> $(LIOT_AIROCOV_CUSTOMER_APP_COBJS:.o=.d)</span><br><span class="line"><span class="keyword">endif</span></span><br><span class="line"><span class="keyword">-include</span> $(LIOT_AIROCOV_CUSTOMER_APP_COBJS:.o=.dd)</span><br><span class="line"></span><br><span class="line">CFLAGS_INC += -I <span class="variable">$(TOP)</span>/PLAT/os/freertos/portable/gcc</span><br><span class="line"></span><br><span class="line">obj-y += <span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_COBJSTEMP)</span></span><br></pre></td></tr></table></figure>
+
+<p>以下是对您提供的 Makefile 代码的<strong>逐行解析</strong> ，重点说明每行的作用、关键逻辑和潜在注意事项：</p>
+<hr>
+<h3 id="1-定义应用路径变量"><a href="#1-定义应用路径变量" class="headerlink" title="1. 定义应用路径变量"></a><strong>1. 定义应用路径变量</strong></h3><figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LIOT_AIROCOV_CUSTOMER_APP_PATH = <span class="variable">$(TOP)</span>/PLAT/project/<span class="variable">$(TARGET)</span>/<span class="variable">$(CORE)</span>/apps/<span class="variable">$(PROJECT)</span>/airocov_lierda</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>作用</strong> ：定义应用代码的<strong>根目录路径</strong> 。</li>
+<li><strong>关键点</strong> ：<ul>
+<li><code>$(TOP)</code>：项目根目录（如<code>./</code> 或<code>../</code>）。</li>
+<li><code>$(TARGET)</code>：目标芯片&#x2F;平台（如<code>stm32f4</code>）。</li>
+<li><code>$(CORE)</code>：内核类型（如<code>arm</code>）。</li>
+<li><code>$(PROJECT)</code>：客户&#x2F;项目名称（如<code>customer1</code>）。</li>
+</ul>
+</li>
+<li><strong>示例</strong> ：若<code>TOP=.</code>、<code>TARGET=stm32f4</code>、<code>CORE=arm</code>、<code>PROJECT=customer1</code>，则路径为<code>./PLAT/project/stm32f4/arm/apps/customer1/airocov_lierda</code>。</li>
+</ul>
+<hr>
+<h3 id="2-添加头文件包含路径"><a href="#2-添加头文件包含路径" class="headerlink" title="2. 添加头文件包含路径"></a><strong>2. 添加头文件包含路径</strong></h3><figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">CFLAGS_INC     +=  -I <span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_PATH)</span>/inc</span><br><span class="line">CFLAGS_INC     +=  -I <span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_PATH)</span>/bsp_adapter_inc</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>作用</strong> ：将应用层头文件目录和 BSP 适配层头文件目录加入编译器搜索路径。</li>
+<li><strong>关键点</strong> ：<ul>
+<li><code>inc/</code>：应用层头文件（如<code>main.h</code>）。</li>
+<li><code>bsp_adapter_inc/</code>：硬件抽象层（BSP）适配头文件（如<code>hal.h</code>）。</li>
+</ul>
+</li>
+<li><strong>注意</strong> ：<code>CFLAGS_INC</code> 是全局编译选项，影响所有源文件。</li>
+</ul>
+<hr>
+<h3 id="3-定义源文件目录"><a href="#3-定义源文件目录" class="headerlink" title="3. 定义源文件目录"></a><strong>3. 定义源文件目录</strong></h3><figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">LIOT_AIROCOV_CUSTOMER_APP_SRC_DIRS += <span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_PATH)</span>/src</span><br><span class="line">LIOT_AIROCOV_CUSTOMER_APP_SRC_DIRS += <span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_PATH)</span>/bsp_adapter_src</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>作用</strong> ：指定源文件所在目录。</li>
+<li><strong>关键点</strong> ：<ul>
+<li><code>src/</code>：应用逻辑代码（如<code>main.c</code>）。</li>
+<li><code>bsp_adapter_src/</code>：BSP 适配层代码（如<code>hal_stm32.c</code>）。</li>
+</ul>
+</li>
+<li><strong>注意</strong> ：<code>+=</code> 确保追加目录，避免覆盖已有路径。</li>
+</ul>
+<hr>
+<h3 id="4-排除文件列表（留空）"><a href="#4-排除文件列表（留空）" class="headerlink" title="4. 排除文件列表（留空）"></a><strong>4. 排除文件列表（留空）</strong></h3><figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LIOT_AIROCOV_CUSTOMER_APP_EXCLUDE_FILES :=</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>作用</strong> ：定义需要<strong>排除</strong> 的文件列表（当前为空）。</li>
+<li><strong>关键点</strong> ：后续<code>filter-out</code> 会过滤掉这些文件（例如<code>LIOT_AIROCOV_CUSTOMER_APP_EXCLUDE_FILES += file_to_exclude.c</code>）。</li>
+</ul>
+<hr>
+<h3 id="5-收集所有-c-源文件"><a href="#5-收集所有-c-源文件" class="headerlink" title="5. 收集所有 .c 源文件"></a><strong>5. 收集所有 <code>.c</code> 源文件</strong></h3><figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LIOT_AIROCOV_CUSTOMER_APP_CSRC = <span class="variable">$(<span class="built_in">foreach</span> <span class="built_in">dir</span>, <span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_SRC_DIRS)</span>, $(<span class="built_in">wildcard</span> <span class="variable">$(dir)</span>/*.c)</span>)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>作用</strong> ：遍历<code>SRC_DIRS</code> 中的每个目录，收集所有<code>.c</code> 文件。</li>
+<li><strong>关键点</strong> ：<ul>
+<li><code>wildcard</code>：仅匹配<strong>当前目录下的一级文件</strong> （不递归子目录）。</li>
+<li>示例：若<code>src/</code> 有<code>main.c</code> 和<code>utils.c</code>，则<code>LIOT_AIROCOV_CUSTOMER_APP_CSRC = src/main.c src/utils.c</code>。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="6-过滤排除文件"><a href="#6-过滤排除文件" class="headerlink" title="6. 过滤排除文件"></a><strong>6. 过滤排除文件</strong></h3><figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LIOT_AIROCOV_CUSTOMER_APP_CFILES = <span class="variable">$(<span class="built_in">filter</span>-out <span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_EXCLUDE_FILES)</span>, <span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_CSRC)</span>)</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>作用</strong> ：从源文件列表中移除<code>EXCLUDE_FILES</code> 中指定的文件。</li>
+<li><strong>关键点</strong> ：当前<code>EXCLUDE_FILES</code> 为空，所以<code>CFILES</code> &#x3D;<code>CSRC</code>。</li>
+</ul>
+<hr>
+<h3 id="7-转换-c-为-o（中间变量）"><a href="#7-转换-c-为-o（中间变量）" class="headerlink" title="7. 转换 .c 为 .o（中间变量）"></a><strong>7. 转换 <code>.c</code> 为 <code>.o</code>（中间变量）</strong></h3><figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LIOT_AIROCOV_CUSTOMER_APP_COBJSTEMP := <span class="variable">$(<span class="built_in">patsubst</span> %.c, %.o, <span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_CFILES)</span>)</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>作用</strong> ：将源文件列表（<code>*.c</code>）转换为目标文件列表（<code>*.o</code>）。</li>
+<li><strong>关键点</strong> ：<code>COBJSTEMP</code> 是<strong>临时变量</strong> ，路径仍保留原始目录结构（如<code>src/main.o</code>）。</li>
+</ul>
+<hr>
+<h3 id="8-替换路径为构建目录结构"><a href="#8-替换路径为构建目录结构" class="headerlink" title="8. 替换路径为构建目录结构"></a><strong>8. 替换路径为构建目录结构</strong></h3><figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LIOT_AIROCOV_CUSTOMER_APP_COBJSTEMP := <span class="variable">$(<span class="built_in">subst</span> <span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_PATH)</span>,PLAT/project/<span class="variable">$(TARGET)</span>/<span class="variable">$(CORE)</span>/apps/<span class="variable">$(PROJECT)</span>/airocov_lierda,<span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_COBJSTEMP)</span>)</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>作用</strong> ：将原始路径替换为<strong>构建目录下的相对路径</strong> 。</li>
+<li><strong>关键点</strong> ：<ul>
+<li>原始路径：<code>./PLAT/project/stm32f4/arm/apps/customer1/airocov_lierda/src/main.c</code>。</li>
+<li>替换后：<code>PLAT/project/stm32f4/arm/apps/customer1/airocov_lierda/src/main.o</code>。</li>
+<li><strong>目的</strong> ：避免目标文件路径包含<code>./</code>，确保构建路径一致。</li>
+</ul>
+</li>
+<li><strong>注意</strong> ：此操作可能<strong>冗余</strong> （因<code>LIOT_AIROCOV_CUSTOMER_APP_PATH</code> 本身已包含完整路径），但逻辑正确。</li>
+</ul>
+<hr>
+<h3 id="9-生成最终目标文件路径"><a href="#9-生成最终目标文件路径" class="headerlink" title="9. 生成最终目标文件路径"></a><strong>9. 生成最终目标文件路径</strong></h3><figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LIOT_AIROCOV_CUSTOMER_APP_COBJS := <span class="variable">$(<span class="built_in">addprefix</span> <span class="variable">$(BUILDDIR)</span>/, <span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_COBJSTEMP)</span>)</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>作用</strong> ：将目标文件添加<code>$(BUILDDIR)</code> 前缀（如<code>build/</code>）。</li>
+<li><strong>关键点</strong> ：<ul>
+<li><code>BUILDDIR</code> 通常为<code>build/</code> 或<code>build/stm32f4/</code>。</li>
+<li>示例：<code>COBJS = build/PLAT/project/stm32f4/arm/apps/customer1/airocov_lierda/src/main.o</code>。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="10-生成预处理文件列表"><a href="#10-生成预处理文件列表" class="headerlink" title="10. 生成预处理文件列表"></a><strong>10. 生成预处理文件列表</strong></h3><figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">LIOT_AIROCOV_CUSTOMER_APP_PPFILES := <span class="variable">$(<span class="built_in">patsubst</span> %.o, %.pp, <span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_COBJS)</span>)</span></span><br><span class="line">PPFILES += <span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_PPFILES)</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>作用</strong> ：为每个<code>.o</code> 文件生成<code>.pp</code> 预处理文件（用于调试）。</li>
+<li><strong>关键点</strong> ：<code>PPFILES</code> 是全局变量，用于后续编译器选项（如<code>-MMD</code>）。</li>
+</ul>
+<hr>
+<h3 id="11-依赖文件包含（条件编译）"><a href="#11-依赖文件包含（条件编译）" class="headerlink" title="11. 依赖文件包含（条件编译）"></a><strong>11. 依赖文件包含（条件编译）</strong></h3><figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ifneq</span> (<span class="variable">$(MAKECMDGOALS)</span>, unilog)</span><br><span class="line"><span class="keyword">-include</span> $(LIOT_AIROCOV_CUSTOMER_APP_COBJS:.o=.d)</span><br><span class="line"><span class="keyword">endif</span></span><br><span class="line"><span class="keyword">-include</span> $(LIOT_AIROCOV_CUSTOMER_APP_COBJS:.o=.dd)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>作用</strong> ：包含编译生成的依赖文件（<code>.d</code> 和<code>.dd</code>）。</li>
+<li><strong>关键点</strong> ：<ul>
+<li><code>ifneq</code>：<strong>仅当目标不是 <code>unilog</code> 时</strong> 包含<code>.d</code> 依赖文件（避免日志生成时的干扰）。</li>
+<li><code>.d</code>：标准依赖文件（由编译器生成）。</li>
+<li><code>.dd</code>：额外依赖文件（可能用于特定工具链）。</li>
+</ul>
+</li>
+<li><strong>注意</strong> ：<code>-include</code> 确保文件不存在时不会报错。</li>
+</ul>
+<hr>
+<h3 id="12-添加-FreeRTOS-头文件路径"><a href="#12-添加-FreeRTOS-头文件路径" class="headerlink" title="12. 添加 FreeRTOS 头文件路径"></a><strong>12. 添加 FreeRTOS 头文件路径</strong></h3><figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CFLAGS_INC += -I <span class="variable">$(TOP)</span>/PLAT/os/freertos/portable/gcc</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>作用</strong> ：添加 FreeRTOS 移植层头文件路径。</li>
+<li><strong>关键点</strong> ：FreeRTOS 通常需在<code>portable/gcc/</code> 中定义硬件适配。</li>
+</ul>
+<hr>
+<h3 id="13-将目标文件加入链接列表"><a href="#13-将目标文件加入链接列表" class="headerlink" title="13. 将目标文件加入链接列表"></a><strong>13. 将目标文件加入链接列表</strong></h3><figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">obj-y += <span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_COBJSTEMP)</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>作用</strong> ：将应用目标文件加入最终链接的<code>obj-y</code> 列表。</li>
+<li><strong>关键点</strong> ：<ul>
+<li>使用<code>COBJSTEMP</code>（<strong>非最终路径</strong> ，即<code>PLAT/project/.../src/main.o</code>）。</li>
+<li><strong>潜在问题</strong> ：<code>obj-y</code> 通常要求<strong>相对路径</strong> ，但<code>COBJSTEMP</code> 已被替换为相对路径（如<code>PLAT/project/.../src/main.o</code>），符合 Makefile 规范。</li>
+<li><strong>正确性</strong> ：此处逻辑正确，因为<code>COBJS</code> 已通过<code>addprefix</code> 生成了完整路径，但<code>obj-y</code> 用的是中间变量<code>COBJSTEMP</code>（其值已替换为相对路径）。</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="关键逻辑总结"><a href="#关键逻辑总结" class="headerlink" title="关键逻辑总结"></a><strong>关键逻辑总结</strong></h3><table>
+<thead>
+<tr>
+<th><strong>步骤</strong></th>
+<th><strong>目的</strong></th>
+<th><strong>关键变量</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>路径定义</td>
+<td>构建应用代码根目录</td>
+<td><code>LIOT_AIROCOV_CUSTOMER_APP_PATH</code></td>
+</tr>
+<tr>
+<td>头文件包含</td>
+<td>使编译器能找到应用和 BSP 头文件</td>
+<td><code>CFLAGS_INC</code></td>
+</tr>
+<tr>
+<td>源文件收集</td>
+<td>获取所有<code>.c</code> 文件（过滤排除文件）</td>
+<td><code>LIOT_AIROCOV_CUSTOMER_APP_CFILES</code></td>
+</tr>
+<tr>
+<td>路径转换</td>
+<td>生成构建目录下的目标文件路径</td>
+<td><code>LIOT_AIROCOV_CUSTOMER_APP_COBJS</code></td>
+</tr>
+<tr>
+<td>依赖处理</td>
+<td>生成编译依赖，支持增量编译</td>
+<td><code>.d</code>&#x2F;<code>.dd</code> 文件包含</td>
+</tr>
+<tr>
+<td>链接列表</td>
+<td>将目标文件加入最终可执行文件链接列表</td>
+<td><code>obj-y</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="潜在问题与建议"><a href="#潜在问题与建议" class="headerlink" title="潜在问题与建议"></a><strong>潜在问题与建议</strong></h3><ol>
+<li><strong>路径冗余</strong> ：<ul>
+<li>第 8 行的<code>subst</code> 操作可能冗余（因<code>LIOT_AIROCOV_CUSTOMER_APP_PATH</code> 本身是完整路径），可简化为：<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LIOT_AIROCOV_CUSTOMER_APP_COBJSTEMP := <span class="variable">$(<span class="built_in">patsubst</span> <span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_PATH)</span>/%, <span class="variable">$(BUILDDIR)</span>/PLAT/project/<span class="variable">$(TARGET)</span>/<span class="variable">$(CORE)</span>/apps/<span class="variable">$(PROJECT)</span>/airocov_lierda/%, <span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_CFILES)</span>)</span></span><br></pre></td></tr></table></figure></li>
+<li><strong>但当前逻辑无错误</strong> ，仅稍显冗长。</li>
+</ul>
+</li>
+<li><strong>递归遍历问题</strong> ：<ul>
+<li><code>wildcard $(dir)/*.c</code><strong>仅匹配当前目录</strong> ，若源文件在子目录中（如<code>src/utils/utils.c</code>），需额外处理（例如：<code>$(wildcard $(dir)/**.c)</code>，但需 Makefile 4.0+）。</li>
+</ul>
+</li>
+<li><strong><code>obj-y</code> 使用 <code>COBJSTEMP</code></strong> ：<ul>
+<li>当前用<code>COBJSTEMP</code>（已替换路径）而非<code>COBJS</code>（含<code>BUILDDIR</code>）是<strong>正确的</strong> ，因为<code>obj-y</code> 需要<strong>相对于项目根目录的相对路径</strong> 。</li>
+</ul>
+</li>
+</ol>
+<hr>
+<blockquote>
+<p>✅ <strong>结论</strong> ：该 Makefile 逻辑清晰、规范，符合嵌入式项目构建标准，能正确处理路径、编译依赖和链接目标。主要注意点已在解析中标注。</p>
+</blockquote>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2026/07/26/%E7%BC%96%E8%AF%91%E9%93%BE%E6%8E%A5/MakeFile/Makefile.inc/" data-id="cuid6ZRJiBNHBq_HekFiG_5XQ" data-title="Makefile" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Makefile/" rel="tag">Makefile</a></li></ul>
 
     </footer>
   </div>
@@ -2948,254 +3307,11 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2026/07/26/%E8%BE%BE%E5%8F%91%E9%9D%A2%E8%AF%95%E5%87%86%E5%A4%87/%E4%B8%80%E9%9D%A2/" data-id="cuidgoRgXYrL-1eIxfuIOU_BF" data-title="达发科技面试（一面）" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2026/07/26/%E8%BE%BE%E5%8F%91%E9%9D%A2%E8%AF%95%E5%87%86%E5%A4%87/%E4%B8%80%E9%9D%A2/" data-id="cuidS97pMPw5dbHybCSPDGS-S" data-title="达发科技面试（一面）" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E9%9D%A2%E8%AF%95/" rel="tag">面试</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-编译链接/MakeFile/Makefile.inc" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2026/07/26/%E7%BC%96%E8%AF%91%E9%93%BE%E6%8E%A5/MakeFile/Makefile.inc/" class="article-date">
-  <time class="dt-published" datetime="2026-07-26T05:16:00.256Z" itemprop="datePublished">2026-07-26</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2026/07/26/%E7%BC%96%E8%AF%91%E9%93%BE%E6%8E%A5/MakeFile/Makefile.inc/">Makefile</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <ul>
-<li>源码</li>
-</ul>
-<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line">LIOT_AIROCOV_CUSTOMER_APP_PATH = <span class="variable">$(TOP)</span>/PLAT/project/<span class="variable">$(TARGET)</span>/<span class="variable">$(CORE)</span>/apps/<span class="variable">$(PROJECT)</span>/airocov_lierda</span><br><span class="line"></span><br><span class="line">CFLAGS_INC     +=  -I <span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_PATH)</span>/inc</span><br><span class="line">CFLAGS_INC     +=  -I <span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_PATH)</span>/bsp_adapter_inc</span><br><span class="line"></span><br><span class="line">LIOT_AIROCOV_CUSTOMER_APP_SRC_DIRS += <span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_PATH)</span>/src</span><br><span class="line">LIOT_AIROCOV_CUSTOMER_APP_SRC_DIRS += <span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_PATH)</span>/bsp_adapter_src</span><br><span class="line"></span><br><span class="line">LIOT_AIROCOV_CUSTOMER_APP_EXCLUDE_FILES :=</span><br><span class="line">		   </span><br><span class="line">LIOT_AIROCOV_CUSTOMER_APP_CSRC = <span class="variable">$(<span class="built_in">foreach</span> <span class="built_in">dir</span>, <span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_SRC_DIRS)</span>, $(<span class="built_in">wildcard</span> <span class="variable">$(dir)</span>/*.c)</span>)</span><br><span class="line">LIOT_AIROCOV_CUSTOMER_APP_CFILES = <span class="variable">$(<span class="built_in">filter</span>-out <span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_EXCLUDE_FILES)</span>, <span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_CSRC)</span>)</span></span><br><span class="line">LIOT_AIROCOV_CUSTOMER_APP_COBJSTEMP := <span class="variable">$(<span class="built_in">patsubst</span> %.c, %.o, <span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_CFILES)</span>)</span></span><br><span class="line">LIOT_AIROCOV_CUSTOMER_APP_COBJSTEMP :=<span class="variable">$(<span class="built_in">subst</span> <span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_PATH)</span>,PLAT/project/<span class="variable">$(TARGET)</span>/<span class="variable">$(CORE)</span>/apps/<span class="variable">$(PROJECT)</span>/airocov_lierda,<span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_COBJSTEMP)</span>)</span></span><br><span class="line">LIOT_AIROCOV_CUSTOMER_APP_COBJS := <span class="variable">$(<span class="built_in">addprefix</span> <span class="variable">$(BUILDDIR)</span>/, <span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_COBJSTEMP)</span>)</span></span><br><span class="line"></span><br><span class="line">LIOT_AIROCOV_CUSTOMER_APP_PPFILES := <span class="variable">$(<span class="built_in">patsubst</span> %.o, %.pp, <span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_COBJS)</span>)</span></span><br><span class="line">PPFILES += <span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_PPFILES)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">ifneq</span> (<span class="variable">$(MAKECMDGOALS)</span>, unilog)</span><br><span class="line"><span class="keyword">-include</span> $(LIOT_AIROCOV_CUSTOMER_APP_COBJS:.o=.d)</span><br><span class="line"><span class="keyword">endif</span></span><br><span class="line"><span class="keyword">-include</span> $(LIOT_AIROCOV_CUSTOMER_APP_COBJS:.o=.dd)</span><br><span class="line"></span><br><span class="line">CFLAGS_INC += -I <span class="variable">$(TOP)</span>/PLAT/os/freertos/portable/gcc</span><br><span class="line"></span><br><span class="line">obj-y += <span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_COBJSTEMP)</span></span><br></pre></td></tr></table></figure>
-
-<p>以下是对您提供的 Makefile 代码的<strong>逐行解析</strong> ，重点说明每行的作用、关键逻辑和潜在注意事项：</p>
-<hr>
-<h3 id="1-定义应用路径变量"><a href="#1-定义应用路径变量" class="headerlink" title="1. 定义应用路径变量"></a><strong>1. 定义应用路径变量</strong></h3><figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LIOT_AIROCOV_CUSTOMER_APP_PATH = <span class="variable">$(TOP)</span>/PLAT/project/<span class="variable">$(TARGET)</span>/<span class="variable">$(CORE)</span>/apps/<span class="variable">$(PROJECT)</span>/airocov_lierda</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><strong>作用</strong> ：定义应用代码的<strong>根目录路径</strong> 。</li>
-<li><strong>关键点</strong> ：<ul>
-<li><code>$(TOP)</code>：项目根目录（如<code>./</code> 或<code>../</code>）。</li>
-<li><code>$(TARGET)</code>：目标芯片&#x2F;平台（如<code>stm32f4</code>）。</li>
-<li><code>$(CORE)</code>：内核类型（如<code>arm</code>）。</li>
-<li><code>$(PROJECT)</code>：客户&#x2F;项目名称（如<code>customer1</code>）。</li>
-</ul>
-</li>
-<li><strong>示例</strong> ：若<code>TOP=.</code>、<code>TARGET=stm32f4</code>、<code>CORE=arm</code>、<code>PROJECT=customer1</code>，则路径为<code>./PLAT/project/stm32f4/arm/apps/customer1/airocov_lierda</code>。</li>
-</ul>
-<hr>
-<h3 id="2-添加头文件包含路径"><a href="#2-添加头文件包含路径" class="headerlink" title="2. 添加头文件包含路径"></a><strong>2. 添加头文件包含路径</strong></h3><figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">CFLAGS_INC     +=  -I <span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_PATH)</span>/inc</span><br><span class="line">CFLAGS_INC     +=  -I <span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_PATH)</span>/bsp_adapter_inc</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><strong>作用</strong> ：将应用层头文件目录和 BSP 适配层头文件目录加入编译器搜索路径。</li>
-<li><strong>关键点</strong> ：<ul>
-<li><code>inc/</code>：应用层头文件（如<code>main.h</code>）。</li>
-<li><code>bsp_adapter_inc/</code>：硬件抽象层（BSP）适配头文件（如<code>hal.h</code>）。</li>
-</ul>
-</li>
-<li><strong>注意</strong> ：<code>CFLAGS_INC</code> 是全局编译选项，影响所有源文件。</li>
-</ul>
-<hr>
-<h3 id="3-定义源文件目录"><a href="#3-定义源文件目录" class="headerlink" title="3. 定义源文件目录"></a><strong>3. 定义源文件目录</strong></h3><figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">LIOT_AIROCOV_CUSTOMER_APP_SRC_DIRS += <span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_PATH)</span>/src</span><br><span class="line">LIOT_AIROCOV_CUSTOMER_APP_SRC_DIRS += <span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_PATH)</span>/bsp_adapter_src</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><strong>作用</strong> ：指定源文件所在目录。</li>
-<li><strong>关键点</strong> ：<ul>
-<li><code>src/</code>：应用逻辑代码（如<code>main.c</code>）。</li>
-<li><code>bsp_adapter_src/</code>：BSP 适配层代码（如<code>hal_stm32.c</code>）。</li>
-</ul>
-</li>
-<li><strong>注意</strong> ：<code>+=</code> 确保追加目录，避免覆盖已有路径。</li>
-</ul>
-<hr>
-<h3 id="4-排除文件列表（留空）"><a href="#4-排除文件列表（留空）" class="headerlink" title="4. 排除文件列表（留空）"></a><strong>4. 排除文件列表（留空）</strong></h3><figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LIOT_AIROCOV_CUSTOMER_APP_EXCLUDE_FILES :=</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><strong>作用</strong> ：定义需要<strong>排除</strong> 的文件列表（当前为空）。</li>
-<li><strong>关键点</strong> ：后续<code>filter-out</code> 会过滤掉这些文件（例如<code>LIOT_AIROCOV_CUSTOMER_APP_EXCLUDE_FILES += file_to_exclude.c</code>）。</li>
-</ul>
-<hr>
-<h3 id="5-收集所有-c-源文件"><a href="#5-收集所有-c-源文件" class="headerlink" title="5. 收集所有 .c 源文件"></a><strong>5. 收集所有 <code>.c</code> 源文件</strong></h3><figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LIOT_AIROCOV_CUSTOMER_APP_CSRC = <span class="variable">$(<span class="built_in">foreach</span> <span class="built_in">dir</span>, <span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_SRC_DIRS)</span>, $(<span class="built_in">wildcard</span> <span class="variable">$(dir)</span>/*.c)</span>)</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><strong>作用</strong> ：遍历<code>SRC_DIRS</code> 中的每个目录，收集所有<code>.c</code> 文件。</li>
-<li><strong>关键点</strong> ：<ul>
-<li><code>wildcard</code>：仅匹配<strong>当前目录下的一级文件</strong> （不递归子目录）。</li>
-<li>示例：若<code>src/</code> 有<code>main.c</code> 和<code>utils.c</code>，则<code>LIOT_AIROCOV_CUSTOMER_APP_CSRC = src/main.c src/utils.c</code>。</li>
-</ul>
-</li>
-</ul>
-<hr>
-<h3 id="6-过滤排除文件"><a href="#6-过滤排除文件" class="headerlink" title="6. 过滤排除文件"></a><strong>6. 过滤排除文件</strong></h3><figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LIOT_AIROCOV_CUSTOMER_APP_CFILES = <span class="variable">$(<span class="built_in">filter</span>-out <span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_EXCLUDE_FILES)</span>, <span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_CSRC)</span>)</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><strong>作用</strong> ：从源文件列表中移除<code>EXCLUDE_FILES</code> 中指定的文件。</li>
-<li><strong>关键点</strong> ：当前<code>EXCLUDE_FILES</code> 为空，所以<code>CFILES</code> &#x3D;<code>CSRC</code>。</li>
-</ul>
-<hr>
-<h3 id="7-转换-c-为-o（中间变量）"><a href="#7-转换-c-为-o（中间变量）" class="headerlink" title="7. 转换 .c 为 .o（中间变量）"></a><strong>7. 转换 <code>.c</code> 为 <code>.o</code>（中间变量）</strong></h3><figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LIOT_AIROCOV_CUSTOMER_APP_COBJSTEMP := <span class="variable">$(<span class="built_in">patsubst</span> %.c, %.o, <span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_CFILES)</span>)</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><strong>作用</strong> ：将源文件列表（<code>*.c</code>）转换为目标文件列表（<code>*.o</code>）。</li>
-<li><strong>关键点</strong> ：<code>COBJSTEMP</code> 是<strong>临时变量</strong> ，路径仍保留原始目录结构（如<code>src/main.o</code>）。</li>
-</ul>
-<hr>
-<h3 id="8-替换路径为构建目录结构"><a href="#8-替换路径为构建目录结构" class="headerlink" title="8. 替换路径为构建目录结构"></a><strong>8. 替换路径为构建目录结构</strong></h3><figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LIOT_AIROCOV_CUSTOMER_APP_COBJSTEMP := <span class="variable">$(<span class="built_in">subst</span> <span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_PATH)</span>,PLAT/project/<span class="variable">$(TARGET)</span>/<span class="variable">$(CORE)</span>/apps/<span class="variable">$(PROJECT)</span>/airocov_lierda,<span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_COBJSTEMP)</span>)</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><strong>作用</strong> ：将原始路径替换为<strong>构建目录下的相对路径</strong> 。</li>
-<li><strong>关键点</strong> ：<ul>
-<li>原始路径：<code>./PLAT/project/stm32f4/arm/apps/customer1/airocov_lierda/src/main.c</code>。</li>
-<li>替换后：<code>PLAT/project/stm32f4/arm/apps/customer1/airocov_lierda/src/main.o</code>。</li>
-<li><strong>目的</strong> ：避免目标文件路径包含<code>./</code>，确保构建路径一致。</li>
-</ul>
-</li>
-<li><strong>注意</strong> ：此操作可能<strong>冗余</strong> （因<code>LIOT_AIROCOV_CUSTOMER_APP_PATH</code> 本身已包含完整路径），但逻辑正确。</li>
-</ul>
-<hr>
-<h3 id="9-生成最终目标文件路径"><a href="#9-生成最终目标文件路径" class="headerlink" title="9. 生成最终目标文件路径"></a><strong>9. 生成最终目标文件路径</strong></h3><figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LIOT_AIROCOV_CUSTOMER_APP_COBJS := <span class="variable">$(<span class="built_in">addprefix</span> <span class="variable">$(BUILDDIR)</span>/, <span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_COBJSTEMP)</span>)</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><strong>作用</strong> ：将目标文件添加<code>$(BUILDDIR)</code> 前缀（如<code>build/</code>）。</li>
-<li><strong>关键点</strong> ：<ul>
-<li><code>BUILDDIR</code> 通常为<code>build/</code> 或<code>build/stm32f4/</code>。</li>
-<li>示例：<code>COBJS = build/PLAT/project/stm32f4/arm/apps/customer1/airocov_lierda/src/main.o</code>。</li>
-</ul>
-</li>
-</ul>
-<hr>
-<h3 id="10-生成预处理文件列表"><a href="#10-生成预处理文件列表" class="headerlink" title="10. 生成预处理文件列表"></a><strong>10. 生成预处理文件列表</strong></h3><figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">LIOT_AIROCOV_CUSTOMER_APP_PPFILES := <span class="variable">$(<span class="built_in">patsubst</span> %.o, %.pp, <span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_COBJS)</span>)</span></span><br><span class="line">PPFILES += <span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_PPFILES)</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><strong>作用</strong> ：为每个<code>.o</code> 文件生成<code>.pp</code> 预处理文件（用于调试）。</li>
-<li><strong>关键点</strong> ：<code>PPFILES</code> 是全局变量，用于后续编译器选项（如<code>-MMD</code>）。</li>
-</ul>
-<hr>
-<h3 id="11-依赖文件包含（条件编译）"><a href="#11-依赖文件包含（条件编译）" class="headerlink" title="11. 依赖文件包含（条件编译）"></a><strong>11. 依赖文件包含（条件编译）</strong></h3><figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">ifneq</span> (<span class="variable">$(MAKECMDGOALS)</span>, unilog)</span><br><span class="line"><span class="keyword">-include</span> $(LIOT_AIROCOV_CUSTOMER_APP_COBJS:.o=.d)</span><br><span class="line"><span class="keyword">endif</span></span><br><span class="line"><span class="keyword">-include</span> $(LIOT_AIROCOV_CUSTOMER_APP_COBJS:.o=.dd)</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><strong>作用</strong> ：包含编译生成的依赖文件（<code>.d</code> 和<code>.dd</code>）。</li>
-<li><strong>关键点</strong> ：<ul>
-<li><code>ifneq</code>：<strong>仅当目标不是 <code>unilog</code> 时</strong> 包含<code>.d</code> 依赖文件（避免日志生成时的干扰）。</li>
-<li><code>.d</code>：标准依赖文件（由编译器生成）。</li>
-<li><code>.dd</code>：额外依赖文件（可能用于特定工具链）。</li>
-</ul>
-</li>
-<li><strong>注意</strong> ：<code>-include</code> 确保文件不存在时不会报错。</li>
-</ul>
-<hr>
-<h3 id="12-添加-FreeRTOS-头文件路径"><a href="#12-添加-FreeRTOS-头文件路径" class="headerlink" title="12. 添加 FreeRTOS 头文件路径"></a><strong>12. 添加 FreeRTOS 头文件路径</strong></h3><figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CFLAGS_INC += -I <span class="variable">$(TOP)</span>/PLAT/os/freertos/portable/gcc</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><strong>作用</strong> ：添加 FreeRTOS 移植层头文件路径。</li>
-<li><strong>关键点</strong> ：FreeRTOS 通常需在<code>portable/gcc/</code> 中定义硬件适配。</li>
-</ul>
-<hr>
-<h3 id="13-将目标文件加入链接列表"><a href="#13-将目标文件加入链接列表" class="headerlink" title="13. 将目标文件加入链接列表"></a><strong>13. 将目标文件加入链接列表</strong></h3><figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">obj-y += <span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_COBJSTEMP)</span></span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><strong>作用</strong> ：将应用目标文件加入最终链接的<code>obj-y</code> 列表。</li>
-<li><strong>关键点</strong> ：<ul>
-<li>使用<code>COBJSTEMP</code>（<strong>非最终路径</strong> ，即<code>PLAT/project/.../src/main.o</code>）。</li>
-<li><strong>潜在问题</strong> ：<code>obj-y</code> 通常要求<strong>相对路径</strong> ，但<code>COBJSTEMP</code> 已被替换为相对路径（如<code>PLAT/project/.../src/main.o</code>），符合 Makefile 规范。</li>
-<li><strong>正确性</strong> ：此处逻辑正确，因为<code>COBJS</code> 已通过<code>addprefix</code> 生成了完整路径，但<code>obj-y</code> 用的是中间变量<code>COBJSTEMP</code>（其值已替换为相对路径）。</li>
-</ul>
-</li>
-</ul>
-<hr>
-<h3 id="关键逻辑总结"><a href="#关键逻辑总结" class="headerlink" title="关键逻辑总结"></a><strong>关键逻辑总结</strong></h3><table>
-<thead>
-<tr>
-<th><strong>步骤</strong></th>
-<th><strong>目的</strong></th>
-<th><strong>关键变量</strong></th>
-</tr>
-</thead>
-<tbody><tr>
-<td>路径定义</td>
-<td>构建应用代码根目录</td>
-<td><code>LIOT_AIROCOV_CUSTOMER_APP_PATH</code></td>
-</tr>
-<tr>
-<td>头文件包含</td>
-<td>使编译器能找到应用和 BSP 头文件</td>
-<td><code>CFLAGS_INC</code></td>
-</tr>
-<tr>
-<td>源文件收集</td>
-<td>获取所有<code>.c</code> 文件（过滤排除文件）</td>
-<td><code>LIOT_AIROCOV_CUSTOMER_APP_CFILES</code></td>
-</tr>
-<tr>
-<td>路径转换</td>
-<td>生成构建目录下的目标文件路径</td>
-<td><code>LIOT_AIROCOV_CUSTOMER_APP_COBJS</code></td>
-</tr>
-<tr>
-<td>依赖处理</td>
-<td>生成编译依赖，支持增量编译</td>
-<td><code>.d</code>&#x2F;<code>.dd</code> 文件包含</td>
-</tr>
-<tr>
-<td>链接列表</td>
-<td>将目标文件加入最终可执行文件链接列表</td>
-<td><code>obj-y</code></td>
-</tr>
-</tbody></table>
-<hr>
-<h3 id="潜在问题与建议"><a href="#潜在问题与建议" class="headerlink" title="潜在问题与建议"></a><strong>潜在问题与建议</strong></h3><ol>
-<li><strong>路径冗余</strong> ：<ul>
-<li>第 8 行的<code>subst</code> 操作可能冗余（因<code>LIOT_AIROCOV_CUSTOMER_APP_PATH</code> 本身是完整路径），可简化为：<figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LIOT_AIROCOV_CUSTOMER_APP_COBJSTEMP := <span class="variable">$(<span class="built_in">patsubst</span> <span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_PATH)</span>/%, <span class="variable">$(BUILDDIR)</span>/PLAT/project/<span class="variable">$(TARGET)</span>/<span class="variable">$(CORE)</span>/apps/<span class="variable">$(PROJECT)</span>/airocov_lierda/%, <span class="variable">$(LIOT_AIROCOV_CUSTOMER_APP_CFILES)</span>)</span></span><br></pre></td></tr></table></figure></li>
-<li><strong>但当前逻辑无错误</strong> ，仅稍显冗长。</li>
-</ul>
-</li>
-<li><strong>递归遍历问题</strong> ：<ul>
-<li><code>wildcard $(dir)/*.c</code><strong>仅匹配当前目录</strong> ，若源文件在子目录中（如<code>src/utils/utils.c</code>），需额外处理（例如：<code>$(wildcard $(dir)/**.c)</code>，但需 Makefile 4.0+）。</li>
-</ul>
-</li>
-<li><strong><code>obj-y</code> 使用 <code>COBJSTEMP</code></strong> ：<ul>
-<li>当前用<code>COBJSTEMP</code>（已替换路径）而非<code>COBJS</code>（含<code>BUILDDIR</code>）是<strong>正确的</strong> ，因为<code>obj-y</code> 需要<strong>相对于项目根目录的相对路径</strong> 。</li>
-</ul>
-</li>
-</ol>
-<hr>
-<blockquote>
-<p>✅ <strong>结论</strong> ：该 Makefile 逻辑清晰、规范，符合嵌入式项目构建标准，能正确处理路径、编译依赖和链接目标。主要注意点已在解析中标注。</p>
-</blockquote>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2026/07/26/%E7%BC%96%E8%AF%91%E9%93%BE%E6%8E%A5/MakeFile/Makefile.inc/" data-id="cuidUm5g-rrrqxgOdyiyZF9n4" data-title="Makefile" class="article-share-link"><span class="fa fa-share">Share</span></a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Makefile/" rel="tag">Makefile</a></li></ul>
 
     </footer>
   </div>
@@ -3297,7 +3413,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2026/05/28/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/Modbus%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" data-id="cuid2uF_ZfS2iMTA5AyZ70xx9" data-title="Modbus协议学习笔记" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2026/05/28/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/Modbus%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" data-id="cuidxq_VYI-2Xyj2tVRQtfyxZ" data-title="Modbus协议学习笔记" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -3442,7 +3558,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2026/04/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/FreeRTOS%E5%B7%A5%E7%A8%8B%E5%8C%96%E8%A6%81%E7%82%B9/" data-id="cuid6MKLvGdsT62UrXMJ3I0HY" data-title="FreeRTOS工程化要点：任务划分、优先级设计与CPU占用率监控" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2026/04/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/FreeRTOS%E5%B7%A5%E7%A8%8B%E5%8C%96%E8%A6%81%E7%82%B9/" data-id="cuidqy4LwXDnPcLC6h2QpNSE8" data-title="FreeRTOS工程化要点：任务划分、优先级设计与CPU占用率监控" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -3590,7 +3706,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2026/04/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E8%87%AA%E5%8A%A8%E5%88%9D%E5%A7%8B%E5%8C%96%E6%A1%86%E6%9E%B6/" data-id="cuidn73qcsW_GpzZ0QOBZGsJw" data-title="自动初始化框架" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2026/04/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E8%87%AA%E5%8A%A8%E5%88%9D%E5%A7%8B%E5%8C%96%E6%A1%86%E6%9E%B6/" data-id="cuidaK2bWstZUWBDBo4VJ2NEA" data-title="自动初始化框架" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -3666,7 +3782,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2026/04/16/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%87%BD%E6%95%B0%E5%90%8D+%E8%A1%8C%E5%8F%B7+%E6%97%A5%E5%BF%97%E5%86%85%E5%AE%B9%20%E6%A0%BC%E5%BC%8F%E6%97%A5%E5%BF%97%E8%BE%93%E5%87%BA/" data-id="cuidhX2jy5aylC3uO8tLeAjS0" data-title="函数名+行号+日志内容 格式日志输出" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2026/04/16/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%87%BD%E6%95%B0%E5%90%8D+%E8%A1%8C%E5%8F%B7+%E6%97%A5%E5%BF%97%E5%86%85%E5%AE%B9%20%E6%A0%BC%E5%BC%8F%E6%97%A5%E5%BF%97%E8%BE%93%E5%87%BA/" data-id="cuid5qD9zvqIqf_QLEpwmwRZE" data-title="函数名+行号+日志内容 格式日志输出" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -3823,7 +3939,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2026/02/27/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE%E6%8E%A8%E8%8D%90/" data-id="cuid66XpRue1v_Xate53vMsv-" data-title="嵌入式开源项目" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2026/02/27/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%BC%80%E6%BA%90%E9%A1%B9%E7%9B%AE%E6%8E%A8%E8%8D%90/" data-id="cuidWspDz8oEOHjU8a00vqM3L" data-title="嵌入式开源项目" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -3877,7 +3993,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2026/02/24/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/%E9%A9%B1%E5%8A%A8%E5%B1%8F/00_%E4%BA%A4%E5%8F%89%E7%BC%96%E8%AF%91/" data-id="cuidkI-Rmf4imm28vtTDy61Ea" data-title="交叉编译" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2026/02/24/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/%E9%A9%B1%E5%8A%A8%E5%B1%8F/00_%E4%BA%A4%E5%8F%89%E7%BC%96%E8%AF%91/" data-id="cuiddHMcO5HoZXGT1zaalSAcQ" data-title="交叉编译" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -3932,7 +4048,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2026/02/24/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/%E9%A9%B1%E5%8A%A8%E5%B1%8F/01_%E6%98%BE%E7%A4%BA%E5%86%85%E5%AE%B9/" data-id="cuidbbxe6bdZ-9Xi49eCACy_S" data-title="显示内容" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2026/02/24/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/%E9%A9%B1%E5%8A%A8%E5%B1%8F/01_%E6%98%BE%E7%A4%BA%E5%86%85%E5%AE%B9/" data-id="cuidCyfsFF1fPo2O8mX_Io5Ts" data-title="显示内容" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -4007,11 +4123,11 @@
           </li>
         
           <li>
-            <a href="/2026/07/26/%E8%BE%BE%E5%8F%91%E9%9D%A2%E8%AF%95%E5%87%86%E5%A4%87/%E4%B8%80%E9%9D%A2/">达发科技面试（一面）</a>
+            <a href="/2026/07/26/%E7%BC%96%E8%AF%91%E9%93%BE%E6%8E%A5/MakeFile/Makefile.inc/">Makefile</a>
           </li>
         
           <li>
-            <a href="/2026/07/26/%E7%BC%96%E8%AF%91%E9%93%BE%E6%8E%A5/MakeFile/Makefile.inc/">Makefile</a>
+            <a href="/2026/07/26/%E8%BE%BE%E5%8F%91%E9%9D%A2%E8%AF%95%E5%87%86%E5%A4%87/%E4%B8%80%E9%9D%A2/">达发科技面试（一面）</a>
           </li>
         
           <li>
