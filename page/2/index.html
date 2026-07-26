@@ -71,6 +71,62 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-Linux 学习记录/驱动屏/02_读取触摸屏的输入" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2026/02/24/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/%E9%A9%B1%E5%8A%A8%E5%B1%8F/02_%E8%AF%BB%E5%8F%96%E8%A7%A6%E6%91%B8%E5%B1%8F%E7%9A%84%E8%BE%93%E5%85%A5/" class="article-date">
+  <time class="dt-published" datetime="2026-02-23T16:00:00.000Z" itemprop="datePublished">2026-02-24</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>►<a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E5%85%A8%E5%BF%97T113S3/">全志T113S3</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2026/02/24/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/%E9%A9%B1%E5%8A%A8%E5%B1%8F/02_%E8%AF%BB%E5%8F%96%E8%A7%A6%E6%91%B8%E5%B1%8F%E7%9A%84%E8%BE%93%E5%85%A5/">读取触摸屏得到输入</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="如何读取触摸屏的输入？"><a href="#如何读取触摸屏的输入？" class="headerlink" title="如何读取触摸屏的输入？"></a>如何读取触摸屏的输入？</h1><p>有了显示，还需要有触摸输入，程序是如何读取触摸屏用户按下的位置的呢？Linux系统其实把输入设备也抽象为文件了，在我们板卡中，该文件的路径是&#x2F;dev&#x2F;input&#x2F;event1，所以，我们需要读取用户在触摸屏的操作，我们只需要对该文件进行读取即可。</p>
+<p>那需要读取哪些事件呢？我们可以通过<code>getevent -l /dev/input/event1</code>了解所需事件</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">root@TinaLinux:/<span class="meta"># getevent -l /dev/input/event1</span></span><br><span class="line">poll <span class="number">2</span>, returned <span class="number">1</span></span><br><span class="line">EV_ABS       ABS_MT_TRACKING_ID   <span class="number">00000007</span>        </span><br><span class="line">poll <span class="number">2</span>, returned <span class="number">1</span></span><br><span class="line">EV_ABS       ABS_MT_POSITION_X    <span class="number">00000117</span>        </span><br><span class="line">poll <span class="number">2</span>, returned <span class="number">1</span></span><br><span class="line">EV_ABS       ABS_MT_POSITION_Y    <span class="number">00000116</span>        </span><br><span class="line">poll <span class="number">2</span>, returned <span class="number">1</span></span><br><span class="line">EV_KEY       BTN_TOUCH            DOWN            </span><br><span class="line">poll <span class="number">2</span>, returned <span class="number">1</span></span><br><span class="line">EV_SYN       SYN_REPORT           <span class="number">00000000</span>        </span><br><span class="line">poll <span class="number">2</span>, returned <span class="number">1</span></span><br><span class="line">EV_ABS       ABS_MT_TRACKING_ID   ffffffff        </span><br><span class="line">poll <span class="number">2</span>, returned <span class="number">1</span></span><br><span class="line">EV_KEY       BTN_TOUCH            UP              </span><br><span class="line">poll <span class="number">2</span>, returned <span class="number">1</span></span><br><span class="line">EV_SYN       SYN_REPORT           <span class="number">00000000</span> </span><br></pre></td></tr></table></figure>
+
+<p>然后通过<code>struct input_event</code>结构体获取解析即可。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;linux/input.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 全局变量声明</span></span><br><span class="line"><span class="type">int</span> evdev_fd = <span class="number">-1</span>;          <span class="comment">// 事件设备文件描述符</span></span><br><span class="line"><span class="type">int</span> indev_x = <span class="number">0</span>;            <span class="comment">// 触摸点的 X 坐标</span></span><br><span class="line"><span class="type">int</span> indev_y = <span class="number">0</span>;            <span class="comment">// 触摸点的 Y 坐标</span></span><br><span class="line"><span class="type">int</span> is_touching = <span class="number">0</span>;        <span class="comment">// 触摸状态（0: 未触摸，1: 触摸）</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 读取当前设备的状态</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">evdev_read</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">input_event</span> <span class="title">event</span>;</span>  <span class="comment">// 用于存储输入事件的结构体</span></span><br><span class="line">    <span class="comment">// 循环读取事件</span></span><br><span class="line">    <span class="keyword">if</span> (read(evdev_fd, &amp;event, <span class="keyword">sizeof</span>(event)) &gt; <span class="number">0</span>) </span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">switch</span> (event.type) &#123;</span><br><span class="line">            <span class="keyword">case</span> EV_ABS:</span><br><span class="line">                <span class="comment">// 处理绝对位置事件</span></span><br><span class="line">                <span class="keyword">if</span> (event.code == ABS_MT_POSITION_X) indev_x = event.value; <span class="comment">// 更新 X 坐标</span></span><br><span class="line">                <span class="keyword">else</span> <span class="keyword">if</span> (event.code == ABS_MT_POSITION_Y) indev_y = event.value; <span class="comment">// 更新 Y 坐标</span></span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> EV_KEY:</span><br><span class="line">                <span class="comment">// 处理按键事件</span></span><br><span class="line">                <span class="keyword">if</span> (event.code == BTN_TOUCH) is_touching = event.value;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//1-触摸按下</span></span><br><span class="line">    <span class="keyword">if</span> (is_touching == <span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">//如果当前处于触摸状态，打印坐标和状态</span></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;x,y=%d,%d  state=%d\n&quot;</span>, indev_x, indev_y, is_touching);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// 打开事件设备文件</span></span><br><span class="line">    evdev_fd = open(<span class="string">&quot;/dev/input/event1&quot;</span>, O_RDONLY | O_NONBLOCK);</span><br><span class="line">    <span class="keyword">if</span> (evdev_fd == <span class="number">-1</span>) </span><br><span class="line">    &#123;</span><br><span class="line">        perror(<span class="string">&quot;Failed to open device&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 主循环，持续读取事件</span></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        evdev_read();</span><br><span class="line">        usleep(<span class="number">10000</span>);  <span class="comment">// 休眠 10 毫秒，防止 CPU 占用过高</span></span><br><span class="line">    &#125;</span><br><span class="line">    close(evdev_fd);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>课后作业：</p>
+<p>实现按下触摸时，更换屏幕显示颜色</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;linux/input.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/mman.h&gt;</span>   </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span>   </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;linux/fb.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/ioctl.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">//32位的ARGB颜色</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> White   0xffFFFFFF</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> Red     0xffFF0000</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> Green   0xff00ff00</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> Blue    0xff99ffff</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 全局变量声明</span></span><br><span class="line"><span class="type">static</span> <span class="type">int</span> evdev_fd = <span class="number">-1</span>;          <span class="comment">// 事件设备文件描述符</span></span><br><span class="line"><span class="type">static</span> <span class="type">int</span> indev_x = <span class="number">0</span>;            <span class="comment">// 触摸点的 X 坐标</span></span><br><span class="line"><span class="type">static</span> <span class="type">int</span> indev_y = <span class="number">0</span>;            <span class="comment">// 触摸点的 Y 坐标</span></span><br><span class="line"><span class="type">static</span> <span class="type">int</span> is_touching = <span class="number">0</span>;        <span class="comment">// 触摸状态（0: 未触摸，1: 触摸）</span></span><br><span class="line"><span class="type">static</span> <span class="type">unsigned</span> <span class="type">int</span> colors[] = &#123;White, Red, Green, Blue&#125;;</span><br><span class="line"><span class="type">static</span> <span class="type">int</span> color_index = <span class="number">0</span>;</span><br><span class="line"><span class="type">static</span> <span class="type">unsigned</span> <span class="type">int</span> *framebuffer_mem;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">fb_var_screeninfo</span> <span class="title">vinfo</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 填充屏幕颜色</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">fb_fill</span><span class="params">(<span class="type">unsigned</span> <span class="type">int</span> color)</span> &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; vinfo.xres * vinfo.yres; i++) &#123;</span><br><span class="line">        framebuffer_mem[i] = color;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 读取当前设备的状态</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="type">void</span> <span class="title function_">evdev_read</span><span class="params">()</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">input_event</span> <span class="title">event</span>;</span>  <span class="comment">// 用于存储输入事件的结构体</span></span><br><span class="line">    <span class="comment">// 循环读取事件</span></span><br><span class="line">    <span class="keyword">if</span> (read(evdev_fd, &amp;event, <span class="keyword">sizeof</span>(event)) &gt; <span class="number">0</span>) </span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">switch</span> (event.type) &#123;</span><br><span class="line">            <span class="keyword">case</span> EV_ABS:</span><br><span class="line">                <span class="comment">// 处理绝对位置事件</span></span><br><span class="line">                <span class="keyword">if</span> (event.code == ABS_MT_POSITION_X) indev_x = event.value; <span class="comment">// 更新 X 坐标</span></span><br><span class="line">                <span class="keyword">else</span> <span class="keyword">if</span> (event.code == ABS_MT_POSITION_Y) indev_y = event.value; <span class="comment">// 更新 Y 坐标</span></span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> EV_KEY:</span><br><span class="line">                <span class="comment">// 处理按键事件</span></span><br><span class="line">                <span class="keyword">if</span> (event.code == BTN_TOUCH) is_touching = event.value;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//1-触摸按下</span></span><br><span class="line">    <span class="keyword">if</span> (is_touching == <span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        is_touching = <span class="number">0</span>;</span><br><span class="line">        <span class="comment">//如果当前处于触摸状态，打印坐标和状态</span></span><br><span class="line">        <span class="built_in">printf</span>(<span class="string">&quot;x,y=%d,%d  state=%d\n&quot;</span>, indev_x, indev_y, is_touching);</span><br><span class="line">        color_index = (color_index + <span class="number">1</span>) % <span class="number">4</span>;</span><br><span class="line">        fb_fill(colors[color_index]);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">//打开帧缓冲设备</span></span><br><span class="line">    <span class="type">int</span> framebuffer_fd = open(<span class="string">&quot;/dev/fb0&quot;</span>,O_RDWR);           <span class="comment">//打开framebuffer设备</span></span><br><span class="line">    <span class="keyword">if</span>(framebuffer_fd == <span class="number">-1</span>)&#123;</span><br><span class="line">        perror(<span class="string">&quot;open fb error&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">    <span class="comment">//获取屏幕的显示参数</span></span><br><span class="line">    ioctl(framebuffer_fd, FBIOGET_VSCREENINFO, &amp;vinfo);</span><br><span class="line">    <span class="comment">//打印分辨率</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;xres= %d,yres= %d %dbpp\n&quot;</span>,vinfo.xres,vinfo.yres,vinfo.bits_per_pixel);</span><br><span class="line"> </span><br><span class="line">    <span class="comment">//将文件或设备映射到进程的地址空间，后续对此内存的操作，就可以反映到设备上</span></span><br><span class="line">    framebuffer_mem = (<span class="type">unsigned</span> <span class="type">int</span> *)mmap(<span class="literal">NULL</span>, vinfo.xres*vinfo.yres*<span class="number">4</span>, </span><br><span class="line">            PROT_READ |  PROT_WRITE, MAP_SHARED, framebuffer_fd, <span class="number">0</span>);      </span><br><span class="line">    <span class="keyword">if</span>(framebuffer_mem == MAP_FAILED)&#123;</span><br><span class="line">        perror(<span class="string">&quot;mmap error&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;  </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 打开事件设备文件</span></span><br><span class="line">    evdev_fd = open(<span class="string">&quot;/dev/input/event1&quot;</span>, O_RDONLY | O_NONBLOCK);</span><br><span class="line">    <span class="keyword">if</span> (evdev_fd == <span class="number">-1</span>) </span><br><span class="line">    &#123;</span><br><span class="line">        perror(<span class="string">&quot;Failed to open device&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 主循环，持续读取事件</span></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        evdev_read();</span><br><span class="line">        usleep(<span class="number">10000</span>);  <span class="comment">// 休眠 10 毫秒，防止 CPU 占用过高</span></span><br><span class="line">    &#125;</span><br><span class="line">    close(evdev_fd);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>了解完输入输出后，很多小伙伴就有一个疑惑，如果我要设计一个好看的界面，界面上需要有按键、输入框、键盘、图片显示，那我是不是得把这些控件的样式都通过取模软件生成数组，然后一个一个去画到FrameBuffer中呢？这样开发效率也太低了，有没有更好的办法呢？肯定是有的，LGVL</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2026/02/24/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/%E9%A9%B1%E5%8A%A8%E5%B1%8F/02_%E8%AF%BB%E5%8F%96%E8%A7%A6%E6%91%B8%E5%B1%8F%E7%9A%84%E8%BE%93%E5%85%A5/" data-id="cuidXiap_h3khBu0e-HDPOw0Z" data-title="读取触摸屏得到输入" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" rel="tag">嵌入式学习</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E9%A9%B1%E5%8A%A8%E5%B1%8F/" rel="tag">驱动屏</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
     <article id="post-git 使用/简略使用指南" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2026/02/08/git%20%E4%BD%BF%E7%94%A8/%E7%AE%80%E7%95%A5%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/" class="article-date">
@@ -272,7 +328,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2026/02/08/git%20%E4%BD%BF%E7%94%A8/%E7%AE%80%E7%95%A5%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/" data-id="cuidcXg-mlGZwOw8I8Tkd0m6F" data-title="git 简略使用指南" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2026/02/08/git%20%E4%BD%BF%E7%94%A8/%E7%AE%80%E7%95%A5%E4%BD%BF%E7%94%A8%E6%8C%87%E5%8D%97/" data-id="cuidzALae4LDGS1LN9StijUuq" data-title="git 简略使用指南" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -379,7 +435,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2026/01/30/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" data-id="cuid9LQPXhLx3Bq-GLATLBUnz" data-title="博客hexo环境搭建" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2026/01/30/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" data-id="cuid4DbAmEJumNmEzKE99yNrD" data-title="博客hexo环境搭建" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -540,7 +596,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2026/01/29/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E7%BB%93%E6%9E%84%E4%BD%93%E8%AE%BE%E8%AE%A1%E7%9A%84%E5%AF%B9%E9%BD%90%E4%B8%8E%E4%BC%98%E5%8C%96/" data-id="cuidfnCby47TO32d-nUo6grYK" data-title="嵌入式结构体设计的对齐与优化" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2026/01/29/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E7%BB%93%E6%9E%84%E4%BD%93%E8%AE%BE%E8%AE%A1%E7%9A%84%E5%AF%B9%E9%BD%90%E4%B8%8E%E4%BC%98%E5%8C%96/" data-id="cuidkIEUMAul6LusL7dhdxPo_" data-title="嵌入式结构体设计的对齐与优化" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -1017,7 +1073,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/APN%E7%89%A9%E8%81%94%E7%BD%91/" data-id="cuidSa6q1A8DWyoYo9glKKjHJ" data-title="APN物联网" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/APN%E7%89%A9%E8%81%94%E7%BD%91/" data-id="cuidLRoMTCnzK78Fitw1QQdhx" data-title="APN物联网" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -1148,7 +1204,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%87%BD%E6%95%B0%E6%8C%87%E9%92%88%E9%87%8D%E6%9E%84%E5%BA%94%E7%94%A8/" data-id="cuid49CM9ilQZSztoodr5zOqJ" data-title="函数指针重构应用" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%87%BD%E6%95%B0%E6%8C%87%E9%92%88%E9%87%8D%E6%9E%84%E5%BA%94%E7%94%A8/" data-id="cuid1Pe63W6MHILt-Nhmfr3sK" data-title="函数指针重构应用" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -1489,7 +1545,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%BC%80%E5%8F%91%E7%9C%8B%E5%9B%BE%E8%AF%B4%E8%AF%9D/" data-id="cuid-jTr92cFdT0mPf9SaGWxK" data-title="嵌入式开发看(原理)图说话" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%BC%80%E5%8F%91%E7%9C%8B%E5%9B%BE%E8%AF%B4%E8%AF%9D/" data-id="cuidUTswOPBdieVqVF_vBCb1m" data-title="嵌入式开发看(原理)图说话" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -2265,7 +2321,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%98%E5%82%A8%E5%BC%80%E5%8F%91%E9%AB%98%E6%95%88%E5%BA%94%E7%94%A8/" data-id="cuid0F2x1uhKy2e-JKpcMWxwL" data-title="嵌入式存储开发高效应用" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%98%E5%82%A8%E5%BC%80%E5%8F%91%E9%AB%98%E6%95%88%E5%BA%94%E7%94%A8/" data-id="cuid8ztHBeElZC7HCzwEFUHzx" data-title="嵌入式存储开发高效应用" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -2382,7 +2438,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E7%89%A9%E8%81%94%E7%BD%91%E5%B8%B8%E8%A7%81%E5%8D%8F%E8%AE%AE%E7%AE%80%E4%BB%8B/" data-id="cuidB8gUckXWVJ85gvtPUeQHD" data-title="物联网常见协议简介" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E7%89%A9%E8%81%94%E7%BD%91%E5%B8%B8%E8%A7%81%E5%8D%8F%E8%AE%AE%E7%AE%80%E4%BB%8B/" data-id="cuidHVjmNat9GpFqiTb9PH2ph" data-title="物联网常见协议简介" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -2516,113 +2572,11 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E9%AB%98%E6%95%88%E6%95%B0%E6%8D%AE%E4%BA%A4%E6%8D%A2/" data-id="cuidw27PD3z58I7pv-QSer-K6" data-title="嵌入式设备如何实现高效数据交换" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E9%AB%98%E6%95%88%E6%95%B0%E6%8D%AE%E4%BA%A4%E6%8D%A2/" data-id="cuidvaBLkuD449ZMc8t2sUiLM" data-title="嵌入式设备如何实现高效数据交换" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
   <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" rel="tag">嵌入式学习</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" rel="tag">数据传输</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-博客撰写方法/静态博客撰写方法（整理后）" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2026/01/18/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95%EF%BC%88%E6%95%B4%E7%90%86%E5%90%8E%EF%BC%89/" class="article-date">
-  <time class="dt-published" datetime="2026-01-17T16:00:00.000Z" itemprop="datePublished">2026-01-18</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2026/01/18/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95%EF%BC%88%E6%95%B4%E7%90%86%E5%90%8E%EF%BC%89/">博客撰写方法(整理后)</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <h1 id="嵌入式开发者：Hexo-博客搭建与双环境同步全指南"><a href="#嵌入式开发者：Hexo-博客搭建与双环境同步全指南" class="headerlink" title="嵌入式开发者：Hexo 博客搭建与双环境同步全指南"></a>嵌入式开发者：Hexo 博客搭建与双环境同步全指南</h1><h2 id="第一阶段：环境初始化与云端配置"><a href="#第一阶段：环境初始化与云端配置" class="headerlink" title="第一阶段：环境初始化与云端配置"></a>第一阶段：环境初始化与云端配置</h2><p>在开始写代码前，先建立两个 GitHub 仓库，分别存放“毛坯房（源码）”和“装修房（网页）”。</p>
-<h3 id="1-准备-GitHub-仓库"><a href="#1-准备-GitHub-仓库" class="headerlink" title="1. 准备 GitHub 仓库"></a>1. 准备 GitHub 仓库</h3><ul>
-<li><strong>仓库 A (网页库)</strong>：名称必须为 <code>你的用户名.github.io</code>。设为 <strong>Public</strong>。</li>
-<li><strong>仓库 B (源码库)</strong>：名称自定义（如 <code>blog-source</code>）。建议设为 <strong>Private</strong>，用于存放所有 <code>.md</code> 原稿和配置文件。</li>
-</ul>
-<h3 id="2-安装核心组件-双端通用"><a href="#2-安装核心组件-双端通用" class="headerlink" title="2. 安装核心组件 (双端通用)"></a>2. 安装核心组件 (双端通用)</h3><p>无论在 Windows 还是全志开发板（Ubuntu&#x2F;Debian）上，均需安装：</p>
-<ul>
-<li><strong>Node.js</strong>: 运行环境。</li>
-<li><strong>Git</strong>: 版本控制与发布工具。</li>
-</ul>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Linux (开发板/虚拟机) 安装命令</span></span><br><span class="line"><span class="built_in">sudo</span> apt update &amp;&amp; <span class="built_in">sudo</span> apt install nodejs npm git -y</span><br><span class="line"></span><br><span class="line"><span class="comment"># Windows 建议直接从官网下载 .msi 安装包</span></span><br><span class="line"><span class="comment"># 安装完成后，全局安装 Hexo 命令行工具：</span></span><br><span class="line">npm install -g hexo-cli</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<hr>
-<h2 id="第二阶段：本地架构搭建（以-Windows-为例）"><a href="#第二阶段：本地架构搭建（以-Windows-为例）" class="headerlink" title="第二阶段：本地架构搭建（以 Windows 为例）"></a>第二阶段：本地架构搭建（以 Windows 为例）</h2><h3 id="1-初始化-Hexo"><a href="#1-初始化-Hexo" class="headerlink" title="1. 初始化 Hexo"></a>1. 初始化 Hexo</h3><p>找一个纯净的文件夹，执行以下操作：</p>
-<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">hexo init my_blog</span><br><span class="line"><span class="built_in">cd</span> my_blog</span><br><span class="line">npm install</span><br><span class="line">npm install hexo<span class="literal">-deployer-git</span> <span class="literal">--save</span>  <span class="comment"># 预装部署插件</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h3 id="2-关联源码仓库（实现备份-同步）"><a href="#2-关联源码仓库（实现备份-同步）" class="headerlink" title="2. 关联源码仓库（实现备份&#x2F;同步）"></a>2. 关联源码仓库（实现备份&#x2F;同步）</h3><p>这一步是为了让你在 Windows 写完后，能随时在开发板上拉取最新的笔记。</p>
-<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git init</span><br><span class="line">git remote add origin https://github.com/你的用户名/blog<span class="literal">-source</span>.git</span><br><span class="line">git branch <span class="literal">-M</span> main</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<hr>
-<h2 id="第三阶段：写作规范与-Front-Matter"><a href="#第三阶段：写作规范与-Front-Matter" class="headerlink" title="第三阶段：写作规范与 Front Matter"></a>第三阶段：写作规范与 Front Matter</h2><p>Hexo 文章的核心在于文件头部的 <strong>YAML</strong> 格式配置。</p>
-<h3 id="1-标准文章头模板"><a href="#1-标准文章头模板" class="headerlink" title="1. 标准文章头模板"></a>1. 标准文章头模板</h3><p>在 <code>source/_posts/</code> 下新建 <code>.md</code> 文件，必须包含以下信息：</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">title:</span> <span class="string">&quot;笔记: open()函数使用&quot;</span>   <span class="comment"># 若包含特殊符号，务必加双引号</span></span><br><span class="line"><span class="attr">date:</span> <span class="number">2026-01-20 10:00:00</span></span><br><span class="line"><span class="attr">tags:</span> </span><br><span class="line">  <span class="bullet">-</span> <span class="string">Linux</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">Driver</span></span><br><span class="line"><span class="attr">categories:</span> <span class="string">学习笔记</span></span><br><span class="line"><span class="attr">sticky:</span> <span class="number">0</span>                     <span class="comment"># 置顶等级</span></span><br><span class="line"><span class="attr">mathjax:</span> <span class="literal">true</span>                  <span class="comment"># 开启公式支持</span></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="meta"></span></span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p><strong>⚠️ 避坑准则：</strong></p>
-<ul>
-<li><strong>冒号后必加空格</strong>（例如 <code>title: Hello</code>）。</li>
-<li><strong>禁用 Tab 缩进</strong>，只能使用空格。</li>
-</ul>
-</blockquote>
-<hr>
-<h2 id="第四阶段：发布与双端同步工作流"><a href="#第四阶段：发布与双端同步工作流" class="headerlink" title="第四阶段：发布与双端同步工作流"></a>第四阶段：发布与双端同步工作流</h2><p>这是开发者最常用的“闭环”操作，建议直接保存以下流程：</p>
-<h3 id="1-发布流程（从本地到互联网）"><a href="#1-发布流程（从本地到互联网）" class="headerlink" title="1. 发布流程（从本地到互联网）"></a>1. 发布流程（从本地到互联网）</h3><p>修改根目录 <code>_config.yml</code> 底部：</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">deploy:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">git</span></span><br><span class="line">  <span class="attr">repo:</span> <span class="string">https://github.com/你的用户名/你的用户名.github.io.git</span></span><br><span class="line">  <span class="attr">branch:</span> <span class="string">main</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p><strong>执行发布三连：</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">hexo clean    <span class="comment"># 清理旧文件</span></span><br><span class="line">hexo g        <span class="comment"># 生成静态网页</span></span><br><span class="line">hexo d        <span class="comment"># 部署到 GitHub Pages</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h3 id="2-源码同步流程（从本地-A-到本地-B）"><a href="#2-源码同步流程（从本地-A-到本地-B）" class="headerlink" title="2. 源码同步流程（从本地 A 到本地 B）"></a>2. 源码同步流程（从本地 A 到本地 B）</h3><p><strong>在 Windows 端完成更新后：</strong></p>
-<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git add .</span><br><span class="line">git commit <span class="literal">-m</span> <span class="string">&quot;新增 Linux IO 笔记&quot;</span></span><br><span class="line">git push origin main</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p><strong>在全志开发板&#x2F;Linux 端获取更新：</strong></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git pull origin main</span><br><span class="line"><span class="comment"># 这样你在开发板上也能看到同样的 .md 文稿了</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<hr>
-<h2 id="第五阶段：补充建议（进阶方案）"><a href="#第五阶段：补充建议（进阶方案）" class="headerlink" title="第五阶段：补充建议（进阶方案）"></a>第五阶段：补充建议（进阶方案）</h2><h3 id="1-自动生成-YAML-头部-VS-Code-用户必备"><a href="#1-自动生成-YAML-头部-VS-Code-用户必备" class="headerlink" title="1. 自动生成 YAML 头部 (VS Code 用户必备)"></a>1. 自动生成 YAML 头部 (VS Code 用户必备)</h3><p>为了避免每次手动写 Front Matter 报错，建议在 VS Code 中配置 <strong>User Snippets (用户代码片段)</strong>。</p>
-<p>将你提供的 JSON 模板加入 <code>markdown.json</code> 中，以后只需输入 <code>blog</code> 即可一键生成标准头部。</p>
-<h3 id="2-资源路径处理"><a href="#2-资源路径处理" class="headerlink" title="2. 资源路径处理"></a>2. 资源路径处理</h3><p>对于嵌入式开发者，文章中经常包含实验截图。</p>
-<ul>
-<li><strong>建议方案</strong>：修改 <code>_config.yml</code> 中的 <code>post_asset_folder: true</code>。</li>
-<li><strong>效果</strong>：每次新建文章会同步生成一个同名文件夹，你直接把图片放进去，用 <code>![描述](图片名.png)</code> 即可引用，方便管理。</li>
-</ul>
-<h3 id="3-轻量化尝试：Hugo"><a href="#3-轻量化尝试：Hugo" class="headerlink" title="3. 轻量化尝试：Hugo"></a>3. 轻量化尝试：Hugo</h3><p>如果你觉得 Hexo (Node.js) 在全志开发板上运行太重、生成速度慢，可以尝试 <strong>Hugo</strong>（Go 语言编写）。</p>
-<ul>
-<li><strong>优势</strong>：单个二进制文件，无需安装成百上千的 npm 包，极其适合资源受限的嵌入式系统。</li>
-</ul>
-<hr>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2026/01/18/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95%EF%BC%88%E6%95%B4%E7%90%86%E5%90%8E%EF%BC%89/" data-id="cuidIt0rXakO7EiA0zWxxyg9Q" data-title="博客撰写方法(整理后)" class="article-share-link"><span class="fa fa-share">Share</span></a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" rel="tag">学习记录</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" rel="tag">工具使用</a></li></ul>
 
     </footer>
   </div>
@@ -2667,7 +2621,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/C%E8%AF%AD%E8%A8%80%E5%AE%8F/" style="font-size: 10px;">C语言宏</a> <a href="/tags/Debug%E6%97%A5%E5%BF%97/" style="font-size: 10px;">Debug日志</a> <a href="/tags/Linux/" style="font-size: 18px;">Linux</a> <a href="/tags/Makefile/" style="font-size: 10px;">Makefile</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96/" style="font-size: 10px;">内存优化</a> <a href="/tags/%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" style="font-size: 10px;">博客环境搭建</a> <a href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" style="font-size: 10px;">学习记录</a> <a href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" style="font-size: 20px;">嵌入式学习</a> <a href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" style="font-size: 14px;">工具使用</a> <a href="/tags/%E5%B8%B8%E8%A7%81%E5%8D%8F%E8%AE%AE%E7%AE%80%E4%BB%8B/" style="font-size: 10px;">常见协议简介</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" style="font-size: 12px;">数据传输</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" style="font-size: 16px;">数据存储</a> <a href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/" style="font-size: 10px;">结构体</a> <a href="/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 10px;">面试</a> <a href="/tags/%E9%A9%B1%E5%8A%A8%E5%B1%8F/" style="font-size: 14px;">驱动屏</a>
+      <a href="/tags/C%E8%AF%AD%E8%A8%80%E5%AE%8F/" style="font-size: 10px;">C语言宏</a> <a href="/tags/Debug%E6%97%A5%E5%BF%97/" style="font-size: 10px;">Debug日志</a> <a href="/tags/Linux/" style="font-size: 18px;">Linux</a> <a href="/tags/Makefile/" style="font-size: 10px;">Makefile</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96/" style="font-size: 10px;">内存优化</a> <a href="/tags/%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" style="font-size: 10px;">博客环境搭建</a> <a href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" style="font-size: 10px;">学习记录</a> <a href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" style="font-size: 20px;">嵌入式学习</a> <a href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" style="font-size: 14px;">工具使用</a> <a href="/tags/%E5%B8%B8%E8%A7%81%E5%8D%8F%E8%AE%AE%E7%AE%80%E4%BB%8B/" style="font-size: 10px;">常见协议简介</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" style="font-size: 12px;">数据传输</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" style="font-size: 16px;">数据存储</a> <a href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/" style="font-size: 10px;">结构体</a> <a href="/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 12px;">面试</a> <a href="/tags/%E9%A9%B1%E5%8A%A8%E5%B1%8F/" style="font-size: 14px;">驱动屏</a>
     </div>
   </div>
 
@@ -2689,7 +2643,11 @@
       <ul>
         
           <li>
-            <a href="/2026/07/26/%E8%BE%BE%E5%8F%91%E9%9D%A2%E8%AF%95%E5%87%86%E5%A4%87/%E4%B8%80%E9%9D%A2/">达发科技面试</a>
+            <a href="/2026/07/26/%E8%BE%BE%E5%8F%91%E9%9D%A2%E8%AF%95%E5%87%86%E5%A4%87/%E4%BA%8C%E9%9D%A2/">达发科技面试(二面)</a>
+          </li>
+        
+          <li>
+            <a href="/2026/07/26/%E8%BE%BE%E5%8F%91%E9%9D%A2%E8%AF%95%E5%87%86%E5%A4%87/%E4%B8%80%E9%9D%A2/">达发科技面试（一面）</a>
           </li>
         
           <li>
@@ -2702,10 +2660,6 @@
         
           <li>
             <a href="/2026/04/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/FreeRTOS%E5%B7%A5%E7%A8%8B%E5%8C%96%E8%A6%81%E7%82%B9/">FreeRTOS工程化要点：任务划分、优先级设计与CPU占用率监控</a>
-          </li>
-        
-          <li>
-            <a href="/2026/04/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E8%87%AA%E5%8A%A8%E5%88%9D%E5%A7%8B%E5%8C%96%E6%A1%86%E6%9E%B6/">自动初始化框架</a>
           </li>
         
       </ul>
