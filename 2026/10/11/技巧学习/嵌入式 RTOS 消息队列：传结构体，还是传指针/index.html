@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>嵌入式 RTOS 消息队列：传结构体，还是传指针？嵌入式 RTOS 消息队列：传结构体，还是传指针？ | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="嵌入式 RTOS 消息队列：传结构体，还是传指针？在 RTOS 嵌入式开发中，消息队列常用于：  任务与任务之间通信； 中断服务程序（ISR）向任务通知事件； 网络回调向业务任务投递数据； 将耗时工作从回调或中断中转移到独立任务执行。  使用消息队列时，一个常见设计问题是：  队列里应该直接保存完整的消息结构体，还是只保存指向消息对象的指针？  这两种设计都很常见，也都可以正确实现。但它们在内存占">
+<meta property="og:type" content="article">
+<meta property="og:title" content="嵌入式 RTOS 消息队列：传结构体，还是传指针？嵌入式 RTOS 消息队列：传结构体，还是传指针？">
+<meta property="og:url" content="http://example.com/2026/10/11/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%20RTOS%20%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%EF%BC%9A%E4%BC%A0%E7%BB%93%E6%9E%84%E4%BD%93%EF%BC%8C%E8%BF%98%E6%98%AF%E4%BC%A0%E6%8C%87%E9%92%88/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="嵌入式 RTOS 消息队列：传结构体，还是传指针？在 RTOS 嵌入式开发中，消息队列常用于：  任务与任务之间通信； 中断服务程序（ISR）向任务通知事件； 网络回调向业务任务投递数据； 将耗时工作从回调或中断中转移到独立任务执行。  使用消息队列时，一个常见设计问题是：  队列里应该直接保存完整的消息结构体，还是只保存指向消息对象的指针？  这两种设计都很常见，也都可以正确实现。但它们在内存占">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2026-10-11T02:00:00.000Z">
+<meta property="article:modified_time" content="2026-10-11T02:00:00.000Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="RTOS">
+<meta property="article:tag" content="嵌入式学习">
+<meta property="article:tag" content="消息队列">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+  
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
+
+<meta name="generator" content="Hexo 8.1.1"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+        
+          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
+        
+        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-技巧学习/嵌入式 RTOS 消息队列：传结构体，还是传指针" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2026/10/11/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%20RTOS%20%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%EF%BC%9A%E4%BC%A0%E7%BB%93%E6%9E%84%E4%BD%93%EF%BC%8C%E8%BF%98%E6%98%AF%E4%BC%A0%E6%8C%87%E9%92%88/" class="article-date">
+  <time class="dt-published" datetime="2026-10-11T02:00:00.000Z" itemprop="datePublished">2026-10-11</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      嵌入式 RTOS 消息队列：传结构体，还是传指针？嵌入式 RTOS 消息队列：传结构体，还是传指针？
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="嵌入式-RTOS-消息队列：传结构体，还是传指针？"><a href="#嵌入式-RTOS-消息队列：传结构体，还是传指针？" class="headerlink" title="嵌入式 RTOS 消息队列：传结构体，还是传指针？"></a>嵌入式 RTOS 消息队列：传结构体，还是传指针？</h1><p>在 RTOS 嵌入式开发中，消息队列常用于：</p>
+<ul>
+<li>任务与任务之间通信；</li>
+<li>中断服务程序（ISR）向任务通知事件；</li>
+<li>网络回调向业务任务投递数据；</li>
+<li>将耗时工作从回调或中断中转移到独立任务执行。</li>
+</ul>
+<p>使用消息队列时，一个常见设计问题是：</p>
+<blockquote>
+<p>队列里应该直接保存完整的消息结构体，还是只保存指向消息对象的指针？</p>
+</blockquote>
+<p>这两种设计都很常见，也都可以正确实现。但它们在内存占用、性能、实时性、生命周期管理和适用场景方面有明显区别。</p>
+<p>本文使用统一的通用消息结构体 <code>app_message_t</code> 说明两种方案，帮助新手理解底层原理，也为有经验的开发者提供设计取舍参考。</p>
+<hr>
+<h2 id="一、先理解：uint8-t-不等于“消息是字节数组”"><a href="#一、先理解：uint8-t-不等于“消息是字节数组”" class="headerlink" title="一、先理解：uint8_t * 不等于“消息是字节数组”"></a>一、先理解：<code>uint8_t *</code> 不等于“消息是字节数组”</h2><p>很多 RTOS 的消息队列接口看起来类似：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="title function_">rtos_queue_wait</span><span class="params">(</span></span><br><span class="line"><span class="params">    <span class="type">queue_handle_t</span> <span class="built_in">queue</span>,</span></span><br><span class="line"><span class="params">    <span class="type">uint8_t</span> *recv_msg,</span></span><br><span class="line"><span class="params">    <span class="type">uint32_t</span> msg_len,</span></span><br><span class="line"><span class="params">    <span class="type">uint32_t</span> timeout</span></span><br><span class="line"><span class="params">)</span>;</span><br></pre></td></tr></table></figure>
+
+<p>其中：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">uint8_t</span> *recv_msg</span><br></pre></td></tr></table></figure>
+
+<p>只是一个通用的“内存缓冲区地址”。</p>
+<p>它的实际含义是：</p>
+<blockquote>
+<p>从队列取出 <code>msg_len</code> 字节数据，并复制到 <code>recv_msg</code> 指向的内存区域。</p>
+</blockquote>
+<p>因此，下面三种变量都能作为接收缓冲区：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">uint32_t</span> value;</span><br><span class="line"><span class="type">app_message_t</span> msg;</span><br><span class="line"><span class="type">app_message_t</span> *msg_ptr;</span><br></pre></td></tr></table></figure>
+
+<p>调用时分别写成：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(<span class="type">uint8_t</span> *)&amp;value</span><br><span class="line">(<span class="type">uint8_t</span> *)&amp;msg</span><br><span class="line">(<span class="type">uint8_t</span> *)&amp;msg_ptr</span><br></pre></td></tr></table></figure>
+
+<p>注意：三者虽然都转换为 <code>uint8_t *</code>，但含义不同。</p>
+<table>
+<thead>
+<tr>
+<th>接收变量</th>
+<th><code>recv_msg</code> 指向什么</th>
+<th>实际接收内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>uint32_t value</code></td>
+<td>一个整数变量</td>
+<td>整数值</td>
+</tr>
+<tr>
+<td><code>app_message_t msg</code></td>
+<td>一个结构体变量</td>
+<td>完整结构体内容</td>
+</tr>
+<tr>
+<td><code>app_message_t *msg_ptr</code></td>
+<td>一个指针变量</td>
+<td>一个内存地址（指针值）</td>
+</tr>
+</tbody></table>
+<p>所以，理解消息队列的关键不是只看 <code>uint8_t *</code>，而是要同时看：</p>
+<ol>
+<li>队列创建时的单条消息大小；</li>
+<li>发送时的长度与地址；</li>
+<li>接收时的长度与地址；</li>
+<li>队列保存的是“对象内容”还是“对象地址”。</li>
+</ol>
+<hr>
+<h1 id="二、统一示例：一个通用应用消息结构体"><a href="#二、统一示例：一个通用应用消息结构体" class="headerlink" title="二、统一示例：一个通用应用消息结构体"></a>二、统一示例：一个通用应用消息结构体</h1><p>假设系统中使用下面这个消息结构体：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">enum</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    APP_MSG_BUTTON_PRESS,</span><br><span class="line">    APP_MSG_NETWORK_DATA,</span><br><span class="line">    APP_MSG_OTA_COMMAND,</span><br><span class="line">    APP_MSG_SENSOR_REPORT,</span><br><span class="line">&#125; app_message_type_e;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    app_message_type_e type;  <span class="comment">// 消息类型</span></span><br><span class="line">    <span class="type">uint32_t</span> id;              <span class="comment">// 消息编号、设备编号或请求编号</span></span><br><span class="line">    <span class="type">uint32_t</span> length;          <span class="comment">// 数据长度</span></span><br><span class="line">    <span class="type">uint8_t</span> data[<span class="number">128</span>];        <span class="comment">// 固定长度的消息负载</span></span><br><span class="line">&#125; <span class="type">app_message_t</span>;</span><br></pre></td></tr></table></figure>
+
+<p>这个结构体包含：</p>
+<ul>
+<li>消息类型；</li>
+<li>编号；</li>
+<li>数据长度；</li>
+<li>固定大小的数据区。</li>
+</ul>
+<p>后文所有代码都围绕它展开。</p>
+<hr>
+<h1 id="三、方案一：队列直接传递完整结构体"><a href="#三、方案一：队列直接传递完整结构体" class="headerlink" title="三、方案一：队列直接传递完整结构体"></a>三、方案一：队列直接传递完整结构体</h1><p>这种方式也可以叫作：</p>
+<ul>
+<li><strong>值传递</strong></li>
+<li><strong>结构体复制</strong></li>
+<li><strong>对象副本入队</strong></li>
+<li><strong>按值消息队列</strong></li>
+</ul>
+<p>其核心思想是：</p>
+<blockquote>
+<p>发送时，队列复制整个 <code>app_message_t</code>；接收时，再把整个结构体复制到接收变量中。</p>
+</blockquote>
+<hr>
+<h2 id="3-1-创建“结构体队列”"><a href="#3-1-创建“结构体队列”" class="headerlink" title="3.1 创建“结构体队列”"></a>3.1 创建“结构体队列”</h2><p>创建队列时，每个队列元素的大小应为完整结构体大小：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> APP_QUEUE_DEPTH  8</span></span><br><span class="line"></span><br><span class="line"><span class="type">queue_handle_t</span> g_app_queue = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">rtos_queue_create(</span><br><span class="line">    &amp;g_app_queue,</span><br><span class="line">    <span class="keyword">sizeof</span>(<span class="type">app_message_t</span>),</span><br><span class="line">    APP_QUEUE_DEPTH</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>这表示：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">队列中的每个槽位都可以存放一个完整的 app_message_t。</span><br></pre></td></tr></table></figure>
+
+<p>若 <code>app_message_t</code> 大小约为 140 字节，队列深度为 8，则仅消息存储区大约需要：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">140 × 8 = 1120 字节</span><br></pre></td></tr></table></figure>
+
+<p>实际内存还要加上队列控制块等 RTOS 开销。</p>
+<hr>
+<h2 id="3-2-发送完整结构体"><a href="#3-2-发送完整结构体" class="headerlink" title="3.2 发送完整结构体"></a>3.2 发送完整结构体</h2><p>发送方创建一个局部消息变量：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">app_send_message</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">app_message_t</span> msg;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">memset</span>(&amp;msg, <span class="number">0</span>, <span class="keyword">sizeof</span>(msg));</span><br><span class="line"></span><br><span class="line">    msg.type = APP_MSG_BUTTON_PRESS;</span><br><span class="line">    msg.id = <span class="number">1001</span>;</span><br><span class="line">    msg.length = <span class="number">1</span>;</span><br><span class="line">    msg.data[<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    rtos_queue_release(</span><br><span class="line">        g_app_queue,</span><br><span class="line">        <span class="keyword">sizeof</span>(msg),</span><br><span class="line">        (<span class="type">uint8_t</span> *)&amp;msg,</span><br><span class="line">        <span class="number">0</span></span><br><span class="line">    );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(<span class="type">uint8_t</span> *)&amp;msg</span><br></pre></td></tr></table></figure>
+
+<p>表示把 <code>msg</code> 结构体起始地址交给队列接口。</p>
+<p>队列会复制：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">sizeof</span>(msg)</span><br></pre></td></tr></table></figure>
+
+<p>个字节。</p>
+<p>队列中保存的是：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">msg 的完整副本</span><br></pre></td></tr></table></figure>
+
+<p>而不是 <code>msg</code> 的地址。</p>
+<hr>
+<h2 id="3-3-接收完整结构体"><a href="#3-3-接收完整结构体" class="headerlink" title="3.3 接收完整结构体"></a>3.3 接收完整结构体</h2><p>接收任务中定义一个结构体变量：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">app_worker_task</span><span class="params">(<span class="type">void</span> *param)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">app_message_t</span> msg;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">memset</span>(&amp;msg, <span class="number">0</span>, <span class="keyword">sizeof</span>(msg));</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (rtos_queue_wait(</span><br><span class="line">                g_app_queue,</span><br><span class="line">                (<span class="type">uint8_t</span> *)&amp;msg,</span><br><span class="line">                <span class="keyword">sizeof</span>(msg),</span><br><span class="line">                RTOS_WAIT_FOREVER) != <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">switch</span> (msg.type)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">case</span> APP_MSG_BUTTON_PRESS:</span><br><span class="line">                <span class="comment">/* 处理按键事件 */</span></span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">case</span> APP_MSG_NETWORK_DATA:</span><br><span class="line">                <span class="comment">/* 处理网络数据 */</span></span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">case</span> APP_MSG_OTA_COMMAND:</span><br><span class="line">                <span class="comment">/* 处理 OTA 命令 */</span></span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里接收端得到的是完整的 <code>app_message_t</code>：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">msg.type</span><br><span class="line">msg.id</span><br><span class="line">msg.length</span><br><span class="line">msg.data</span><br></pre></td></tr></table></figure>
+
+<p>都可以直接访问。</p>
+<hr>
+<h2 id="3-4-结构体队列的数据流"><a href="#3-4-结构体队列的数据流" class="headerlink" title="3.4 结构体队列的数据流"></a>3.4 结构体队列的数据流</h2><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">发送任务或 ISR                      消息队列                    接收任务</span><br><span class="line"></span><br><span class="line">局部变量 msg</span><br><span class="line">&#123; type, id, data &#125;   ──复制──&gt;   &#123; type, id, data &#125;   ──复制──&gt;  局部变量 msg</span><br></pre></td></tr></table></figure>
+
+<p>更直观地说：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">发送端的 msg 和接收端的 msg 是两个不同对象；</span><br><span class="line">它们内容相同，但内存地址不同。</span><br></pre></td></tr></table></figure>
+
+<p>发送者后续修改自己的 <code>msg</code>，不会影响队列中的消息；队列中的消息也不会影响接收者。</p>
+<hr>
+<h2 id="3-5-结构体队列的优点"><a href="#3-5-结构体队列的优点" class="headerlink" title="3.5 结构体队列的优点"></a>3.5 结构体队列的优点</h2><h3 id="1-生命周期简单"><a href="#1-生命周期简单" class="headerlink" title="1. 生命周期简单"></a>1. 生命周期简单</h3><p>发送方可以使用栈上的局部变量：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">app_message_t</span> msg;</span><br></pre></td></tr></table></figure>
+
+<p>函数返回后，该变量即使失效，也不会影响队列，因为队列已经保存了独立副本。</p>
+<p>不需要考虑：</p>
+<ul>
+<li>谁拥有该对象；</li>
+<li>谁负责释放；</li>
+<li>什么时候释放；</li>
+<li>发送后对象会不会被修改；</li>
+<li>接收时对象是否仍有效。</li>
+</ul>
+<hr>
+<h3 id="2-不需要动态内存"><a href="#2-不需要动态内存" class="headerlink" title="2. 不需要动态内存"></a>2. 不需要动态内存</h3><p>无需：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">malloc</span>()</span><br><span class="line"><span class="built_in">free</span>()</span><br></pre></td></tr></table></figure>
+
+<p>因此能避免很多嵌入式常见问题：</p>
+<ul>
+<li>堆内存耗尽；</li>
+<li>堆碎片；</li>
+<li>内存泄漏；</li>
+<li>重复释放；</li>
+<li>悬空指针；</li>
+<li>内存分配失败后的复杂错误处理。</li>
+</ul>
+<hr>
+<h3 id="3-非常适合-ISR-向任务发送小消息"><a href="#3-非常适合-ISR-向任务发送小消息" class="headerlink" title="3. 非常适合 ISR 向任务发送小消息"></a>3. 非常适合 ISR 向任务发送小消息</h3><p>中断服务程序通常应尽快结束，不能执行不确定耗时或可能阻塞的操作。</p>
+<p>对于小消息，可以在 ISR 中这样做：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">app_interrupt_handler</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">app_message_t</span> msg;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">memset</span>(&amp;msg, <span class="number">0</span>, <span class="keyword">sizeof</span>(msg));</span><br><span class="line">    msg.type = APP_MSG_BUTTON_PRESS;</span><br><span class="line">    msg.id = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    rtos_queue_release_isr(</span><br><span class="line">        g_app_queue,</span><br><span class="line">        <span class="keyword">sizeof</span>(msg),</span><br><span class="line">        (<span class="type">uint8_t</span> *)&amp;msg</span><br><span class="line">    );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>只要 RTOS 提供 ISR 专用的队列发送接口，且结构体足够小，这种方式通常安全、直观且高效。</p>
+<hr>
+<h3 id="4-消息天然隔离"><a href="#4-消息天然隔离" class="headerlink" title="4. 消息天然隔离"></a>4. 消息天然隔离</h3><p>假设发送端执行：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">msg.type = APP_MSG_BUTTON_PRESS;</span><br><span class="line"></span><br><span class="line">rtos_queue_release(g_app_queue, <span class="keyword">sizeof</span>(msg), (<span class="type">uint8_t</span> *)&amp;msg, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">msg.type = APP_MSG_NETWORK_DATA;</span><br></pre></td></tr></table></figure>
+
+<p>队列中已入队的消息仍然是：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">APP_MSG_BUTTON_PRESS</span><br></pre></td></tr></table></figure>
+
+<p>因为队列保存的是第一时刻的副本。</p>
+<p>这种隔离能明显降低并发修改导致的数据错乱风险。</p>
+<hr>
+<h3 id="5-代码更容易维护"><a href="#5-代码更容易维护" class="headerlink" title="5. 代码更容易维护"></a>5. 代码更容易维护</h3><p>结构体方式通常很容易理解：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">发送：把 msg 放进队列</span><br><span class="line">接收：从队列取出 msg</span><br><span class="line">处理：访问 msg.xxx</span><br></pre></td></tr></table></figure>
+
+<p>尤其是团队协作、后续维护或新成员接手时，代码审查成本较低。</p>
+<hr>
+<h2 id="3-6-结构体队列的缺点"><a href="#3-6-结构体队列的缺点" class="headerlink" title="3.6 结构体队列的缺点"></a>3.6 结构体队列的缺点</h2><h3 id="1-队列-RAM-消耗与结构体大小成正比"><a href="#1-队列-RAM-消耗与结构体大小成正比" class="headerlink" title="1. 队列 RAM 消耗与结构体大小成正比"></a>1. 队列 RAM 消耗与结构体大小成正比</h3><p>队列的消息存储空间大致为：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sizeof(app_message_t) × queue_depth</span><br></pre></td></tr></table></figure>
+
+<p>例如：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">sizeof</span>(<span class="type">app_message_t</span>) = <span class="number">1024</span> 字节</span><br><span class="line">APP_QUEUE_DEPTH = <span class="number">10</span></span><br></pre></td></tr></table></figure>
+
+<p>则消息区就需要约：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">10 KB</span><br></pre></td></tr></table></figure>
+
+<p>对于 RAM 较小的 MCU 或蜂窝模组平台，可能不可接受。</p>
+<hr>
+<h3 id="2-收发都会复制完整对象"><a href="#2-收发都会复制完整对象" class="headerlink" title="2. 收发都会复制完整对象"></a>2. 收发都会复制完整对象</h3><p>结构体方式一般至少有两次复制：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">发送者结构体 → 队列内部存储</span><br><span class="line">队列内部存储 → 接收者结构体</span><br></pre></td></tr></table></figure>
+
+<p>如果结构体很大，例如带有：</p>
+<ul>
+<li>大型数组；</li>
+<li>图片；</li>
+<li>音频帧；</li>
+<li>固件块；</li>
+<li>JSON 原文；</li>
+<li>网络报文；</li>
+</ul>
+<p>那么复制开销会变大，并可能影响任务响应时间。</p>
+<hr>
+<h3 id="3-不适合大数据和变长数据"><a href="#3-不适合大数据和变长数据" class="headerlink" title="3. 不适合大数据和变长数据"></a>3. 不适合大数据和变长数据</h3><p>如果每条消息长度不同，例如网络包长度可能是：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">20 字节、500 字节、1500 字节、4096 字节……</span><br></pre></td></tr></table></figure>
+
+<p>结构体队列只能采用“按最大长度预留”的方案：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="type">uint32_t</span> length;</span><br><span class="line">    <span class="type">uint8_t</span> data[<span class="number">4096</span>];</span><br><span class="line">&#125; <span class="type">app_message_t</span>;</span><br></pre></td></tr></table></figure>
+
+<p>这会造成严重 RAM 浪费。</p>
+<hr>
+<h1 id="四、方案二：队列传递结构体指针"><a href="#四、方案二：队列传递结构体指针" class="headerlink" title="四、方案二：队列传递结构体指针"></a>四、方案二：队列传递结构体指针</h1><p>这种方式也可以叫作：</p>
+<ul>
+<li><strong>指针传递</strong></li>
+<li><strong>对象地址入队</strong></li>
+<li><strong>引用传递</strong></li>
+<li><strong>零拷贝或低拷贝消息传递</strong><blockquote>
+<p>严格来说，队列仍需要复制一个指针值；但不复制完整消息内容。</p>
+</blockquote>
+</li>
+</ul>
+<p>其核心思想是：</p>
+<blockquote>
+<p>消息对象存放在其他有效内存中，队列只保存该对象的地址。</p>
+</blockquote>
+<hr>
+<h2 id="4-1-创建“指针队列”"><a href="#4-1-创建“指针队列”" class="headerlink" title="4.1 创建“指针队列”"></a>4.1 创建“指针队列”</h2><p>创建队列时，队列元素不是完整结构体，而是指针：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> APP_QUEUE_DEPTH  8</span></span><br><span class="line"></span><br><span class="line">rtos_queue_create(</span><br><span class="line">    &amp;g_app_queue,</span><br><span class="line">    <span class="keyword">sizeof</span>(<span class="type">app_message_t</span> *),</span><br><span class="line">    APP_QUEUE_DEPTH</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>这里：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">sizeof</span>(<span class="type">app_message_t</span> *)</span><br></pre></td></tr></table></figure>
+
+<p>表示指针变量的大小。</p>
+<p>在多数 32 位嵌入式平台中，通常为 4 字节。</p>
+<p>即使 <code>app_message_t</code> 有 1 KB，队列每个槽位通常仍然只保存约 4 字节的地址。</p>
+<hr>
+<h2 id="4-2-发送指针：先创建独立消息对象"><a href="#4-2-发送指针：先创建独立消息对象" class="headerlink" title="4.2 发送指针：先创建独立消息对象"></a>4.2 发送指针：先创建独立消息对象</h2><p>如果发送端与接收端异步运行，消息对象必须在接收完成前一直有效。</p>
+<p>最常见的普通任务上下文写法是：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">app_send_message</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">app_message_t</span> *msg;</span><br><span class="line"></span><br><span class="line">    msg = <span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(*msg));</span><br><span class="line">    <span class="keyword">if</span> (msg == <span class="literal">NULL</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">memset</span>(msg, <span class="number">0</span>, <span class="keyword">sizeof</span>(*msg));</span><br><span class="line"></span><br><span class="line">    msg-&gt;type = APP_MSG_NETWORK_DATA;</span><br><span class="line">    msg-&gt;id = <span class="number">1001</span>;</span><br><span class="line">    msg-&gt;length = <span class="number">3</span>;</span><br><span class="line">    <span class="built_in">memcpy</span>(msg-&gt;data, <span class="string">&quot;abc&quot;</span>, <span class="number">3</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (rtos_queue_release(</span><br><span class="line">            g_app_queue,</span><br><span class="line">            <span class="keyword">sizeof</span>(msg),</span><br><span class="line">            (<span class="type">uint8_t</span> *)&amp;msg,</span><br><span class="line">            <span class="number">0</span>) != <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="built_in">free</span>(msg);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * 成功入队后，msg 对象的所有权交给接收方。</span></span><br><span class="line"><span class="comment">     * 当前发送方不能再使用或释放 msg。</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里最容易混淆的部分是：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(<span class="type">uint8_t</span> *)&amp;msg</span><br></pre></td></tr></table></figure>
+
+<p><code>msg</code> 的类型是：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">app_message_t</span> *</span><br></pre></td></tr></table></figure>
+
+<p>而：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&amp;msg</span><br></pre></td></tr></table></figure>
+
+<p>的类型是：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">app_message_t</span> **</span><br></pre></td></tr></table></figure>
+
+<p>队列要复制的是 <code>msg</code> 中保存的地址值，因此传递的是：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(<span class="type">uint8_t</span> *)&amp;msg</span><br></pre></td></tr></table></figure>
+
+<p>并且长度是：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">sizeof</span>(msg)</span><br></pre></td></tr></table></figure>
+
+<p>即一个指针大小。</p>
+<hr>
+<h2 id="4-3-接收指针"><a href="#4-3-接收指针" class="headerlink" title="4.3 接收指针"></a>4.3 接收指针</h2><p>接收任务定义一个指针变量：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">app_worker_task</span><span class="params">(<span class="type">void</span> *param)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">app_message_t</span> *msg;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        msg = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (rtos_queue_wait(</span><br><span class="line">                g_app_queue,</span><br><span class="line">                (<span class="type">uint8_t</span> *)&amp;msg,</span><br><span class="line">                <span class="keyword">sizeof</span>(msg),</span><br><span class="line">                RTOS_WAIT_FOREVER) != <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (msg == <span class="literal">NULL</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">switch</span> (msg-&gt;type)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">case</span> APP_MSG_BUTTON_PRESS:</span><br><span class="line">                <span class="comment">/* 处理按键事件 */</span></span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">case</span> APP_MSG_NETWORK_DATA:</span><br><span class="line">                <span class="comment">/* 处理网络数据 */</span></span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">case</span> APP_MSG_OTA_COMMAND:</span><br><span class="line">                <span class="comment">/* 处理 OTA 命令 */</span></span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">free</span>(msg);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>接收成功后：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">msg</span><br></pre></td></tr></table></figure>
+
+<p>得到的是发送端创建的对象地址，因此访问成员时使用：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">msg-&gt;type</span><br><span class="line">msg-&gt;id</span><br><span class="line">msg-&gt;length</span><br><span class="line">msg-&gt;data</span><br></pre></td></tr></table></figure>
+
+<p>处理完成后必须释放：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">free</span>(msg);</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="4-4-指针队列的数据流"><a href="#4-4-指针队列的数据流" class="headerlink" title="4.4 指针队列的数据流"></a>4.4 指针队列的数据流</h2><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">发送任务                     消息队列                  接收任务</span><br><span class="line"></span><br><span class="line">malloc 创建对象</span><br><span class="line">      │</span><br><span class="line">      ▼</span><br><span class="line">&#123; type, id, data &#125;</span><br><span class="line">      │</span><br><span class="line">      └──── 地址 0x20001000 ──&gt; [ 0x20001000 ] ──&gt; msg 指向该对象</span><br><span class="line">                                                          │</span><br><span class="line">                                                          ▼</span><br><span class="line">                                                 使用 msg-&gt;xxx</span><br><span class="line">                                                          │</span><br><span class="line">                                                          ▼</span><br><span class="line">                                                      free(msg)</span><br></pre></td></tr></table></figure>
+
+<p>队列中存储的只是：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0x20001000</span><br></pre></td></tr></table></figure>
+
+<p>不是整个 <code>app_message_t</code>。</p>
+<hr>
+<h2 id="4-5-指针队列的优点"><a href="#4-5-指针队列的优点" class="headerlink" title="4.5 指针队列的优点"></a>4.5 指针队列的优点</h2><h3 id="1-队列本身占用-RAM-很小"><a href="#1-队列本身占用-RAM-很小" class="headerlink" title="1. 队列本身占用 RAM 很小"></a>1. 队列本身占用 RAM 很小</h3><p>无论消息对象是 64 字节、512 字节还是数 KB，队列槽位通常只保存一个指针：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sizeof(app_message_t *) × queue_depth</span><br></pre></td></tr></table></figure>
+
+<p>例如在 32 位系统上：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">4 字节 × 8 条 = 32 字节</span><br></pre></td></tr></table></figure>
+
+<p>这对大消息尤其有优势。</p>
+<hr>
+<h3 id="2-避免复制大型对象"><a href="#2-避免复制大型对象" class="headerlink" title="2. 避免复制大型对象"></a>2. 避免复制大型对象</h3><p>结构体方式需要复制完整消息；指针方式只复制地址。</p>
+<p>假设消息大小是 4096 字节：</p>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th align="right">结构体队列</th>
+<th align="right">指针队列</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>发送入队</td>
+<td align="right">复制约 4096 字节</td>
+<td align="right">复制约 4 字节</td>
+</tr>
+<tr>
+<td>接收出队</td>
+<td align="right">复制约 4096 字节</td>
+<td align="right">复制约 4 字节</td>
+</tr>
+<tr>
+<td>总体复制量</td>
+<td align="right">约 8192 字节</td>
+<td align="right">约 8 字节</td>
+</tr>
+</tbody></table>
+<p>因此，对于大型消息、高频数据流或性能敏感场景，指针方式通常更合适。</p>
+<hr>
+<h3 id="3-很适合变长数据"><a href="#3-很适合变长数据" class="headerlink" title="3. 很适合变长数据"></a>3. 很适合变长数据</h3><p>例如接收到一个长度不确定的网络报文：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="type">uint32_t</span> length;</span><br><span class="line">    <span class="type">uint8_t</span> data[];</span><br><span class="line">&#125; <span class="type">app_packet_t</span>;</span><br></pre></td></tr></table></figure>
+
+<p>可以按实际长度分配：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">app_packet_t</span> *packet;</span><br><span class="line"></span><br><span class="line">packet = <span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(*packet) + actual_length);</span><br><span class="line">packet-&gt;length = actual_length;</span><br></pre></td></tr></table></figure>
+
+<p>然后仅把 <code>packet</code> 指针放进队列。</p>
+<p>这样无需让队列为最大可能报文长度预留大量 RAM。</p>
+<hr>
+<h3 id="4-可以结合内存池实现高性能通信"><a href="#4-可以结合内存池实现高性能通信" class="headerlink" title="4. 可以结合内存池实现高性能通信"></a>4. 可以结合内存池实现高性能通信</h3><p>在资源受限嵌入式系统中，通常不建议频繁使用普通 <code>malloc/free</code>。</p>
+<p>更成熟的方案是：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">预分配固定数量对象</span><br><span class="line">        ↓</span><br><span class="line">从内存池申请空闲对象</span><br><span class="line">        ↓</span><br><span class="line">填充消息</span><br><span class="line">        ↓</span><br><span class="line">将对象指针放入队列</span><br><span class="line">        ↓</span><br><span class="line">接收方处理完成后归还对象池</span><br></pre></td></tr></table></figure>
+
+<p>这种“指针队列 + 固定内存池”组合常用于：</p>
+<ul>
+<li>网络协议栈；</li>
+<li>音频数据流；</li>
+<li>图像帧处理；</li>
+<li>大数据采集；</li>
+<li>高吞吐通信；</li>
+<li>高频日志或诊断数据；</li>
+<li>大型 OTA 数据分片。</li>
+</ul>
+<hr>
+<h2 id="4-6-指针队列的缺点"><a href="#4-6-指针队列的缺点" class="headerlink" title="4.6 指针队列的缺点"></a>4.6 指针队列的缺点</h2><h3 id="1-必须明确对象生命周期和所有权"><a href="#1-必须明确对象生命周期和所有权" class="headerlink" title="1. 必须明确对象生命周期和所有权"></a>1. 必须明确对象生命周期和所有权</h3><p>使用指针队列时，需要严格回答以下问题：</p>
+<ul>
+<li>对象是谁创建的？</li>
+<li>入队成功后，谁拥有对象？</li>
+<li>队列满时谁释放对象？</li>
+<li>接收方何时释放对象？</li>
+<li>是否可能多个消费者同时使用同一对象？</li>
+<li>发送方入队后是否还会修改对象？</li>
+</ul>
+<p>最常见的所有权规则是：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">发送成功入队：</span><br><span class="line">    对象所有权转移给接收方。</span><br><span class="line"></span><br><span class="line">发送失败：</span><br><span class="line">    对象仍属于发送方，发送方负责释放。</span><br><span class="line"></span><br><span class="line">接收方处理完成：</span><br><span class="line">    接收方负责释放或归还内存池。</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="2-容易产生内存泄漏"><a href="#2-容易产生内存泄漏" class="headerlink" title="2. 容易产生内存泄漏"></a>2. 容易产生内存泄漏</h3><p>错误示例：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">app_message_t</span> *msg = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">rtos_queue_wait(..., (<span class="type">uint8_t</span> *)&amp;msg, <span class="keyword">sizeof</span>(msg), ...);</span><br><span class="line"></span><br><span class="line">process_message(msg);</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 忘记 free(msg); */</span></span><br></pre></td></tr></table></figure>
+
+<p>每处理一次消息，就泄漏一个对象。</p>
+<p>长期运行后可能导致：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">可用堆内存持续减少</span><br><span class="line">        ↓</span><br><span class="line">malloc 失败</span><br><span class="line">        ↓</span><br><span class="line">网络、OTA 或业务功能异常</span><br><span class="line">        ↓</span><br><span class="line">设备重启或卡死</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="3-容易发生重复释放"><a href="#3-容易发生重复释放" class="headerlink" title="3. 容易发生重复释放"></a>3. 容易发生重复释放</h3><p>错误示例：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 发送者：入队成功后错误释放 */</span></span><br><span class="line">rtos_queue_release(...);</span><br><span class="line"><span class="built_in">free</span>(msg);</span><br></pre></td></tr></table></figure>
+
+<p>接收端又执行：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">free</span>(msg);</span><br></pre></td></tr></table></figure>
+
+<p>同一块内存被释放两次，可能造成堆损坏或随机崩溃。</p>
+<hr>
+<h3 id="4-容易产生悬空指针"><a href="#4-容易产生悬空指针" class="headerlink" title="4. 容易产生悬空指针"></a>4. 容易产生悬空指针</h3><p>这是最危险的错误之一。</p>
+<p>错误示例：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">app_send_message</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">app_message_t</span> msg;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">memset</span>(&amp;msg, <span class="number">0</span>, <span class="keyword">sizeof</span>(msg));</span><br><span class="line">    msg.type = APP_MSG_BUTTON_PRESS;</span><br><span class="line"></span><br><span class="line">    <span class="type">app_message_t</span> *ptr = &amp;msg;</span><br><span class="line"></span><br><span class="line">    rtos_queue_release(</span><br><span class="line">        g_app_queue,</span><br><span class="line">        <span class="keyword">sizeof</span>(ptr),</span><br><span class="line">        (<span class="type">uint8_t</span> *)&amp;ptr,</span><br><span class="line">        <span class="number">0</span></span><br><span class="line">    );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里队列中保存的是局部变量 <code>msg</code> 的地址。</p>
+<p>函数返回后：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">msg 生命周期结束。</span><br></pre></td></tr></table></figure>
+
+<p>但队列中仍然有它的地址。</p>
+<p>接收任务稍后访问：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ptr-&gt;type</span><br></pre></td></tr></table></figure>
+
+<p>就是访问无效内存，可能表现为：</p>
+<ul>
+<li>收到错误消息；</li>
+<li>偶发异常；</li>
+<li>数据随机变化；</li>
+<li>内存越界；</li>
+<li>程序崩溃；</li>
+<li>难以复现的现场故障。</li>
+</ul>
+<hr>
+<h3 id="5-不宜在-ISR-中直接使用-malloc"><a href="#5-不宜在-ISR-中直接使用-malloc" class="headerlink" title="5. 不宜在 ISR 中直接使用 malloc()"></a>5. 不宜在 ISR 中直接使用 <code>malloc()</code></h3><p>错误或高风险示例：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> <span class="title function_">app_interrupt_handler</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">app_message_t</span> *msg;</span><br><span class="line"></span><br><span class="line">    msg = <span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(*msg));</span><br><span class="line">    <span class="keyword">if</span> (msg == <span class="literal">NULL</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    msg-&gt;type = APP_MSG_BUTTON_PRESS;</span><br><span class="line"></span><br><span class="line">    rtos_queue_release_isr(</span><br><span class="line">        g_app_queue,</span><br><span class="line">        <span class="keyword">sizeof</span>(msg),</span><br><span class="line">        (<span class="type">uint8_t</span> *)&amp;msg</span><br><span class="line">    );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通常不建议在 ISR 中调用普通 <code>malloc()</code>，原因包括：</p>
+<ul>
+<li>运行时间不确定；</li>
+<li>堆管理器内部可能使用锁；</li>
+<li>可能破坏实时性；</li>
+<li>可能与任务上下文中的内存操作发生竞争；</li>
+<li>某些 RTOS 或 SDK 不允许在中断中使用堆；</li>
+<li>队列发送失败时，还需要在 ISR 中执行释放处理。</li>
+</ul>
+<p>如果 ISR 必须使用指针队列，更推荐使用<strong>预分配、无阻塞、ISR 安全的内存池</strong>。</p>
+<hr>
+<h1 id="五、两种方案的关键区别"><a href="#五、两种方案的关键区别" class="headerlink" title="五、两种方案的关键区别"></a>五、两种方案的关键区别</h1><table>
+<thead>
+<tr>
+<th>对比项</th>
+<th>结构体队列</th>
+<th>指针队列</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>队列保存内容</td>
+<td>完整<code>app_message_t</code> 副本</td>
+<td><code>app_message_t *</code> 地址</td>
+</tr>
+<tr>
+<td>建队元素大小</td>
+<td><code>sizeof(app_message_t)</code></td>
+<td><code>sizeof(app_message_t *)</code></td>
+</tr>
+<tr>
+<td>接收变量</td>
+<td><code>app_message_t msg</code></td>
+<td><code>app_message_t *msg</code></td>
+</tr>
+<tr>
+<td>接收参数</td>
+<td><code>(uint8_t *)&amp;msg</code></td>
+<td><code>(uint8_t *)&amp;msg</code></td>
+</tr>
+<tr>
+<td>接收长度</td>
+<td><code>sizeof(msg)</code>，即结构体大小</td>
+<td><code>sizeof(msg)</code>，即指针大小</td>
+</tr>
+<tr>
+<td>成员访问</td>
+<td><code>msg.type</code></td>
+<td><code>msg-&gt;type</code></td>
+</tr>
+<tr>
+<td>是否需要<code>malloc/free</code></td>
+<td>通常不需要</td>
+<td>常常需要或使用内存池</td>
+</tr>
+<tr>
+<td>生命周期管理</td>
+<td>简单</td>
+<td>复杂，需要明确所有权</td>
+</tr>
+<tr>
+<td>队列 RAM</td>
+<td>随结构体大小增长</td>
+<td>通常很小</td>
+</tr>
+<tr>
+<td>数据复制量</td>
+<td>大小与结构体成正比</td>
+<td>通常仅复制指针</td>
+</tr>
+<tr>
+<td>是否适合 ISR</td>
+<td>很适合小消息</td>
+<td>需 ISR-safe 内存池，不宜普通<code>malloc</code></td>
+</tr>
+<tr>
+<td>是否支持变长消息</td>
+<td>不方便</td>
+<td>很适合</td>
+</tr>
+<tr>
+<td>主要风险</td>
+<td>RAM 占用、复制开销</td>
+<td>泄漏、悬空指针、重复释放、并发问题</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>注意：两种接收写法表面上都可能是 <code>(uint8_t *)&amp;msg</code>，但 <code>msg</code> 的类型不同。<br>前者的 <code>msg</code> 是结构体变量，后者的 <code>msg</code> 是指针变量。</p>
+</blockquote>
+<hr>
+<h1 id="六、适用场景：何时使用结构体队列？"><a href="#六、适用场景：何时使用结构体队列？" class="headerlink" title="六、适用场景：何时使用结构体队列？"></a>六、适用场景：何时使用结构体队列？</h1><p>结构体队列适用于“消息小、长度固定、要求简单可靠”的场景。</p>
+<h2 id="6-1-GPIO、按键和输入事件"><a href="#6-1-GPIO、按键和输入事件" class="headerlink" title="6.1 GPIO、按键和输入事件"></a>6.1 GPIO、按键和输入事件</h2><p>例如：</p>
+<ul>
+<li>按键按下、松开；</li>
+<li>GPIO 电平变化；</li>
+<li>传感器阈值触发；</li>
+<li>Wakeup 唤醒事件；</li>
+<li>SIM 卡插拔事件；</li>
+<li>充电状态变化。</li>
+</ul>
+<p>消息通常只需要包含：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">事件类型 + 引脚号 + 时间戳 + 少量状态值</span><br></pre></td></tr></table></figure>
+
+<p>数据量很小，直接复制最简单可靠。</p>
+<hr>
+<h2 id="6-2-ISR-向任务发送通知"><a href="#6-2-ISR-向任务发送通知" class="headerlink" title="6.2 ISR 向任务发送通知"></a>6.2 ISR 向任务发送通知</h2><p>例如：</p>
+<ul>
+<li>UART 接收完成通知；</li>
+<li>DMA 传输完成通知；</li>
+<li>定时器超时；</li>
+<li>GPIO 中断；</li>
+<li>ADC 采样完成；</li>
+<li>硬件故障中断。</li>
+</ul>
+<p>此时 ISR 的工作应尽量少，推荐发送简短事件：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="type">uint32_t</span> event;</span><br><span class="line">    <span class="type">uint32_t</span> channel;</span><br><span class="line">    <span class="type">uint32_t</span> timestamp;</span><br><span class="line">&#125; <span class="type">isr_event_t</span>;</span><br></pre></td></tr></table></figure>
+
+<p>然后由任务执行耗时操作。</p>
+<hr>
+<h2 id="6-3-小型、固定格式的控制命令"><a href="#6-3-小型、固定格式的控制命令" class="headerlink" title="6.3 小型、固定格式的控制命令"></a>6.3 小型、固定格式的控制命令</h2><p>例如：</p>
+<ul>
+<li>开关控制；</li>
+<li>模式切换；</li>
+<li>参数设置；</li>
+<li>状态查询；</li>
+<li>低频 OTA 控制指令；</li>
+<li>短配置命令。</li>
+</ul>
+<p>若命令结构体是固定长度，且消息频率不高，复制结构体通常比使用动态内存更安全。</p>
+<hr>
+<h2 id="6-4-对稳定性优先的设备"><a href="#6-4-对稳定性优先的设备" class="headerlink" title="6.4 对稳定性优先的设备"></a>6.4 对稳定性优先的设备</h2><p>如果设备要求：</p>
+<ul>
+<li>长期运行；</li>
+<li>尽量不使用动态内存；</li>
+<li>低维护风险；</li>
+<li>易于代码审查；</li>
+<li>容易定位问题；</li>
+</ul>
+<p>那么优先选择结构体队列通常更合适。</p>
+<hr>
+<h1 id="七、适用场景：何时使用指针队列？"><a href="#七、适用场景：何时使用指针队列？" class="headerlink" title="七、适用场景：何时使用指针队列？"></a>七、适用场景：何时使用指针队列？</h1><p>指针队列适用于“消息大、长度变化、吞吐高或复制代价高”的场景。</p>
+<h2 id="7-1-网络数据包与协议数据"><a href="#7-1-网络数据包与协议数据" class="headerlink" title="7.1 网络数据包与协议数据"></a>7.1 网络数据包与协议数据</h2><p>例如：</p>
+<ul>
+<li>TCP&#x2F;UDP 收包；</li>
+<li>MQTT 原始消息；</li>
+<li>HTTP 请求或响应；</li>
+<li>WebSocket 数据；</li>
+<li>CoAP 数据；</li>
+<li>蓝牙数据包。</li>
+</ul>
+<p>网络数据长度常常不可预测，可能从数十字节到数 KB。此时使用指针或缓冲区描述符更加合理。</p>
+<hr>
+<h2 id="7-2-OTA-固件数据块"><a href="#7-2-OTA-固件数据块" class="headerlink" title="7.2 OTA 固件数据块"></a>7.2 OTA 固件数据块</h2><p>需要区分两种概念：</p>
+<ul>
+<li><strong>OTA 控制命令</strong>：如 URL、版本、MD5、升级标志，通常较小且固定，可用结构体队列；</li>
+<li><strong>OTA 固件数据块</strong>：如下载的二进制分片，通常较大，不应反复复制，可采用指针队列或缓冲区队列。</li>
+</ul>
+<p>例如每个固件块为 4 KB：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">结构体队列：</span><br><span class="line">4 KB × 队列深度，RAM 很快膨胀；</span><br><span class="line">并且每次入队、出队都复制 4 KB。</span><br><span class="line"></span><br><span class="line">指针队列：</span><br><span class="line">队列只保存缓冲区地址；</span><br><span class="line">任务处理完成后归还缓存。</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="7-3-音频、图像和视频数据"><a href="#7-3-音频、图像和视频数据" class="headerlink" title="7.3 音频、图像和视频数据"></a>7.3 音频、图像和视频数据</h2><p>例如：</p>
+<ul>
+<li>PCM 音频帧；</li>
+<li>编码音频帧；</li>
+<li>摄像头图像帧；</li>
+<li>视频编码数据；</li>
+<li>AI 推理输入输出缓存。</li>
+</ul>
+<p>这类数据通常：</p>
+<ul>
+<li>数据块大；</li>
+<li>传输频率高；</li>
+<li>对实时性敏感；</li>
+<li>复制成本高。</li>
+</ul>
+<p>常见架构是：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">DMA/驱动填充缓冲区</span><br><span class="line">        ↓</span><br><span class="line">将缓冲区描述符或指针放入队列</span><br><span class="line">        ↓</span><br><span class="line">处理任务消费</span><br><span class="line">        ↓</span><br><span class="line">归还缓冲区给缓冲池</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="7-4-大型传感器或采集数据"><a href="#7-4-大型传感器或采集数据" class="headerlink" title="7.4 大型传感器或采集数据"></a>7.4 大型传感器或采集数据</h2><p>例如：</p>
+<ul>
+<li>GNSS 原始数据；</li>
+<li>IMU 批量采样；</li>
+<li>波形采集；</li>
+<li>电能质量数据；</li>
+<li>大批量日志；</li>
+<li>诊断转储数据。</li>
+</ul>
+<p>此类数据如果整体复制进队列，既占 RAM 又浪费 CPU。更适合使用指针 + 内存池。</p>
+<hr>
+<h2 id="7-5-变长-JSON、证书和配置文件"><a href="#7-5-变长-JSON、证书和配置文件" class="headerlink" title="7.5 变长 JSON、证书和配置文件"></a>7.5 变长 JSON、证书和配置文件</h2><p>例如：</p>
+<ul>
+<li>云端下发 JSON；</li>
+<li>设备证书；</li>
+<li>配置文件；</li>
+<li>AT 指令长响应；</li>
+<li>文件系统读取缓冲区。</li>
+</ul>
+<p>由于长度不固定，使用指针方式可以按实际长度分配或复用缓冲区。</p>
+<hr>
+<h1 id="八、指针队列在-ISR-中的正确使用方式"><a href="#八、指针队列在-ISR-中的正确使用方式" class="headerlink" title="八、指针队列在 ISR 中的正确使用方式"></a>八、指针队列在 ISR 中的正确使用方式</h1><p>如果确实需要 ISR 投递大对象，推荐使用：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">固定内存池 + 指针队列</span><br></pre></td></tr></table></figure>
+
+<p>而不是：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ISR + malloc/free</span><br></pre></td></tr></table></figure>
+
+<h2 id="8-1-设计思路"><a href="#8-1-设计思路" class="headerlink" title="8.1 设计思路"></a>8.1 设计思路</h2><p>预先创建固定数量的消息对象：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> APP_POOL_COUNT  8</span></span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">app_message_t</span> g_message_pool[APP_POOL_COUNT];</span><br></pre></td></tr></table></figure>
+
+<p>并维护一个空闲对象池。</p>
+<p>流程如下：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">ISR 从空闲池获取对象</span><br><span class="line">        ↓</span><br><span class="line">填充消息内容</span><br><span class="line">        ↓</span><br><span class="line">将对象指针放入队列</span><br><span class="line">        ↓</span><br><span class="line">任务接收指针并处理</span><br><span class="line">        ↓</span><br><span class="line">任务将对象归还空闲池</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="8-2-需要额外考虑的问题"><a href="#8-2-需要额外考虑的问题" class="headerlink" title="8.2 需要额外考虑的问题"></a>8.2 需要额外考虑的问题</h2><p>采用该方案前，必须明确：</p>
+<ol>
+<li>内存池申请是否可在 ISR 中调用；</li>
+<li>内存池归还是否线程安全；</li>
+<li>队列满时如何归还对象；</li>
+<li>内存池耗尽时是丢弃消息、合并消息还是记录计数；</li>
+<li>同一对象是否可能被重复入队；</li>
+<li>消费者是否可能忘记归还对象；</li>
+<li>是否需要多个消费者共享同一对象；</li>
+<li>是否需要引用计数。</li>
+</ol>
+<p>所以，对于简单事件，使用指针队列反而可能让系统复杂度大幅上升。</p>
+<hr>
+<h1 id="九、常见错误与检查清单"><a href="#九、常见错误与检查清单" class="headerlink" title="九、常见错误与检查清单"></a>九、常见错误与检查清单</h1><h2 id="9-1-结构体队列的检查项"><a href="#9-1-结构体队列的检查项" class="headerlink" title="9.1 结构体队列的检查项"></a>9.1 结构体队列的检查项</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rtos_queue_create(&amp;<span class="built_in">queue</span>, <span class="keyword">sizeof</span>(<span class="type">app_message_t</span>), depth);</span><br></pre></td></tr></table></figure>
+
+<p>发送：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">app_message_t</span> msg;</span><br><span class="line"></span><br><span class="line">rtos_queue_release(</span><br><span class="line">    <span class="built_in">queue</span>,</span><br><span class="line">    <span class="keyword">sizeof</span>(msg),</span><br><span class="line">    (<span class="type">uint8_t</span> *)&amp;msg,</span><br><span class="line">    timeout</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>接收：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">app_message_t</span> msg;</span><br><span class="line"></span><br><span class="line">rtos_queue_wait(</span><br><span class="line">    <span class="built_in">queue</span>,</span><br><span class="line">    (<span class="type">uint8_t</span> *)&amp;msg,</span><br><span class="line">    <span class="keyword">sizeof</span>(msg),</span><br><span class="line">    timeout</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>检查重点：</p>
+<ul>
+<li>队列元素大小是否是 <code>sizeof(app_message_t)</code>；</li>
+<li>发送长度和接收长度是否一致；</li>
+<li>是否使用 ISR 专用发送接口；</li>
+<li>大结构体是否导致队列 RAM 过大；</li>
+<li>ISR 是否复制了过大的结构体。</li>
+</ul>
+<hr>
+<h2 id="9-2-指针队列的检查项"><a href="#9-2-指针队列的检查项" class="headerlink" title="9.2 指针队列的检查项"></a>9.2 指针队列的检查项</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rtos_queue_create(&amp;<span class="built_in">queue</span>, <span class="keyword">sizeof</span>(<span class="type">app_message_t</span> *), depth);</span><br></pre></td></tr></table></figure>
+
+<p>发送：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">app_message_t</span> *msg;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* msg 必须指向持续有效的对象 */</span></span><br><span class="line"></span><br><span class="line">rtos_queue_release(</span><br><span class="line">    <span class="built_in">queue</span>,</span><br><span class="line">    <span class="keyword">sizeof</span>(msg),</span><br><span class="line">    (<span class="type">uint8_t</span> *)&amp;msg,</span><br><span class="line">    timeout</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>接收：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">app_message_t</span> *msg = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">rtos_queue_wait(</span><br><span class="line">    <span class="built_in">queue</span>,</span><br><span class="line">    (<span class="type">uint8_t</span> *)&amp;msg,</span><br><span class="line">    <span class="keyword">sizeof</span>(msg),</span><br><span class="line">    timeout</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<p>检查重点：</p>
+<ul>
+<li>队列元素大小是否是 <code>sizeof(app_message_t *)</code>；</li>
+<li>发送和接收是否都是 <code>sizeof(pointer)</code>；</li>
+<li>入队的是 <code>&amp;msg</code>，而不是 <code>msg</code>；</li>
+<li>消息对象是否在消费前始终有效；</li>
+<li>入队失败时对象是否释放&#x2F;归还；</li>
+<li>消费完成后对象是否释放&#x2F;归还；</li>
+<li>ISR 中是否错误使用普通 <code>malloc/free</code>；</li>
+<li>是否有内存池耗尽和队列满的处理策略。</li>
+</ul>
+<hr>
+<h1 id="十、最终选型建议"><a href="#十、最终选型建议" class="headerlink" title="十、最终选型建议"></a>十、最终选型建议</h1><p>可以按下面的顺序决策。</p>
+<h2 id="优先选择结构体队列，如果："><a href="#优先选择结构体队列，如果：" class="headerlink" title="优先选择结构体队列，如果："></a>优先选择结构体队列，如果：</h2><ul>
+<li>消息很小；</li>
+<li>消息长度固定；</li>
+<li>消息来自 ISR；</li>
+<li>消息发送频率不高；</li>
+<li>希望避免动态内存；</li>
+<li>系统 RAM 可以接受队列副本；</li>
+<li>更重视可维护性和稳定性。</li>
+</ul>
+<p>典型例子：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GPIO 事件、按键事件、定时器事件、状态变化、短控制命令。</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="优先选择指针队列，如果："><a href="#优先选择指针队列，如果：" class="headerlink" title="优先选择指针队列，如果："></a>优先选择指针队列，如果：</h2><ul>
+<li>消息很大；</li>
+<li>数据长度可变；</li>
+<li>消息频率高；</li>
+<li>完整复制会影响性能；</li>
+<li>已有可靠的内存池或缓冲区管理机制；</li>
+<li>能够清晰定义对象所有权；</li>
+<li>能处理队列满和内存池耗尽。</li>
+</ul>
+<p>典型例子：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">网络包、OTA 固件分片、图像帧、音频帧、大型采样数据、文件块、长 JSON。</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="十一、一句话总结"><a href="#十一、一句话总结" class="headerlink" title="十一、一句话总结"></a>十一、一句话总结</h1><blockquote>
+<p><strong>小而固定的消息，特别是 ISR 产生的事件，优先使用“结构体副本队列”；大而变长、高频或复制代价高的数据，优先使用“指针队列”，并搭配明确的所有权规则和内存池管理。</strong></p>
+</blockquote>
+<p>更简洁地说：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">小消息：复制内容，简单可靠。</span><br><span class="line">大消息：传递地址，节省 RAM 和 CPU。</span><br></pre></td></tr></table></figure>
+
+<p>但要记住：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">结构体队列的主要代价是 RAM 和复制；</span><br><span class="line">指针队列的主要代价是生命周期和内存管理复杂度。</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2026/10/11/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%20RTOS%20%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%EF%BC%9A%E4%BC%A0%E7%BB%93%E6%9E%84%E4%BD%93%EF%BC%8C%E8%BF%98%E6%98%AF%E4%BC%A0%E6%8C%87%E9%92%88/" data-id="cuidS05QX1WlGmWxhwtl5arQs" data-title="嵌入式 RTOS 消息队列：传结构体，还是传指针？嵌入式 RTOS 消息队列：传结构体，还是传指针？" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RTOS/" rel="tag">RTOS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" rel="tag">嵌入式学习</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" rel="tag">消息队列</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2026/10/11/%E8%BE%BE%E5%8F%91%E9%9D%A2%E8%AF%95%E5%87%86%E5%A4%87/%E4%B8%80%E9%9D%A2/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          达发科技面试（一面）
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2026/06/03/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%86%85%E5%AD%98%E4%B8%8EFLASH%E5%8F%AF%E8%A7%86%E5%8C%96%E5%B7%A5%E5%85%B7/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">嵌入式内存与FLASH可视化工具</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E5%85%A8%E5%BF%97T113S3/">全志T113S3</a></li></ul></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C%E8%AF%AD%E8%A8%80%E5%AE%8F/" rel="tag">C语言宏</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Debug%E6%97%A5%E5%BF%97/" rel="tag">Debug日志</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FLASH%E5%AD%98%E5%82%A8/" rel="tag">FLASH存储</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Makefile/" rel="tag">Makefile</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RTOS/" rel="tag">RTOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96/" rel="tag">内存优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%85%E5%AD%98%E8%B5%84%E6%BA%90%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="tag">内存资源可视化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="tag">博客环境搭建</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" rel="tag">学习记录</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" rel="tag">嵌入式学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" rel="tag">工具使用</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B8%B8%E8%A7%81%E5%8D%8F%E8%AE%AE%E7%AE%80%E4%BB%8B/" rel="tag">常见协议简介</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" rel="tag">数据传输</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" rel="tag">数据存储</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" rel="tag">消息队列</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/" rel="tag">结构体</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9D%A2%E8%AF%95/" rel="tag">面试</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%A9%B1%E5%8A%A8%E5%B1%8F/" rel="tag">驱动屏</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/C%E8%AF%AD%E8%A8%80%E5%AE%8F/" style="font-size: 10px;">C语言宏</a> <a href="/tags/Debug%E6%97%A5%E5%BF%97/" style="font-size: 10px;">Debug日志</a> <a href="/tags/FLASH%E5%AD%98%E5%82%A8/" style="font-size: 10px;">FLASH存储</a> <a href="/tags/Linux/" style="font-size: 18px;">Linux</a> <a href="/tags/Makefile/" style="font-size: 10px;">Makefile</a> <a href="/tags/RTOS/" style="font-size: 10px;">RTOS</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96/" style="font-size: 10px;">内存优化</a> <a href="/tags/%E5%86%85%E5%AD%98%E8%B5%84%E6%BA%90%E5%8F%AF%E8%A7%86%E5%8C%96/" style="font-size: 10px;">内存资源可视化</a> <a href="/tags/%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" style="font-size: 10px;">博客环境搭建</a> <a href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" style="font-size: 10px;">学习记录</a> <a href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" style="font-size: 20px;">嵌入式学习</a> <a href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" style="font-size: 14px;">工具使用</a> <a href="/tags/%E5%B8%B8%E8%A7%81%E5%8D%8F%E8%AE%AE%E7%AE%80%E4%BB%8B/" style="font-size: 10px;">常见协议简介</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" style="font-size: 12px;">数据传输</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" style="font-size: 16px;">数据存储</a> <a href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" style="font-size: 10px;">消息队列</a> <a href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/" style="font-size: 10px;">结构体</a> <a href="/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 12px;">面试</a> <a href="/tags/%E9%A9%B1%E5%8A%A8%E5%B1%8F/" style="font-size: 14px;">驱动屏</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/10/">October 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/06/">June 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/05/">May 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/04/">April 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/03/">March 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/02/">February 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2026/01/">January 2026</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/02/">February 2023</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2023/01/">January 2023</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2026/10/11/%E8%BE%BE%E5%8F%91%E9%9D%A2%E8%AF%95%E5%87%86%E5%A4%87/%E4%BA%8C%E9%9D%A2/">达发科技面试(二面)</a>
+          </li>
+        
+          <li>
+            <a href="/2026/10/11/%E8%BE%BE%E5%8F%91%E9%9D%A2%E8%AF%95%E5%87%86%E5%A4%87/%E4%B8%80%E9%9D%A2/">达发科技面试（一面）</a>
+          </li>
+        
+          <li>
+            <a href="/2026/10/11/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%20RTOS%20%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%EF%BC%9A%E4%BC%A0%E7%BB%93%E6%9E%84%E4%BD%93%EF%BC%8C%E8%BF%98%E6%98%AF%E4%BC%A0%E6%8C%87%E9%92%88/">嵌入式 RTOS 消息队列：传结构体，还是传指针？嵌入式 RTOS 消息队列：传结构体，还是传指针？</a>
+          </li>
+        
+          <li>
+            <a href="/2026/06/03/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%86%85%E5%AD%98%E4%B8%8EFLASH%E5%8F%AF%E8%A7%86%E5%8C%96%E5%B7%A5%E5%85%B7/">嵌入式内存与FLASH可视化工具</a>
+          </li>
+        
+          <li>
+            <a href="/2026/05/28/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/Modbus%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">Modbus协议学习笔记</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2026 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.6.4.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
