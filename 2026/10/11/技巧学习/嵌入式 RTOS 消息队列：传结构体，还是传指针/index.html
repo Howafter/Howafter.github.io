@@ -4,11 +4,11 @@
   <meta charset="utf-8">
   
   
-  <title>嵌入式 RTOS 消息队列：传结构体，还是传指针？嵌入式 RTOS 消息队列：传结构体，还是传指针？ | Hexo</title>
+  <title>嵌入式 RTOS 消息队列：传结构体，还是传指针？ | Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="在 RTOS 嵌入式开发中，消息队列常用于：  任务与任务之间通信； 中断服务程序（ISR）向任务通知事件； 网络回调向业务任务投递数据； 将耗时工作从回调或中断中转移到独立任务执行。  使用消息队列时，一个常见设计问题是：  队列里应该直接保存完整的消息结构体，还是只保存指向消息对象的指针？  这两种设计都很常见，也都可以正确实现。但它们在内存占用、性能、实时性、生命周期管理和适用场景方面有明显">
 <meta property="og:type" content="article">
-<meta property="og:title" content="嵌入式 RTOS 消息队列：传结构体，还是传指针？嵌入式 RTOS 消息队列：传结构体，还是传指针？">
+<meta property="og:title" content="嵌入式 RTOS 消息队列：传结构体，还是传指针？">
 <meta property="og:url" content="http://example.com/2026/10/11/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%20RTOS%20%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%EF%BC%9A%E4%BC%A0%E7%BB%93%E6%9E%84%E4%BD%93%EF%BC%8C%E8%BF%98%E6%98%AF%E4%BC%A0%E6%8C%87%E9%92%88/index.html">
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="在 RTOS 嵌入式开发中，消息队列常用于：  任务与任务之间通信； 中断服务程序（ISR）向任务通知事件； 网络回调向业务任务投递数据； 将耗时工作从回调或中断中转移到独立任务执行。  使用消息队列时，一个常见设计问题是：  队列里应该直接保存完整的消息结构体，还是只保存指向消息对象的指针？  这两种设计都很常见，也都可以正确实现。但它们在内存占用、性能、实时性、生命周期管理和适用场景方面有明显">
@@ -94,7 +94,7 @@
         
   
     <h1 class="p-name article-title" itemprop="headline name">
-      嵌入式 RTOS 消息队列：传结构体，还是传指针？嵌入式 RTOS 消息队列：传结构体，还是传指针？
+      嵌入式 RTOS 消息队列：传结构体，还是传指针？
     </h1>
   
 
@@ -797,7 +797,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2026/10/11/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%20RTOS%20%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%EF%BC%9A%E4%BC%A0%E7%BB%93%E6%9E%84%E4%BD%93%EF%BC%8C%E8%BF%98%E6%98%AF%E4%BC%A0%E6%8C%87%E9%92%88/" data-id="cuidubAF9Tww0wdItfCUqXESZ" data-title="嵌入式 RTOS 消息队列：传结构体，还是传指针？嵌入式 RTOS 消息队列：传结构体，还是传指针？" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2026/10/11/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%20RTOS%20%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%EF%BC%9A%E4%BC%A0%E7%BB%93%E6%9E%84%E4%BD%93%EF%BC%8C%E8%BF%98%E6%98%AF%E4%BC%A0%E6%8C%87%E9%92%88/" data-id="cuid_pJGg90jaqN0HQJ1LAsmx" data-title="嵌入式 RTOS 消息队列：传结构体，还是传指针？" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -871,7 +871,7 @@
       <ul>
         
           <li>
-            <a href="/2026/10/11/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%20RTOS%20%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%EF%BC%9A%E4%BC%A0%E7%BB%93%E6%9E%84%E4%BD%93%EF%BC%8C%E8%BF%98%E6%98%AF%E4%BC%A0%E6%8C%87%E9%92%88/">嵌入式 RTOS 消息队列：传结构体，还是传指针？嵌入式 RTOS 消息队列：传结构体，还是传指针？</a>
+            <a href="/2026/10/11/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%20RTOS%20%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%EF%BC%9A%E4%BC%A0%E7%BB%93%E6%9E%84%E4%BD%93%EF%BC%8C%E8%BF%98%E6%98%AF%E4%BC%A0%E6%8C%87%E9%92%88/">嵌入式 RTOS 消息队列：传结构体，还是传指针？</a>
           </li>
         
           <li>
