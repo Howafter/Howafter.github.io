@@ -71,257 +71,6 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-技巧学习/物联网常见协议简介" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E7%89%A9%E8%81%94%E7%BD%91%E5%B8%B8%E8%A7%81%E5%8D%8F%E8%AE%AE%E7%AE%80%E4%BB%8B/" class="article-date">
-  <time class="dt-published" datetime="2026-01-26T02:00:00.000Z" itemprop="datePublished">2026-01-26</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E7%89%A9%E8%81%94%E7%BD%91%E5%B8%B8%E8%A7%81%E5%8D%8F%E8%AE%AE%E7%AE%80%E4%BB%8B/">物联网常见协议简介</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <h1 id="网络协议全面介绍"><a href="#网络协议全面介绍" class="headerlink" title="网络协议全面介绍"></a>网络协议全面介绍</h1><h2 id="TCP-传输控制协议"><a href="#TCP-传输控制协议" class="headerlink" title="TCP (传输控制协议)"></a>TCP (传输控制协议)</h2><ul>
-<li><strong>层级</strong>：传输层</li>
-<li><strong>特点</strong>：面向连接的协议，通过”三次握手”建立连接，提供确认机制、重传控制、流量控制和拥塞控制</li>
-<li><strong>核心优势</strong>：确保数据的完整性、顺序性和可靠性</li>
-<li><strong>应用场景</strong>：Web浏览(HTTPS)、文件传输(FTP&#x2F;SFTP)、电子邮件(SMTP&#x2F;IMAP)、数据库操作等</li>
-<li><strong>与UDP对比</strong>：TCP可靠但有延迟，UDP无连接但高效</li>
-</ul>
-<h2 id="UDP-用户数据报协议"><a href="#UDP-用户数据报协议" class="headerlink" title="UDP (用户数据报协议)"></a>UDP (用户数据报协议)</h2><ul>
-<li><strong>层级</strong>：传输层</li>
-<li><strong>特点</strong>：无连接协议，无需建立连接即可发送数据，头部开销小(仅8字节)</li>
-<li><strong>核心优势</strong>：传输效率高，延迟小</li>
-<li><strong>应用场景</strong>：DNS、TFTP、SNMP、网络视频会议等对可靠性要求不高的应用</li>
-<li><strong>与TCP对比</strong>：UDP不可靠但速度快，适合实时应用</li>
-</ul>
-<h2 id="HTTP-超文本传输协议"><a href="#HTTP-超文本传输协议" class="headerlink" title="HTTP (超文本传输协议)"></a>HTTP (超文本传输协议)</h2><ul>
-<li><strong>层级</strong>：应用层</li>
-<li><strong>特点</strong>：基于TCP的协议，用于Web浏览</li>
-<li><strong>工作原理</strong>：客户端-服务器模型，通过请求-响应机制传输数据</li>
-<li><strong>应用场景</strong>：网页浏览、API调用等</li>
-</ul>
-<h2 id="HTTPS-安全超文本传输协议"><a href="#HTTPS-安全超文本传输协议" class="headerlink" title="HTTPS (安全超文本传输协议)"></a>HTTPS (安全超文本传输协议)</h2><ul>
-<li><strong>层级</strong>：应用层</li>
-<li><strong>特点</strong>：HTTP的安全版本，通过SSL&#x2F;TLS加密</li>
-<li><strong>工作原理</strong>：使用SSL&#x2F;TLS协议创建加密链接，URL显示HTTPS和挂锁图标</li>
-<li><strong>重要性</strong>：保护用户数据安全，防止黑客读取敏感信息</li>
-<li><strong>应用场景</strong>：在线支付、登录认证、隐私信息传输等</li>
-</ul>
-<h2 id="SSL-TLS-安全套接字层-传输层安全性"><a href="#SSL-TLS-安全套接字层-传输层安全性" class="headerlink" title="SSL&#x2F;TLS (安全套接字层&#x2F;传输层安全性)"></a>SSL&#x2F;TLS (安全套接字层&#x2F;传输层安全性)</h2><ul>
-<li><strong>层级</strong>：传输层安全协议</li>
-<li><strong>特点</strong>：SSL是早期协议，现已被TLS取代，但”SSL”仍被广泛使用</li>
-<li><strong>工作原理</strong>：通过”SSL握手”过程建立加密会话，加密传输中的数据</li>
-<li><strong>应用场景</strong>：保护网站通信安全，确保数据传输私密性</li>
-</ul>
-<h2 id="MQTT-消息队列遥测传输协议"><a href="#MQTT-消息队列遥测传输协议" class="headerlink" title="MQTT (消息队列遥测传输协议)"></a>MQTT (消息队列遥测传输协议)</h2><ul>
-<li><strong>层级</strong>：应用层</li>
-<li><strong>特点</strong>：基于发布&#x2F;订阅模式的轻量级协议，专为物联网设计</li>
-<li><strong>核心优势</strong>：协议头极小(固定头部仅2字节)，适合低带宽、高延迟环境</li>
-<li><strong>服务质量(QoS)</strong>：0(最多一次)、1(至少一次)、2(恰好一次)</li>
-<li><strong>应用场景</strong>：智能家居、工业物联网、车联网、智慧城市、医疗健康等</li>
-</ul>
-<h2 id="FTP-文件传输协议"><a href="#FTP-文件传输协议" class="headerlink" title="FTP (文件传输协议)"></a>FTP (文件传输协议)</h2><ul>
-<li><strong>层级</strong>：应用层</li>
-<li><strong>特点</strong>：客户端-服务器模型，使用两个TCP连接(控制连接和数据连接)</li>
-<li><strong>工作模式</strong>：主动模式(服务器主动发起数据连接)和被动模式(客户端主动发起数据连接)</li>
-<li><strong>应用场景</strong>：文件上传、下载、删除等操作</li>
-<li><strong>安全替代</strong>：FTPS(FTP over SSL&#x2F;TLS)和SFTP(SSH File Transfer Protocol)</li>
-</ul>
-<h2 id="RNDIS-远程网络驱动接口规范"><a href="#RNDIS-远程网络驱动接口规范" class="headerlink" title="RNDIS (远程网络驱动接口规范)"></a>RNDIS (远程网络驱动接口规范)</h2><ul>
-<li><strong>层级</strong>：网络层</li>
-<li><strong>特点</strong>：基于USB的通信协议，用于在USB设备上实现TCP&#x2F;IP数据传输</li>
-<li><strong>核心机制</strong>：将网络数据包封装在USB传输中，实现”TCP&#x2F;IP over USB”</li>
-<li><strong>应用场景</strong>：嵌入式设备、移动终端与计算机之间的联网功能</li>
-<li><strong>支持系统</strong>：微软Windows系统为主，部分Linux和Android系统通过驱动支持</li>
-</ul>
-<h2 id="ECM-企业内容管理"><a href="#ECM-企业内容管理" class="headerlink" title="ECM (企业内容管理)"></a>ECM (企业内容管理)</h2><ul>
-<li><strong>层级</strong>：应用层</li>
-<li><strong>特点</strong>：用于管理非结构化数据的系统，如文档、图像等</li>
-<li><strong>标准</strong>：CMIS(内容管理互操作性服务标准)是ECM存储库上的SQL标准</li>
-<li><strong>应用场景</strong>：企业文档管理、内容协作、知识管理等</li>
-</ul>
-<h2 id="PPP-点对点协议"><a href="#PPP-点对点协议" class="headerlink" title="PPP (点对点协议)"></a>PPP (点对点协议)</h2><ul>
-<li><strong>层级</strong>：链路层</li>
-<li><strong>特点</strong>：点到点链路层协议，用于在全双工的同异步链路上进行点到点的数据传输</li>
-<li><strong>主要组件</strong>：<ul>
-<li>LCP(链路控制协议)：用于各种链路层参数的协商</li>
-<li>NCP(网络控制协议)：如IPCP，用于各网络层参数的协商</li>
-<li>认证协议：CHAP、PAP，保证网络安全性</li>
-</ul>
-</li>
-<li><strong>优点</strong>：支持同步和异步链路、良好的扩展性、提供认证协议</li>
-<li><strong>应用场景</strong>：PPPoE(PPP over Ethernet)等接入场景，用于获取IP地址、DNS服务器等信息</li>
-</ul>
-<p>以上协议在现代网络通信中扮演着重要角色，从底层数据传输到应用层服务，构成了互联网通信的完整体系。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E7%89%A9%E8%81%94%E7%BD%91%E5%B8%B8%E8%A7%81%E5%8D%8F%E8%AE%AE%E7%AE%80%E4%BB%8B/" data-id="cuidcB_0ovGmhJR785ujfpkKi" data-title="物联网常见协议简介" class="article-share-link"><span class="fa fa-share">Share</span></a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" rel="tag">嵌入式学习</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B8%B8%E8%A7%81%E5%8D%8F%E8%AE%AE%E7%AE%80%E4%BB%8B/" rel="tag">常见协议简介</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-技巧学习/高效数据交换" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E9%AB%98%E6%95%88%E6%95%B0%E6%8D%AE%E4%BA%A4%E6%8D%A2/" class="article-date">
-  <time class="dt-published" datetime="2026-01-26T02:00:00.000Z" itemprop="datePublished">2026-01-26</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E9%AB%98%E6%95%88%E6%95%B0%E6%8D%AE%E4%BA%A4%E6%8D%A2/">嵌入式设备如何实现高效数据交换</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>在实际项目中，经常需要在不同设备之间交换复杂数据，例如：</p>
-<p>• STM32&#x2F;ESP32 等 MCU 需要与 App 共享配置、传感器数据或固件信息；<br>• 边缘设备需要与云端服务同步状态；<br>• 同一产品线中的不同硬件平台需要共享统一的数据结构。• STM32&#x2F;ESP32 等 MCU 需要与 App 共享配置、传感器数据或固件信息；<br>• 边缘设备需要与云端服务同步状态；<br>• 同一产品线中的不同硬件平台需要共享统一的数据结构。</p>
-<h2 id="Protocol-Buffers"><a href="#Protocol-Buffers" class="headerlink" title="Protocol Buffers"></a>Protocol Buffers</h2><h2 id="什么是-Protocol-Buffers？"><a href="#什么是-Protocol-Buffers？" class="headerlink" title="什么是 Protocol Buffers？"></a>什么是 Protocol Buffers？</h2><p>Protocol Buffers 是 Google 开源的结构化数据序列化机制，特点是：</p>
-<p>• 体积小：二进制编码，远小于 JSON&#x2F;XML；<br>• 速度快：序列化&#x2F;反序列化速度快，开销低；<br>• 强类型：使用 .proto 文件定义字段，自动生成代码，避免类型错误；<br>• 版本兼容：字段有标签号（tag），支持新增字段而不破坏旧版本；<br>• 多语言支持：官方支持C&#x2F;Java&#x2F;Python&#x2F;Go 等多种语言。<br>对比 JSON：</p>
-<table>
-<thead>
-<tr>
-<th>特性</th>
-<th>JSON</th>
-<th>Protocol Buffers</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>编码</td>
-<td>文本</td>
-<td>二进制</td>
-</tr>
-<tr>
-<td>体积</td>
-<td>大</td>
-<td>小（通常为 JSON 的 1&#x2F;3~1&#x2F;10）</td>
-</tr>
-<tr>
-<td>解析速度</td>
-<td>慢，需要字符串解析</td>
-<td>快，直接操作字节流</td>
-</tr>
-<tr>
-<td>强类型</td>
-<td>无</td>
-<td>有（由<code>&lt;span leaf=&quot;&quot;&gt;.proto&lt;/span&gt;</code> 定义）</td>
-</tr>
-<tr>
-<td>版本兼容</td>
-<td>依赖字段名称</td>
-<td>依赖字段编号，兼容性更强</td>
-</tr>
-<tr>
-<td>适用于嵌入式</td>
-<td>一般</td>
-<td>非常适合</td>
-</tr>
-</tbody></table>
-<p>Protobuf 数据模型<br>一个 Protobuf 消息由字段组成，每个字段具有：</p>
-<p>• 类型（int32、string、bytes 等）<br>• 名称（如 temperature）<br>• 标签编号（tag，比如 1）<br>示例 .proto 文件：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">syntax = &quot;proto3&quot;;</span><br><span class="line"></span><br><span class="line">message SensorData &#123;</span><br><span class="line">uint32 device_id = 1;</span><br><span class="line">float temperature = 2;</span><br><span class="line">float humidity = 3;</span><br><span class="line">repeated uint32 samples = 4;  // 重复字段</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<hr>
-<h2 id="nanopb"><a href="#nanopb" class="headerlink" title="nanopb"></a>nanopb</h2><p>为什么需要 nanopb？<br>标准的 Protobuf C&#x2F;C++ 库体积较大，依赖动态内存分配，不适合资源受限的 MCU。nanopb 为嵌入式平台量身打造，具有以下特点：</p>
-<p>• 超小体积：核心库仅几 KB，生成的代码也极小；<br>• 无动态内存：默认使用静态缓冲区，避免 malloc&#x2F;free 带来的风险；<br>• 可配置性强：可以按需启用&#x2F;禁用字段、回调；<br>• 开源：遵循 zlib 许可证，商业友好；<br>• 兼容 Protobuf：与官方工具链兼容，可与手机 App、服务器使用的 Protobuf 无缝对接。<br>nanopb 的工作流程</p>
-<ol>
-<li><p>编写 .proto 文件：定义数据结构</p>
-</li>
-<li><p>使用 nanopb 的 protoc 插件生成 .pb.h&#x2F;.pb.c</p>
-</li>
-<li><p>在 MCU 工程中引入 .pb.h&#x2F;.pb.c 和 nanopb 库</p>
-</li>
-<li><p>使用 nanopb 提供的 API 进行编码&#x2F;解码</p>
-</li>
-<li><p>与手机 App&#x2F;云端共享相同的 .proto，实现跨平台数据交换<br>完整工作流<br>定义数据结构（proto 文件）<br>创建 device.proto：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">syntax = &quot;proto3&quot;;</span><br><span class="line"></span><br><span class="line">message DeviceStatus &#123;</span><br><span class="line">uint32 device_id = 1;</span><br><span class="line">bool online = 2;</span><br><span class="line">float battery_level = 3;</span><br><span class="line">string firmware_version = 4;</span><br><span class="line">repeated SensorData sensors = 5;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">message SensorData &#123;</span><br><span class="line">uint32 sensor_id = 1;</span><br><span class="line">float value = 2;</span><br><span class="line">string unit = 3;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
-</ol>
-<p>生成代码<br>在 PC 上安装 protoc 和 nanopb 插件：</p>
-<h1 id="安装-nanopb（包含插件和示例）"><a href="#安装-nanopb（包含插件和示例）" class="headerlink" title="安装 nanopb（包含插件和示例）"></a>安装 nanopb（包含插件和示例）</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/nanopb/nanopb.git</span><br><span class="line">cd nanopb/generator</span><br><span class="line">python3 nanopb_generator.py --help</span><br></pre></td></tr></table></figure>
-
-<h1 id="生成代码"><a href="#生成代码" class="headerlink" title="生成代码"></a>生成代码</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">protoc --nanopb_out=. device.proto</span><br></pre></td></tr></table></figure>
-
-<h1 id="输出：device-pb-h、device-pb-c"><a href="#输出：device-pb-h、device-pb-c" class="headerlink" title="输出：device.pb.h、device.pb.c"></a>输出：device.pb.h、device.pb.c</h1><p>在 MCU 中集成 nanopb</p>
-<ol>
-<li><p>将 device.pb.h&#x2F;.pb.c 和 pb.h&#x2F;pb_common.c&#x2F;pb_decode.c&#x2F;pb_encode.c 添加到工程</p>
-</li>
-<li><p>在源文件中包含头文件：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#include &quot;pb.h&quot;</span><br><span class="line">#include &quot;pb_encode.h&quot;</span><br><span class="line">#include &quot;pb_decode.h&quot;</span><br><span class="line">#include &quot;device.pb.h&quot;</span><br></pre></td></tr></table></figure></li>
-<li><p>嵌入式端编码（序列化）</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">uint8_t buffer[128];</span><br><span class="line">   pb_ostream_t stream = pb_ostream_from_buffer(buffer, sizeof(buffer));</span><br><span class="line"></span><br><span class="line">DeviceStatus status = DeviceStatus_init_zero;</span><br><span class="line">status.device_id = 1001;</span><br><span class="line">status.online = true;</span><br><span class="line">status.battery_level = 78.5f;</span><br><span class="line">strncpy(status.firmware_version, &quot;1.2.3&quot;, sizeof(status.firmware_version));</span><br><span class="line"></span><br><span class="line">// 添加传感器数据</span><br><span class="line">SensorData sensor = SensorData_init_zero;</span><br><span class="line">sensor.sensor_id = 1;</span><br><span class="line">sensor.value = 36.7f;</span><br><span class="line">strncpy(sensor.unit, &quot;C&quot;, sizeof(sensor.unit));</span><br><span class="line">status.sensors[0] = sensor;</span><br><span class="line">status.sensors_count = 1;</span><br><span class="line"></span><br><span class="line">if (pb_encode(&amp;stream, DeviceStatus_fields, &amp;status)) &#123;</span><br><span class="line">size_t message_length = stream.bytes_written;</span><br><span class="line">send_bytes_over_uart(buffer, message_length);</span><br><span class="line">&#125; else &#123;</span><br><span class="line">printf(&quot;Encoding failed: %s\n&quot;, PB_GET_ERROR(&amp;stream));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-</ol>
-<p>嵌入式端解码（反序列化）</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">pb_istream_t stream = pb_istream_from_buffer(buffer, length);</span><br><span class="line">DeviceStatus status = DeviceStatus_init_zero;</span><br><span class="line"></span><br><span class="line">if (pb_decode(&amp;stream, DeviceStatus_fields, &amp;status)) &#123;</span><br><span class="line">printf(&quot;Device %d firmware %s\n&quot;, status.device_id, status.firmware_version);</span><br><span class="line">&#125; else &#123;</span><br><span class="line">printf(&quot;Decoding failed: %s\n&quot;, PB_GET_ERROR(&amp;stream));</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>手机 App 端处理<br>• App 开发者使用相同的 .proto 文件<br>• 在 Android 中使用 protoc 生成 Java&#x2F;Kotlin 代码（或使用 protoc –java_out）<br>• 在 iOS 中使用 protoc –objc_out<br>• App 直接解析来自 MCU 的 Protobuf 数据，无需额外转换<br>示例：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">val status = Device.DeviceStatus.parseFrom(bytes)</span><br><span class="line">val deviceId = status.deviceId</span><br><span class="line">val battery = status.batteryLevel</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>应用场景</p>
-<ol>
-<li>设备与手机 App 数据同步：<br>• 方言：设备使用 nanopb 编码数据，通过 BLE&#x2F;UART&#x2F;WiFi 发送给 App<br>• App 使用 Protobuf 库解析，显示设备状态</li>
-<li>云端配置下发：<br>• 云端服务使用 Protobuf 定义配置数据<br>• 设备使用 nanopb 解码，实现配置下发</li>
-<li>多平台统一协议：<br>• 同一产品线的 ARM Linux、RTOS MCU、手机 App 共享同一个 .proto<br>• 实现协议标准化，减少维护成本</li>
-<li>数据日志与存储：<br>• 使用 Protobuf 将数据记录到 Flash 或 SD 卡<br>• PC 端工具使用 Protobuf 解析日志</li>
-</ol>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>借助 Protocol Buffers + nanopb，可以在嵌入式设备建立一种高效、可靠、可扩展的数据交换机制，轻松应对复杂数据结构和跨平台兼容性问题。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2026/01/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E9%AB%98%E6%95%88%E6%95%B0%E6%8D%AE%E4%BA%A4%E6%8D%A2/" data-id="cuideMcoiEg0PeYjtJP0cE-BH" data-title="嵌入式设备如何实现高效数据交换" class="article-share-link"><span class="fa fa-share">Share</span></a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" rel="tag">嵌入式学习</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" rel="tag">数据传输</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
     <article id="post-博客撰写方法/博客撰写方法" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2026/01/18/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/" class="article-date">
@@ -491,7 +240,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2026/01/18/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/" data-id="cuideWBH3z4S8c23q6A78IZKI" data-title="博客撰写方法" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2026/01/18/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/" data-id="cuidtSPOr-9WsasXKbMaSJaeI" data-title="博客撰写方法" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -593,7 +342,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2026/01/18/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95%EF%BC%88%E6%95%B4%E7%90%86%E5%90%8E%EF%BC%89/" data-id="cuidp583YkekZocMICIb3UIok" data-title="博客撰写方法(整理后)" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2026/01/18/%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95/%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2%E6%92%B0%E5%86%99%E6%96%B9%E6%B3%95%EF%BC%88%E6%95%B4%E7%90%86%E5%90%8E%EF%BC%89/" data-id="cuidJnakwEgMk335fVdkjISSp" data-title="博客撰写方法(整理后)" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -881,7 +630,7 @@ tmpfs           800M     0  800M   0% /dev/shm
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2023/02/08/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/03_Linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" data-id="cuidaOlWhyOi0ofI1ooc5N1ij" data-title="Linux常用命令" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2023/02/08/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/03_Linux%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" data-id="cuiddvPxYBIN08GAPyH_sB5PU" data-title="Linux常用命令" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -1055,7 +804,7 @@ tmpfs           800M     0  800M   0% /dev/shm
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2023/02/08/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/05_%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" data-id="cuiddxl0g4yOslBqS5DnEsn05" data-title="SSH安装&amp;VSCode客户端工具安装" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2023/02/08/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/05_%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" data-id="cuidSJ6irYCT8ISZHIqie_dJ4" data-title="SSH安装&amp;VSCode客户端工具安装" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -1119,79 +868,7 @@ tmpfs           800M     0  800M   0% /dev/shm
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2023/02/08/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/04_%E6%9D%BF%E5%8D%A1%E4%B8%8ALinux%E6%8C%87%E4%BB%A4%E7%9A%84%E4%BD%BF%E7%94%A8/" data-id="cuidMRwW98Mzi9GYVnaKjemCc" data-title="板卡上Linux指令的使用" class="article-share-link"><span class="fa fa-share">Share</span></a>
-      
-      
-      
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" rel="tag">嵌入式学习</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-Linux 学习记录/01_学习方法及路线" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2023/01/18/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/01_%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95%E5%8F%8A%E8%B7%AF%E7%BA%BF/" class="article-date">
-  <time class="dt-published" datetime="2023-01-17T16:00:00.000Z" itemprop="datePublished">2023-01-18</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2023/01/18/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/01_%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95%E5%8F%8A%E8%B7%AF%E7%BA%BF/">学习方法及路线</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <h1 id="嵌入式学习路线"><a href="#嵌入式学习路线" class="headerlink" title="嵌入式学习路线"></a>嵌入式学习路线</h1><h2 id="1-嵌入式学习的三个阶段"><a href="#1-嵌入式学习的三个阶段" class="headerlink" title="1. 嵌入式学习的三个阶段"></a>1. 嵌入式学习的三个阶段</h2><h2 id="第一阶段：裸机开发-Bare-Metal"><a href="#第一阶段：裸机开发-Bare-Metal" class="headerlink" title="第一阶段：裸机开发 (Bare Metal)"></a>第一阶段：裸机开发 (Bare Metal)</h2><p>这是直接在芯片上“裸奔”写程序。你不需要操作系统，直接操控寄存器。</p>
-<ul>
-<li><strong>重点：</strong> C语言（指针、位运算）、单片机架构（如 STM32&#x2F;ARM Cortex-M）、GPIO、中断、UART、I2C、SPI。</li>
-<li><strong>目标：</strong> 理解底层硬件是如何工作的。当你点亮第一个 LED 灯时，你就完成了硬件控制的第一步。</li>
-</ul>
-<h2 id="第二阶段：嵌入式-Linux-系统-Embedded-Linux"><a href="#第二阶段：嵌入式-Linux-系统-Embedded-Linux" class="headerlink" title="第二阶段：嵌入式 Linux 系统 (Embedded Linux)"></a>第二阶段：嵌入式 Linux 系统 (Embedded Linux)</h2><p>当任务变得复杂（需要网络协议栈、文件系统、图形界面）时，我们就需要 Linux。</p>
-<ul>
-<li><strong>重点：</strong> Linux 常用命令、Shell 脚本、交叉编译 (Cross-Compilation)、Bootloader (U-Boot)、内核移植、根文件系统构建。</li>
-<li><strong>目标：</strong> 让 Linux 在你的开发板（如树莓派、飞凌、正点原子等）上跑起来。</li>
-</ul>
-<h2 id="第三阶段：驱动开发与应用开发"><a href="#第三阶段：驱动开发与应用开发" class="headerlink" title="第三阶段：驱动开发与应用开发"></a>第三阶段：驱动开发与应用开发</h2><p>这是目前行业内需求最大的部分。</p>
-<ul>
-<li><strong>应用层：</strong> 使用 C&#x2F;C++、Python 或 Qt 开发运行在 Linux 上的应用程序。</li>
-<li><strong>驱动层：</strong> 编写连接硬件与 Linux 内核的桥梁（如字符设备驱动）。</li>
-</ul>
-<hr>
-<h2 id="2-快速上手的“黄金建议”"><a href="#2-快速上手的“黄金建议”" class="headerlink" title="2. 快速上手的“黄金建议”"></a>2. 快速上手的“黄金建议”</h2><p>建议你不要只看书，要**“以项目驱动学习”**：</p>
-<ol>
-<li><strong>准备一块开发板：</strong> 如果你是完全的新手，STM32 是学习裸机的首选；如果你想直接攻克 Linux，树莓派 (Raspberry Pi) 或 基于 IMX6ULL 的开发板非常适合。</li>
-<li><strong>不要纠结于背后的深层原理：</strong> 先通过“抄”代码让程序跑通，看到现象后再去深挖底层的寄存器配置或内核源码。</li>
-<li><strong>拥抱 Linux 环境：</strong> 尽早抛弃 Windows 下的各种 IDE，学会使用 Ubuntu 系统，尝试在终端里用 <code>gcc</code> 编译你的第一个 “Hello World”。</li>
-</ol>
-<hr>
-<h2 id="3-学习的过程中要有所总结和记录"><a href="#3-学习的过程中要有所总结和记录" class="headerlink" title="3.学习的过程中要有所总结和记录"></a>3.学习的过程中要有所总结和记录</h2><ol>
-<li>总结是为了整理自己学到的东西，在整理的过程中发现自己对所学的知识的掌握</li>
-<li>记录主要有两个目的：1.自己遗忘时可随时打开回顾；2.为自己工作&#x2F;升学面试所使用的简历添加内容（当然作为学生竞赛获奖也能证明自己的实力）</li>
-</ol>
-<hr>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2023/01/18/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/01_%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95%E5%8F%8A%E8%B7%AF%E7%BA%BF/" data-id="cuidQ2RLCTBrKjM9Jj2rMvzK_" data-title="学习方法及路线" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2023/02/08/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/04_%E6%9D%BF%E5%8D%A1%E4%B8%8ALinux%E6%8C%87%E4%BB%A4%E7%9A%84%E4%BD%BF%E7%94%A8/" data-id="cuidWSbGNXCdzIKQZKXHTIvOr" data-title="板卡上Linux指令的使用" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -1321,7 +998,79 @@ tmpfs           800M     0  800M   0% /dev/shm
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://example.com/2023/01/18/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/02_%E6%96%87%E4%BB%B6%E6%9D%83%E9%99%90/" data-id="cuidM7DAHPVbvVcTFUFnXyMv2" data-title="Linux|RTOS区别及权限" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      <a data-url="http://example.com/2023/01/18/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/02_%E6%96%87%E4%BB%B6%E6%9D%83%E9%99%90/" data-id="cuidr3vXIKqZ1Hv7pr_xpjiKr" data-title="Linux|RTOS区别及权限" class="article-share-link"><span class="fa fa-share">Share</span></a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" rel="tag">嵌入式学习</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+    <article id="post-Linux 学习记录/01_学习方法及路线" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2023/01/18/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/01_%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95%E5%8F%8A%E8%B7%AF%E7%BA%BF/" class="article-date">
+  <time class="dt-published" datetime="2023-01-17T16:00:00.000Z" itemprop="datePublished">2023-01-18</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="p-name article-title" href="/2023/01/18/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/01_%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95%E5%8F%8A%E8%B7%AF%E7%BA%BF/">学习方法及路线</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="嵌入式学习路线"><a href="#嵌入式学习路线" class="headerlink" title="嵌入式学习路线"></a>嵌入式学习路线</h1><h2 id="1-嵌入式学习的三个阶段"><a href="#1-嵌入式学习的三个阶段" class="headerlink" title="1. 嵌入式学习的三个阶段"></a>1. 嵌入式学习的三个阶段</h2><h2 id="第一阶段：裸机开发-Bare-Metal"><a href="#第一阶段：裸机开发-Bare-Metal" class="headerlink" title="第一阶段：裸机开发 (Bare Metal)"></a>第一阶段：裸机开发 (Bare Metal)</h2><p>这是直接在芯片上“裸奔”写程序。你不需要操作系统，直接操控寄存器。</p>
+<ul>
+<li><strong>重点：</strong> C语言（指针、位运算）、单片机架构（如 STM32&#x2F;ARM Cortex-M）、GPIO、中断、UART、I2C、SPI。</li>
+<li><strong>目标：</strong> 理解底层硬件是如何工作的。当你点亮第一个 LED 灯时，你就完成了硬件控制的第一步。</li>
+</ul>
+<h2 id="第二阶段：嵌入式-Linux-系统-Embedded-Linux"><a href="#第二阶段：嵌入式-Linux-系统-Embedded-Linux" class="headerlink" title="第二阶段：嵌入式 Linux 系统 (Embedded Linux)"></a>第二阶段：嵌入式 Linux 系统 (Embedded Linux)</h2><p>当任务变得复杂（需要网络协议栈、文件系统、图形界面）时，我们就需要 Linux。</p>
+<ul>
+<li><strong>重点：</strong> Linux 常用命令、Shell 脚本、交叉编译 (Cross-Compilation)、Bootloader (U-Boot)、内核移植、根文件系统构建。</li>
+<li><strong>目标：</strong> 让 Linux 在你的开发板（如树莓派、飞凌、正点原子等）上跑起来。</li>
+</ul>
+<h2 id="第三阶段：驱动开发与应用开发"><a href="#第三阶段：驱动开发与应用开发" class="headerlink" title="第三阶段：驱动开发与应用开发"></a>第三阶段：驱动开发与应用开发</h2><p>这是目前行业内需求最大的部分。</p>
+<ul>
+<li><strong>应用层：</strong> 使用 C&#x2F;C++、Python 或 Qt 开发运行在 Linux 上的应用程序。</li>
+<li><strong>驱动层：</strong> 编写连接硬件与 Linux 内核的桥梁（如字符设备驱动）。</li>
+</ul>
+<hr>
+<h2 id="2-快速上手的“黄金建议”"><a href="#2-快速上手的“黄金建议”" class="headerlink" title="2. 快速上手的“黄金建议”"></a>2. 快速上手的“黄金建议”</h2><p>建议你不要只看书，要**“以项目驱动学习”**：</p>
+<ol>
+<li><strong>准备一块开发板：</strong> 如果你是完全的新手，STM32 是学习裸机的首选；如果你想直接攻克 Linux，树莓派 (Raspberry Pi) 或 基于 IMX6ULL 的开发板非常适合。</li>
+<li><strong>不要纠结于背后的深层原理：</strong> 先通过“抄”代码让程序跑通，看到现象后再去深挖底层的寄存器配置或内核源码。</li>
+<li><strong>拥抱 Linux 环境：</strong> 尽早抛弃 Windows 下的各种 IDE，学会使用 Ubuntu 系统，尝试在终端里用 <code>gcc</code> 编译你的第一个 “Hello World”。</li>
+</ol>
+<hr>
+<h2 id="3-学习的过程中要有所总结和记录"><a href="#3-学习的过程中要有所总结和记录" class="headerlink" title="3.学习的过程中要有所总结和记录"></a>3.学习的过程中要有所总结和记录</h2><ol>
+<li>总结是为了整理自己学到的东西，在整理的过程中发现自己对所学的知识的掌握</li>
+<li>记录主要有两个目的：1.自己遗忘时可随时打开回顾；2.为自己工作&#x2F;升学面试所使用的简历添加内容（当然作为学生竞赛获奖也能证明自己的实力）</li>
+</ol>
+<hr>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2023/01/18/Linux%20%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/01_%E5%AD%A6%E4%B9%A0%E6%96%B9%E6%B3%95%E5%8F%8A%E8%B7%AF%E7%BA%BF/" data-id="cuid-SVVaODBNxl8_CXQBTwkj" data-title="学习方法及路线" class="article-share-link"><span class="fa fa-share">Share</span></a>
       
       
       
@@ -1360,7 +1109,7 @@ tmpfs           800M     0  800M   0% /dev/shm
   <div class="widget-wrap">
     <h3 class="widget-title">Tags</h3>
     <div class="widget">
-      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C%E8%AF%AD%E8%A8%80%E5%AE%8F/" rel="tag">C语言宏</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Debug%E6%97%A5%E5%BF%97/" rel="tag">Debug日志</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FLASH%E5%AD%98%E5%82%A8/" rel="tag">FLASH存储</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Makefile/" rel="tag">Makefile</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RTOS/" rel="tag">RTOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96/" rel="tag">内存优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%85%E5%AD%98%E8%B5%84%E6%BA%90%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="tag">内存资源可视化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="tag">博客环境搭建</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" rel="tag">学习记录</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" rel="tag">嵌入式学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" rel="tag">工具使用</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B8%B8%E8%A7%81%E5%8D%8F%E8%AE%AE%E7%AE%80%E4%BB%8B/" rel="tag">常见协议简介</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" rel="tag">数据传输</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" rel="tag">数据存储</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" rel="tag">消息队列</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/" rel="tag">结构体</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%9D%A2%E8%AF%95/" rel="tag">面试</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%A9%B1%E5%8A%A8%E5%B1%8F/" rel="tag">驱动屏</a></li></ul>
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C%E8%AF%AD%E8%A8%80%E5%AE%8F/" rel="tag">C语言宏</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Debug%E6%97%A5%E5%BF%97/" rel="tag">Debug日志</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/FLASH%E5%AD%98%E5%82%A8/" rel="tag">FLASH存储</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/" rel="tag">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Makefile/" rel="tag">Makefile</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RTOS/" rel="tag">RTOS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96/" rel="tag">内存优化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%86%85%E5%AD%98%E8%B5%84%E6%BA%90%E5%8F%AF%E8%A7%86%E5%8C%96/" rel="tag">内存资源可视化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="tag">博客环境搭建</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" rel="tag">学习记录</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" rel="tag">嵌入式学习</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" rel="tag">工具使用</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%B8%B8%E8%A7%81%E5%8D%8F%E8%AE%AE%E7%AE%80%E4%BB%8B/" rel="tag">常见协议简介</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" rel="tag">数据传输</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" rel="tag">数据存储</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" rel="tag">消息队列</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/" rel="tag">结构体</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%A9%B1%E5%8A%A8%E5%B1%8F/" rel="tag">驱动屏</a></li></ul>
     </div>
   </div>
 
@@ -1370,7 +1119,7 @@ tmpfs           800M     0  800M   0% /dev/shm
   <div class="widget-wrap">
     <h3 class="widget-title">Tag Cloud</h3>
     <div class="widget tagcloud">
-      <a href="/tags/C%E8%AF%AD%E8%A8%80%E5%AE%8F/" style="font-size: 10px;">C语言宏</a> <a href="/tags/Debug%E6%97%A5%E5%BF%97/" style="font-size: 10px;">Debug日志</a> <a href="/tags/FLASH%E5%AD%98%E5%82%A8/" style="font-size: 10px;">FLASH存储</a> <a href="/tags/Linux/" style="font-size: 18px;">Linux</a> <a href="/tags/Makefile/" style="font-size: 10px;">Makefile</a> <a href="/tags/RTOS/" style="font-size: 10px;">RTOS</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96/" style="font-size: 10px;">内存优化</a> <a href="/tags/%E5%86%85%E5%AD%98%E8%B5%84%E6%BA%90%E5%8F%AF%E8%A7%86%E5%8C%96/" style="font-size: 10px;">内存资源可视化</a> <a href="/tags/%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" style="font-size: 10px;">博客环境搭建</a> <a href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" style="font-size: 10px;">学习记录</a> <a href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" style="font-size: 20px;">嵌入式学习</a> <a href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" style="font-size: 14px;">工具使用</a> <a href="/tags/%E5%B8%B8%E8%A7%81%E5%8D%8F%E8%AE%AE%E7%AE%80%E4%BB%8B/" style="font-size: 10px;">常见协议简介</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" style="font-size: 12px;">数据传输</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" style="font-size: 16px;">数据存储</a> <a href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" style="font-size: 10px;">消息队列</a> <a href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/" style="font-size: 10px;">结构体</a> <a href="/tags/%E9%9D%A2%E8%AF%95/" style="font-size: 12px;">面试</a> <a href="/tags/%E9%A9%B1%E5%8A%A8%E5%B1%8F/" style="font-size: 14px;">驱动屏</a>
+      <a href="/tags/C%E8%AF%AD%E8%A8%80%E5%AE%8F/" style="font-size: 10px;">C语言宏</a> <a href="/tags/Debug%E6%97%A5%E5%BF%97/" style="font-size: 10px;">Debug日志</a> <a href="/tags/FLASH%E5%AD%98%E5%82%A8/" style="font-size: 10px;">FLASH存储</a> <a href="/tags/Linux/" style="font-size: 18px;">Linux</a> <a href="/tags/Makefile/" style="font-size: 10px;">Makefile</a> <a href="/tags/RTOS/" style="font-size: 10px;">RTOS</a> <a href="/tags/git/" style="font-size: 10px;">git</a> <a href="/tags/%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96/" style="font-size: 10px;">内存优化</a> <a href="/tags/%E5%86%85%E5%AD%98%E8%B5%84%E6%BA%90%E5%8F%AF%E8%A7%86%E5%8C%96/" style="font-size: 10px;">内存资源可视化</a> <a href="/tags/%E5%8D%9A%E5%AE%A2%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" style="font-size: 10px;">博客环境搭建</a> <a href="/tags/%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" style="font-size: 10px;">学习记录</a> <a href="/tags/%E5%B5%8C%E5%85%A5%E5%BC%8F%E5%AD%A6%E4%B9%A0/" style="font-size: 20px;">嵌入式学习</a> <a href="/tags/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" style="font-size: 14px;">工具使用</a> <a href="/tags/%E5%B8%B8%E8%A7%81%E5%8D%8F%E8%AE%AE%E7%AE%80%E4%BB%8B/" style="font-size: 10px;">常见协议简介</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93/" style="font-size: 12px;">数据传输</a> <a href="/tags/%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8/" style="font-size: 16px;">数据存储</a> <a href="/tags/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/" style="font-size: 10px;">消息队列</a> <a href="/tags/%E7%BB%93%E6%9E%84%E4%BD%93/" style="font-size: 10px;">结构体</a> <a href="/tags/%E9%A9%B1%E5%8A%A8%E5%B1%8F/" style="font-size: 14px;">驱动屏</a>
     </div>
   </div>
 
@@ -1392,14 +1141,6 @@ tmpfs           800M     0  800M   0% /dev/shm
       <ul>
         
           <li>
-            <a href="/2026/10/11/%E8%BE%BE%E5%8F%91%E9%9D%A2%E8%AF%95%E5%87%86%E5%A4%87/%E4%BA%8C%E9%9D%A2/">达发科技面试(二面)</a>
-          </li>
-        
-          <li>
-            <a href="/2026/10/11/%E8%BE%BE%E5%8F%91%E9%9D%A2%E8%AF%95%E5%87%86%E5%A4%87/%E4%B8%80%E9%9D%A2/">达发科技面试（一面）</a>
-          </li>
-        
-          <li>
             <a href="/2026/10/11/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E5%B5%8C%E5%85%A5%E5%BC%8F%20RTOS%20%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%EF%BC%9A%E4%BC%A0%E7%BB%93%E6%9E%84%E4%BD%93%EF%BC%8C%E8%BF%98%E6%98%AF%E4%BC%A0%E6%8C%87%E9%92%88/">嵌入式 RTOS 消息队列：传结构体，还是传指针？嵌入式 RTOS 消息队列：传结构体，还是传指针？</a>
           </li>
         
@@ -1409,6 +1150,14 @@ tmpfs           800M     0  800M   0% /dev/shm
         
           <li>
             <a href="/2026/05/28/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/Modbus%E5%8D%8F%E8%AE%AE%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">Modbus协议学习笔记</a>
+          </li>
+        
+          <li>
+            <a href="/2026/04/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/FreeRTOS%E5%B7%A5%E7%A8%8B%E5%8C%96%E8%A6%81%E7%82%B9/">FreeRTOS工程化要点：任务划分、优先级设计与CPU占用率监控</a>
+          </li>
+        
+          <li>
+            <a href="/2026/04/26/%E6%8A%80%E5%B7%A7%E5%AD%A6%E4%B9%A0/%E8%87%AA%E5%8A%A8%E5%88%9D%E5%A7%8B%E5%8C%96%E6%A1%86%E6%9E%B6/">自动初始化框架</a>
           </li>
         
       </ul>
